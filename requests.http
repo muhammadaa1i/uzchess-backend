@@ -1,0 +1,41 @@
+GET http://localhost:8000/category/read
+Content-Type: application/json
+
+{
+  "fullName": "Haaland"
+}
+
+###
+
+POST http://localhost:8000/category/create
+Content-Type: application/json
+
+{
+  "title": "Full-stack"
+}
+
+###
+
+POST http://localhost:8000/language
+Content-Type: application/json
+
+{
+  "title": "French",
+  "code": "fr"
+}
+
+###
+PATCH http://localhost:8000/language/1
+Content-Type: application/json
+
+{
+  "code": "o'z"
+}
+
+###
+GET http://localhost:8000/language
+Content-Type: application/json
+
+###
+GET http://localhost:8000/language/2
+Content-Type: application/json
