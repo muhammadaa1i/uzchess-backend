@@ -6,10 +6,10 @@ import {AuthModule} from "./features/auth/auth.module";
 import {JwtModule} from "@nestjs/jwt";
 import {APP_GUARD} from "@nestjs/core";
 import {AuthGuard} from "@/core/guards/auth.guard";
-import {AuthorModule} from "@/features/library/author/author.module";
-import {CategoryModule} from "@/features/library/category/category.module";
-import {Role} from "@/core/enums/role.enum";
-import {RoleGuard} from "@/core/guards/role.guard";
+import {PermissionGuard} from "@/core/guards/permission.guard";
+import {CqrsModule} from "@nestjs/cqrs";
+import {CacheModule} from "@nestjs/cache-manager";
+import {LibraryModule} from "@/features/library/library.module";
 
 @Module({
     imports: [
@@ -21,14 +21,17 @@ import {RoleGuard} from "@/core/guards/role.guard";
             }
         }),
         TypeOrmModule.forRoot(typeOrmConfig),
+        CqrsModule.forRoot(),
+        CacheModule.register({
+            ttl: 1000 * 60 * 30
+        }),
         AuthModule,
-        AuthorModule,
-        CategoryModule,
+        LibraryModule,
         CommonModule,
     ],
     providers: [
         {provide: APP_GUARD, useClass: AuthGuard},
-        {provide: APP_GUARD, useClass: RoleGuard}
+        {provide: APP_GUARD, useClass: PermissionGuard}
     ]
 })
 export class AppModule {
