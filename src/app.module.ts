@@ -9,7 +9,7 @@ import {AuthGuard} from "@/core/guards/auth.guard";
 import {PermissionGuard} from "@/core/guards/permission.guard";
 import {CqrsModule} from "@nestjs/cqrs";
 import {CacheModule} from "@nestjs/cache-manager";
-import {LibraryModule} from "@/features/library/library.module";
+import {LibraryModule} from "@/features/book/book.module";
 
 @Module({
     imports: [
