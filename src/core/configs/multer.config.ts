@@ -1,7 +1,6 @@
 import {diskStorage} from "multer";
 import {join} from 'path'
 import * as fs from "node:fs";
-import {randomUUID} from "node:crypto";
 
 interface Params {
     destination: string,

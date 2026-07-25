@@ -4,7 +4,6 @@ import {JwtService} from "@nestjs/jwt";
 import {Reflector} from "@nestjs/core";
 import {IS_PUBLIC_KEY} from "@/core/decorators/public.decorator";
 import {JwtUser} from "@/core/types/jwt-user";
-import {PermissionKey} from "@/core/decorators/permission.decorator";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,9 +15,9 @@ export class AuthGuard implements CanActivate {
 
     canActivate(context: ExecutionContext) {
         const req: Request = context.switchToHttp().getRequest()
-        const permissions = this.reflector.get(PermissionKey, context.getHandler())
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()])
 
-        if (!permissions)
+        if (isPublic)
             return true
 
         if (!req.headers.authorization)

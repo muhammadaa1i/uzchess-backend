@@ -3,6 +3,6 @@ import {TypeOrmModuleOptions} from '@nestjs/typeorm';
 export const typeOrmConfig: TypeOrmModuleOptions = {
     type: 'postgres',
     synchronize: false,
-    url: 'postgresql://postgres:001007@localhost:5432/uzchess',
+    url: process.env.DATABASE_URL,
     entities: ['dist/**/*.entity.js'],
 };

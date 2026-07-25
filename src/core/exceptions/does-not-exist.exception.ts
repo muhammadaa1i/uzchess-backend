@@ -1,7 +1,7 @@
 import {NotFoundException} from "@nestjs/common";
 
 export class DoesNotExistException extends NotFoundException {
-    static ThrowIfNull(obj: any, message: string = "Does not exist") {
+    static ThrowIfNull<T>(obj: T, message: string = "Does not exist"): asserts obj is NonNullable<T> {
         if (obj === null || obj === undefined) {
             throw new DoesNotExistException(message)
         }

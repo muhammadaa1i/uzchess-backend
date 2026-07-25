@@ -2,6 +2,6 @@ import {Role} from "@/core/enums/role.enum";
 
 export type JwtUser = {
     id: number;
-    role: Role;
+    roles: Role[];
     [key: string]: any;
 };

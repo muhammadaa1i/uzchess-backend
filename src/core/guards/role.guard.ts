@@ -27,6 +27,6 @@ export class RoleGuard {
         if (!req.user)
             return false
 
-        return roles.includes(req.user.role)
+        return req.user.roles.some((role) => roles.includes(role))
     }
 }

@@ -4,6 +4,7 @@ import {User} from "@/features/auth/entities/user.entity";
 import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception";
 import argon2 from "argon2";
 import {JwtService} from "@nestjs/jwt";
+import {Role} from "@/core/enums/role.enum";
 
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand> {
@@ -22,7 +23,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
         const jwtPayload = {
             id: user!.id,
-            roles: user!.userRoles.map((ur) => ur.role.title),
+            roles: user!.userRoles.map((ur) => ur.role.title as Role),
         }
 
         const accessToken = this.jwtService.sign(jwtPayload)
