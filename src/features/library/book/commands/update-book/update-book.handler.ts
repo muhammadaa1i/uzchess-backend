@@ -11,60 +11,87 @@ import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception"
 import {plainToInstance} from "class-transformer";
 import {UpdateBookResponse} from "@/features/library/book/commands/update-book/update-book.response";
 import {unlink} from "node:fs/promises";
+import {Cache} from "@nestjs/cache-manager";
+import {
+    BOOKS_LIST_CACHE_KEY,
+    bookByIdCacheKey,
+} from "@/features/library/book/book.cache";
 
 @CommandHandler(UpdateBookCommand)
 export class UpdateBookHandler implements ICommandHandler<UpdateBookCommand> {
+    constructor(private readonly cache: Cache) {
+    }
+
     async execute(cmd: UpdateBookCommand) {
-        const book = await Book.findOneBy({id: cmd.id})
-        DoesNotExistException.ThrowIfNull(book, "Book not found")
+        const book = await Book.findOneBy({id: cmd.id});
+        DoesNotExistException.ThrowIfNull(book, "Book not found");
 
         if (cmd.categoryId !== undefined) {
-            const categoryExists = await Category.existsBy({id: cmd.categoryId})
-            DoesNotExistException.ThrowIf(!categoryExists, "Category not found")
-            book.categoryId = cmd.categoryId
+            const categoryExists = await Category.existsBy({id: cmd.categoryId});
+            DoesNotExistException.ThrowIf(!categoryExists, "Category not found");
+            book.categoryId = cmd.categoryId;
         }
 
         if (cmd.difficultyId !== undefined) {
-            const difficultyExists = await Difficulty.existsBy({id: cmd.difficultyId})
-            DoesNotExistException.ThrowIf(!difficultyExists, "Difficulty not found")
-            book.difficultyId = cmd.difficultyId
+            const difficultyExists = await Difficulty.existsBy({
+                id: cmd.difficultyId,
+            });
+            DoesNotExistException.ThrowIf(!difficultyExists, "Difficulty not found");
+            book.difficultyId = cmd.difficultyId;
         }
 
         if (cmd.languageId !== undefined) {
-            const languageExists = await Language.existsBy({id: cmd.languageId})
-            DoesNotExistException.ThrowIf(!languageExists, "Language not found")
-            book.languageId = cmd.languageId
+            const languageExists = await Language.existsBy({id: cmd.languageId});
+            DoesNotExistException.ThrowIf(!languageExists, "Language not found");
+            book.languageId = cmd.languageId;
         }
 
-        if (cmd.title !== undefined) book.title = cmd.title
-        if (cmd.price !== undefined) book.price = cmd.price
-        if (cmd.discountPrice !== undefined) book.discountPrice = cmd.discountPrice
+        if (cmd.title !== undefined) book.title = cmd.title;
+        if (cmd.price !== undefined) book.price = cmd.price;
+        if (cmd.discountPrice !== undefined) book.discountPrice = cmd.discountPrice;
+        if (cmd.description !== undefined) book.description = cmd.description;
+        if (cmd.pageCount !== undefined) book.pageCount = cmd.pageCount;
+        if (cmd.publishedYear !== undefined) book.publishedYear = cmd.publishedYear;
 
         if (cmd.coverPath) {
-            const oldCover = book.cover
-            book.cover = cmd.coverPath
+            const oldCover = book.cover;
+            book.cover = cmd.coverPath;
             await unlink(oldCover).catch(() => {
-            })
+            });
         }
 
-        await book.save()
+        await book.save();
 
-        let authorIds = cmd.authorIds
+        let authorIds = cmd.authorIds;
         if (authorIds) {
-            const authorsCount = await Author.countBy({id: In(authorIds)})
-            DoesNotExistException.ThrowIf(authorsCount !== authorIds.length, "One or more authors not found")
+            const authorsCount = await Author.countBy({id: In(authorIds)});
+            DoesNotExistException.ThrowIf(
+                authorsCount !== authorIds.length,
+                "One or more authors not found",
+            );
 
-            await BookAuthor.delete({bookId: book.id})
-            const bookAuthors = authorIds.map((authorId) => BookAuthor.create({bookId: book.id, authorId}))
-            await BookAuthor.save(bookAuthors)
+            await BookAuthor.delete({bookId: book.id});
+            const bookAuthors = authorIds.map((authorId) =>
+                BookAuthor.create({bookId: book.id, authorId}),
+            );
+            await BookAuthor.save(bookAuthors);
         } else {
-            const existing = await BookAuthor.findBy({bookId: book.id})
-            authorIds = existing.map((ba) => ba.authorId)
+            const existing = await BookAuthor.findBy({bookId: book.id});
+            authorIds = existing.map((ba) => ba.authorId);
         }
 
-        return plainToInstance(UpdateBookResponse, {
-            ...book,
-            authorIds,
-        }, {excludeExtraneousValues: true})
+        await Promise.all([
+            this.cache.del(BOOKS_LIST_CACHE_KEY),
+            this.cache.del(bookByIdCacheKey(cmd.id)),
+        ]);
+
+        return plainToInstance(
+            UpdateBookResponse,
+            {
+                ...book,
+                authorIds,
+            },
+            {excludeExtraneousValues: true},
+        );
     }
 }

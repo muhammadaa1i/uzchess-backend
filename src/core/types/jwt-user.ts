@@ -1,7 +1,7 @@
-import {Role} from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role.enum";
 
 export type JwtUser = {
-    id: number;
-    roles: Role[];
-    [key: string]: any;
+  id: number;
+  roles: Role[];
+  [key: string]: any;
 };

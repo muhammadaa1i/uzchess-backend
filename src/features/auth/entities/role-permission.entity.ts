@@ -1,22 +1,26 @@
-import {BaseModel} from "@/core/base.model";
-import {Column, Entity, JoinColumn, ManyToOne} from "typeorm";
-import type {Relation} from "typeorm";
-import {Permission} from "@/features/auth/entities/permission.entity";
-import {Role} from "@/features/auth/entities/role.entity";
+import { BaseModel } from "@/core/base.model";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import type { Relation } from "typeorm";
+import { Permission } from "@/features/auth/entities/permission.entity";
+import { Role } from "@/features/auth/entities/role.entity";
 
-@Entity('rolePermissions')
+@Entity("rolePermissions")
 export class RolePermission extends BaseModel {
-    @Column()
-    roleId: number
+  @Column()
+  roleId: number;
 
-    @ManyToOne(() => Role, (role) => role.rolePermissions, {onDelete: 'CASCADE'})
-    @JoinColumn({name: 'roleId'})
-    role: Relation<Role>
+  @ManyToOne(() => Role, (role) => role.rolePermissions, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "roleId" })
+  role: Relation<Role>;
 
-    @Column()
-    permissionId: number
+  @Column()
+  permissionId: number;
 
-    @ManyToOne(() => Permission, (permission) => permission.rolePermissions, {onDelete: 'CASCADE'})
-    @JoinColumn({name: 'permissionId'})
-    permission: Relation<Permission>
+  @ManyToOne(() => Permission, (permission) => permission.rolePermissions, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "permissionId" })
+  permission: Relation<Permission>;
 }

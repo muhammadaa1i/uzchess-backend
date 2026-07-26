@@ -1,27 +1,27 @@
-import {Allow, IsNotEmpty, IsString, MaxLength} from "class-validator";
-import {ApiProperty} from "@nestjs/swagger";
-import {RegisterCommand} from "@/features/auth/user/register/register.command";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { RegisterCommand } from "@/features/auth/user/register/register.command";
 
 export class RegisterRequest {
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(64)
-    @ApiProperty()
-    username: string
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(64)
+  @ApiProperty()
+  username: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(64)
-    @ApiProperty()
-    fullName: string
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(64)
+  @ApiProperty()
+  fullName: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(32)
-    @ApiProperty()
-    password: string
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(32)
+  @ApiProperty()
+  password: string;
 
-    toCommand() {
-        return new RegisterCommand(this)
-    }
+  toCommand() {
+    return new RegisterCommand(this);
+  }
 }

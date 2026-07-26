@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 
 export class GetAuthorsByIdResponse {
   @ApiProperty()
@@ -10,4 +10,3 @@ export class GetAuthorsByIdResponse {
   @Expose()
   fullName: string;
 }
-

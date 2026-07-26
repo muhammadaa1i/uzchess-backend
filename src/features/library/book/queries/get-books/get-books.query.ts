@@ -5,6 +5,8 @@ export class GetBooksQuery {
         public readonly difficultyId?: number,
         public readonly languageId?: number,
         public readonly minRating?: number,
+        public readonly page?: number,
+        public readonly size?: number,
     ) {
     }
 }

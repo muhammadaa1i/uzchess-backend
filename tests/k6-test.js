@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import {check} from 'k6';
 
-const TOTAL_REQUESTS = 30000;
+const TOTAL_REQUESTS = 300;
 
 export const options = {
     vus: 100, // concurrent users

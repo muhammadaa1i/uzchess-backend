@@ -10,7 +10,7 @@ import {
     Post,
     Query,
     UploadedFile,
-    UseInterceptors
+    UseInterceptors,
 } from "@nestjs/common";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {multerStorageOptions} from "@/core/configs/multer.config";
@@ -33,128 +33,137 @@ import {GetBooksRequest} from "@/features/library/book/queries/get-books/get-boo
 import {GetBooksResponse} from "@/features/library/book/queries/get-books/get-books.response";
 import {GetBooksByIdQuery} from "@/features/library/book/queries/get-books-by-id/get-books-by-id.query";
 import {GetBooksByIdResponse} from "@/features/library/book/queries/get-books-by-id/get-books-by-id.response";
-
-function parseAuthorIds(authorIds: string): number[] {
-    const ids = authorIds.split(',').map((id) => parseInt(id.trim(), 10))
-
-    if (ids.some(isNaN))
-        throw new BadRequestException('authorIds must be a comma-separated list of numbers')
-
-    return ids
-}
+import {PaginatedResultDto} from "@/features/common/dtos/paginated-result.dto";
 
 @Roles(Role.Admin)
-@Controller('books')
+@Controller("books")
 export class BookController {
     constructor(
         private readonly cmdBus: CommandBus,
-        private readonly queryBus: QueryBus
+        private readonly queryBus: QueryBus,
     ) {
     }
 
     @Public()
-    @Get('read')
-    @ApiOkResponse({type: [GetBooksResponse]})
+    @Get("read")
+    @ApiOkResponse({type: PaginatedResultDto(GetBooksResponse)})
     async getAll(@Query() payload: GetBooksRequest) {
-        return await this.queryBus.execute(new GetBooksQuery(
-            payload.search,
-            payload.categoryId,
-            payload.difficultyId,
-            payload.languageId,
-            payload.minRating,
-        ))
+        return await this.queryBus.execute(
+            new GetBooksQuery(
+                payload.search,
+                payload.categoryId,
+                payload.difficultyId,
+                payload.languageId,
+                payload.minRating,
+                payload.page,
+                payload.size,
+            ),
+        );
     }
 
     @Public()
-    @Get('read/:id')
+    @Get("read/:id")
     @ApiOkResponse({type: GetBooksByIdResponse})
-    async getById(@Param('id', ParseIntPipe) id: number) {
-        return await this.queryBus.execute(new GetBooksByIdQuery(id))
+    async getById(@Param("id", ParseIntPipe) id: number) {
+        return await this.queryBus.execute(new GetBooksByIdQuery(id));
     }
 
-    @Post('create')
+    @Post("create")
     @ApiOkResponse({type: CreateBookResponse})
-    @ApiConsumes('multipart/form-data')
-    @UseInterceptors(FileInterceptor('cover', {
-        storage: multerStorageOptions({
-            destination: 'covers',
-            extensions: ['jpg', 'png', 'jpeg', 'svg']
+    @ApiConsumes("multipart/form-data")
+    @UseInterceptors(
+        FileInterceptor("cover", {
+            storage: multerStorageOptions({
+                destination: "covers",
+                extensions: ["jpg", "png", "jpeg", "svg"],
+            }),
+            limits: {
+                fileSize: 1024 * 1024 * 5,
+                files: 1,
+            },
         }),
-        limits: {
-            fileSize: 1024 * 1024 * 2,
-            files: 1
-        }
-    }))
+    )
     async create(
         @Body()
         payload: CreateBookRequest,
         @UploadedFile()
-        cover: Express.Multer.File
+        cover: Express.Multer.File,
     ) {
-        if (!cover)
-            throw new BadRequestException()
+        if (!cover) throw new BadRequestException();
 
         try {
-            return await this.cmdBus.execute(new CreateBookCommand(
-                payload.title,
-                payload.price,
-                payload.discountPrice,
-                payload.categoryId,
-                payload.difficultyId,
-                payload.languageId,
-                parseAuthorIds(payload.authorIds),
-                cover.path,
-            ))
+            return await this.cmdBus.execute(
+                new CreateBookCommand(
+                    payload.title,
+                    payload.price,
+                    payload.discountPrice,
+                    payload.description,
+                    payload.pageCount,
+                    payload.publishedYear,
+                    payload.categoryId,
+                    payload.difficultyId,
+                    payload.languageId,
+                    payload.authorIds,
+                    cover.path,
+                ),
+            );
         } catch (error) {
             await unlink(cover.path).catch(() => {
-            })
-            throw error
+            });
+            throw error;
         }
     }
 
-    @Patch('update/:id')
+    @Patch("update/:id")
     @ApiOkResponse({type: UpdateBookResponse})
-    @ApiConsumes('multipart/form-data')
-    @UseInterceptors(FileInterceptor('cover', {
-        storage: multerStorageOptions({
-            destination: 'covers',
-            extensions: ['jpg', 'png', 'jpeg', 'svg']
+    @ApiConsumes("multipart/form-data")
+    @UseInterceptors(
+        FileInterceptor("cover", {
+            storage: multerStorageOptions({
+                destination: "covers",
+                extensions: ["jpg", "png", "jpeg", "svg"],
+            }),
+            limits: {
+                fileSize: 1024 * 1024 * 5,
+                files: 1,
+            },
         }),
-        limits: {
-            fileSize: 1024 * 1024 * 2,
-            files: 1
-        }
-    }))
+    )
     async update(
-        @Param('id', ParseIntPipe)
+        @Param("id", ParseIntPipe)
         id: number,
         @Body()
         payload: UpdateBookRequest,
         @UploadedFile()
-        cover: Express.Multer.File
+        cover: Express.Multer.File,
     ) {
         try {
-            return await this.cmdBus.execute(new UpdateBookCommand(
-                id,
-                payload.title,
-                payload.price,
-                payload.discountPrice,
-                payload.categoryId,
-                payload.difficultyId,
-                payload.languageId,
-                payload.authorIds ? parseAuthorIds(payload.authorIds) : undefined,
-                cover?.path,
-            ))
+            return await this.cmdBus.execute(
+                new UpdateBookCommand(
+                    id,
+                    payload.title,
+                    payload.price,
+                    payload.discountPrice,
+                    payload.description,
+                    payload.pageCount,
+                    payload.publishedYear,
+                    payload.categoryId,
+                    payload.difficultyId,
+                    payload.languageId,
+                    payload.authorIds,
+                    cover?.path,
+                ),
+            );
         } catch (error) {
             if (cover) await unlink(cover.path).catch(() => {
-            })
-            throw error
+            });
+            throw error;
         }
     }
 
-    @Delete('delete/:id')
+    @Delete("delete/:id")
     @ApiOkResponse({type: DeleteBookResponse})
-    async delete(@Param('id', ParseIntPipe) id: number) {
-        return await this.cmdBus.execute(new DeleteBookCommand(id))
+    async delete(@Param("id", ParseIntPipe) id: number) {
+        return await this.cmdBus.execute(new DeleteBookCommand(id));
     }
 }

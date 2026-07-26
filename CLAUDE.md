@@ -59,8 +59,8 @@ Guard-clause exceptions live in `src/core/exceptions/`: `DoesNotExistException.T
 ### Domain modules
 
 - `features/auth` — `User`/`Role`/`Permission` entities plus join tables `UserRole`, `RolePermission`, `UserPermission` (the last two allow both role-derived permissions and direct per-user allow/deny overrides). `login.handler.ts` signs a JWT with `{ id, roles: Role[] }`.
-- `features/library` — the catalog domain (`author`, `category`, `difficulty`, entities under `entities/<name>/<name>.entity.ts`). This directory was named `book` as recently as the last commit and has been renamed back to `library` — check `git log -- src/features` before assuming a path is stable. Some files here are intentionally empty scaffolding for unbuilt features (e.g. `entities/book/book.entity.ts`, the `languages` slice) — don't assume an empty file is a bug.
-- `features/common` — cross-domain shared entities (`Language`, `CoursesCategory`) and a not-yet-implemented `courses` module.
+- `features/library` — the catalog domain: `author`, `category`, `difficulty`, `book`, `languages`, `rating` slices, with entities under `entities/<name>/<name>.entity.ts`. `Book` belongs to one `Category`/`Difficulty`/`Language` and has many `BookAuthor` (join entity for the author m:n); `Rating` is a unique `(bookId, userId)` score row cascading on delete from both `Book` and `User`. This whole domain was `features/book` until the most recent commit, which renamed it to `library` and filled in the `book`/`languages`/`rating` slices — don't trust stale mental models of this path from before that commit.
+- `features/common` — currently just the `CoursesCategory` entity (`features/common/entity/courses-category.entity.ts`) and an empty `course.module.ts`/`CommonModule` scaffold with no controllers or handlers yet. (Despite the name, `Language` lives under `features/library/entities/languages`, not here.)
 
 ### Request pipeline / guards
 

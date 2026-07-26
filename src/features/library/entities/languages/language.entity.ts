@@ -1,7 +1,7 @@
-import { BaseModel } from 'src/core/base.model';
-import { Column, Entity } from 'typeorm';
+import { BaseModel } from "src/core/base.model";
+import { Column, Entity } from "typeorm";
 
-@Entity('languages')
+@Entity("languages")
 export class Language extends BaseModel {
   @Column({ length: 64, unique: true })
   title: string;

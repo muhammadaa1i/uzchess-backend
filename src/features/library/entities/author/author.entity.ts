@@ -1,8 +1,8 @@
-import { Column, Entity } from 'typeorm';
-import { BaseModel } from 'src/core/base.model';
+import { Column, Entity } from "typeorm";
+import { BaseModel } from "src/core/base.model";
 
-@Entity('authors')
+@Entity("authors")
 export class Author extends BaseModel {
-  @Column({ type: 'varchar', length: 64 })
+  @Column({ type: "varchar", length: 64 })
   fullName: string;
 }

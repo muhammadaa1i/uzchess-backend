@@ -24,6 +24,18 @@ export class GetBooksByIdResponse {
 
     @ApiProperty()
     @Expose()
+    description: string;
+
+    @ApiProperty()
+    @Expose()
+    pageCount: number;
+
+    @ApiProperty()
+    @Expose()
+    publishedYear: number;
+
+    @ApiProperty()
+    @Expose()
     categoryId: number;
 
     @ApiProperty()

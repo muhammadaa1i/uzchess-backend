@@ -1,5 +1,14 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, Min} from "class-validator";
+import {
+    ArrayNotEmpty,
+    IsArray,
+    IsInt,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    MaxLength,
+    Min,
+} from "class-validator";
 import {Type} from "class-transformer";
 
 export class CreateBookRequest {
@@ -7,41 +16,59 @@ export class CreateBookRequest {
     @IsString()
     @IsNotEmpty()
     @MaxLength(256)
-    title: string
+    title: string;
 
     @ApiProperty()
     @Type(() => Number)
     @IsInt()
     @Min(0)
-    price: number
+    price: number;
 
     @ApiProperty({required: false})
     @IsOptional()
     @Type(() => Number)
     @IsInt()
     @Min(0)
-    discountPrice?: number
+    discountPrice?: number;
 
     @ApiProperty()
-    @Type(() => Number)
-    @IsInt()
-    categoryId: number
-
-    @ApiProperty()
-    @Type(() => Number)
-    @IsInt()
-    difficultyId: number
-
-    @ApiProperty()
-    @Type(() => Number)
-    @IsInt()
-    languageId: number
-
-    @ApiProperty({description: 'Comma-separated author ids, e.g. "1,2,3"'})
     @IsString()
     @IsNotEmpty()
-    authorIds: string
+    description: string;
+
+    @ApiProperty()
+    @Type(() => Number)
+    @IsInt()
+    @Min(1)
+    pageCount: number;
+
+    @ApiProperty()
+    @Type(() => Number)
+    @IsInt()
+    publishedYear: number;
+
+    @ApiProperty()
+    @Type(() => Number)
+    @IsInt()
+    categoryId: number;
+
+    @ApiProperty()
+    @Type(() => Number)
+    @IsInt()
+    difficultyId: number;
+
+    @ApiProperty()
+    @Type(() => Number)
+    @IsInt()
+    languageId: number;
+
+    @ApiProperty({type: [Number]})
+    @IsArray()
+    @ArrayNotEmpty()
+    @Type(() => Number)
+    @IsInt({each: true})
+    authorIds: number[];
 
     @ApiProperty({type: "string", format: "binary"})
-    cover: any
+    cover: any;
 }

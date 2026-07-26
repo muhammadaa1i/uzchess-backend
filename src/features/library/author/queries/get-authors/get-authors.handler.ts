@@ -1,19 +1,34 @@
-import {IQueryHandler, QueryHandler} from '@nestjs/cqrs';
-import {GetAuthorsQuery} from '@/features/library/author/queries/get-authors/get-authors.query';
-import {Author} from '../../../entities/author/author.entity';
-import {FindOptionsWhere, ILike} from 'typeorm';
-import {plainToInstance} from 'class-transformer';
-import {GetAuthorsResponse} from '@/features/library/author/queries/get-authors/get-authors.response';
+import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
+import { GetAuthorsQuery } from "@/features/library/author/queries/get-authors/get-authors.query";
+import { Author } from "../../../entities/author/author.entity";
+import { FindOptionsWhere, ILike } from "typeorm";
+import { plainToInstance } from "class-transformer";
+import { GetAuthorsResponse } from "@/features/library/author/queries/get-authors/get-authors.response";
+import { Cache } from "@nestjs/cache-manager";
+import { AUTHORS_LIST_CACHE_KEY } from "@/features/library/author/author.cache";
 
 @QueryHandler(GetAuthorsQuery)
 export class GetAuthorsHandler implements IQueryHandler<GetAuthorsQuery> {
-    async execute(query: GetAuthorsQuery) {
-        const where: FindOptionsWhere<Author> = {};
-        if (query.search) where.fullName = ILike(`%${query.search}%`);
+  constructor(private readonly cache: Cache) {}
 
-        const authors = await Author.find({where});
-        return plainToInstance(GetAuthorsResponse, authors, {
-            excludeExtraneousValues: true,
-        });
+  async execute(query: GetAuthorsQuery) {
+    if (!query.search) {
+      const cached = await this.cache.get<GetAuthorsResponse[]>(
+        AUTHORS_LIST_CACHE_KEY,
+      );
+      if (cached) return cached;
     }
+
+    const where: FindOptionsWhere<Author> = {};
+    if (query.search) where.fullName = ILike(`%${query.search}%`);
+
+    const authors = await Author.find({ where });
+    const result = plainToInstance(GetAuthorsResponse, authors, {
+      excludeExtraneousValues: true,
+    });
+
+    if (!query.search) await this.cache.set(AUTHORS_LIST_CACHE_KEY, result);
+
+    return result;
+  }
 }

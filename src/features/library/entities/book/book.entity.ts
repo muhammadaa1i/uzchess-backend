@@ -1,46 +1,55 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from 'typeorm';
-import type {Relation} from 'typeorm';
-import {BaseModel} from '@/core/base.model';
-import {Category} from '@/features/library/entities/category/category.entity';
-import {Difficulty} from '@/features/library/entities/difficulty/difficulty.entity';
-import {Language} from '@/features/library/entities/languages/language.entity';
-import {BookAuthor} from '@/features/library/entities/book/book-author.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import type { Relation } from "typeorm";
+import { BaseModel } from "@/core/base.model";
+import { Category } from "@/features/library/entities/category/category.entity";
+import { Difficulty } from "@/features/library/entities/difficulty/difficulty.entity";
+import { Language } from "@/features/library/entities/languages/language.entity";
+import { BookAuthor } from "@/features/library/entities/book/book-author.entity";
 
-@Entity('books')
+@Entity("books")
 export class Book extends BaseModel {
-    @Column({length: 256})
-    title: string
+  @Column({ length: 256 })
+  title: string;
 
-    @Column('integer')
-    price: number
+  @Column("integer")
+  price: number;
 
-    @Column('integer', {nullable: true})
-    discountPrice: number | null
+  @Column("integer", { nullable: true })
+  discountPrice: number | null;
 
-    @Column({length: 256})
-    cover: string
+  @Column({ length: 256 })
+  cover: string;
 
-    @Column()
-    categoryId: number
+  @Column("text", { nullable: true })
+  description: string | null;
 
-    @ManyToOne(() => Category)
-    @JoinColumn({name: 'categoryId'})
-    category: Relation<Category>
+  @Column("integer", { nullable: true })
+  pageCount: number | null;
 
-    @Column()
-    difficultyId: number
+  @Column("integer", { nullable: true })
+  publishedYear: number | null;
 
-    @ManyToOne(() => Difficulty)
-    @JoinColumn({name: 'difficultyId'})
-    difficulty: Relation<Difficulty>
+  @Column()
+  categoryId: number;
 
-    @Column()
-    languageId: number
+  @ManyToOne(() => Category)
+  @JoinColumn({ name: "categoryId" })
+  category: Relation<Category>;
 
-    @ManyToOne(() => Language)
-    @JoinColumn({name: 'languageId'})
-    language: Relation<Language>
+  @Column()
+  difficultyId: number;
 
-    @OneToMany(() => BookAuthor, (ba) => ba.book)
-    bookAuthors: Relation<BookAuthor>[]
+  @ManyToOne(() => Difficulty)
+  @JoinColumn({ name: "difficultyId" })
+  difficulty: Relation<Difficulty>;
+
+  @Column()
+  languageId: number;
+
+  @ManyToOne(() => Language)
+  @JoinColumn({ name: "languageId" })
+  language: Relation<Language>;
+
+  @OneToMany(() => BookAuthor, (ba) => ba.book)
+  bookAuthors: Relation<BookAuthor>[];
 }

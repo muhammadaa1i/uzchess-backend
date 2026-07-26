@@ -1,9 +1,9 @@
-import {JwtUser} from "@/core/types/jwt-user";
+import { JwtUser } from "@/core/types/jwt-user";
 
 declare global {
-    namespace Express {
-        interface Request {
-            user?: JwtUser
-        }
+  namespace Express {
+    interface Request {
+      user?: JwtUser;
     }
+  }
 }

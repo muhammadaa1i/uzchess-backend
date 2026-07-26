@@ -1,8 +1,8 @@
-import { Column, Entity } from 'typeorm';
-import { BaseModel } from 'src/core/base.model';
+import { Column, Entity } from "typeorm";
+import { BaseModel } from "src/core/base.model";
 
-@Entity('category')
+@Entity("category")
 export class Category extends BaseModel {
-  @Column({ type: 'varchar', length: 64, unique: true })
+  @Column({ type: "varchar", length: 64, unique: true })
   title: string;
 }
