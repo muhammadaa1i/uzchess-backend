@@ -21,7 +21,7 @@ import { GetCategoriesRequest } from "@/features/library/category/queries/get-ca
 import { GetCategoriesQuery } from "@/features/library/category/queries/get-categories/get-categories.query";
 import { ApiOkResponse } from "@nestjs/swagger";
 import { GetCategoriesResponse } from "@/features/library/category/queries/get-categories/get-categories.response";
-import { PaginatedResultDto } from "@/features/common/dtos/paginated-result.dto";
+import { PaginatedResultDto } from "../../../core/dtos/paginated-result.dto";
 import { CreateCategoryResponse } from "@/features/library/category/commands/create-category/create-category.response";
 import { UpdateCategoryResponse } from "@/features/library/category/commands/update-category/update-category.response";
 import { DeleteCategoryResponse } from "@/features/library/category/commands/delete-category/delete-category.response";

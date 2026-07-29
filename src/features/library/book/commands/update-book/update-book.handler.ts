@@ -10,7 +10,7 @@ import {In} from "typeorm";
 import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception";
 import {plainToInstance} from "class-transformer";
 import {UpdateBookResponse} from "@/features/library/book/commands/update-book/update-book.response";
-import {unlink} from "node:fs/promises";
+import {deleteUploadedFile} from "@/core/configs/multer.config";
 import {Cache} from "@nestjs/cache-manager";
 import {
     BOOKS_LIST_CACHE_KEY,
@@ -26,10 +26,12 @@ export class UpdateBookHandler implements ICommandHandler<UpdateBookCommand> {
         const book = await Book.findOneBy({id: cmd.id});
         DoesNotExistException.ThrowIfNull(book, "Book not found");
 
+        // Validate all foreign keys up front so a bad reference never leaves
+        // some fields persisted while the request as a whole fails (see
+        // create-book.handler.ts for the same validate-then-mutate ordering).
         if (cmd.categoryId !== undefined) {
             const categoryExists = await Category.existsBy({id: cmd.categoryId});
             DoesNotExistException.ThrowIf(!categoryExists, "Category not found");
-            book.categoryId = cmd.categoryId;
         }
 
         if (cmd.difficultyId !== undefined) {
@@ -37,15 +39,24 @@ export class UpdateBookHandler implements ICommandHandler<UpdateBookCommand> {
                 id: cmd.difficultyId,
             });
             DoesNotExistException.ThrowIf(!difficultyExists, "Difficulty not found");
-            book.difficultyId = cmd.difficultyId;
         }
 
         if (cmd.languageId !== undefined) {
             const languageExists = await Language.existsBy({id: cmd.languageId});
             DoesNotExistException.ThrowIf(!languageExists, "Language not found");
-            book.languageId = cmd.languageId;
         }
 
+        if (cmd.authorIds) {
+            const authorsCount = await Author.countBy({id: In(cmd.authorIds)});
+            DoesNotExistException.ThrowIf(
+                authorsCount !== cmd.authorIds.length,
+                "One or more authors not found",
+            );
+        }
+
+        if (cmd.categoryId !== undefined) book.categoryId = cmd.categoryId;
+        if (cmd.difficultyId !== undefined) book.difficultyId = cmd.difficultyId;
+        if (cmd.languageId !== undefined) book.languageId = cmd.languageId;
         if (cmd.title !== undefined) book.title = cmd.title;
         if (cmd.price !== undefined) book.price = cmd.price;
         if (cmd.discountPrice !== undefined) book.discountPrice = cmd.discountPrice;
@@ -56,7 +67,7 @@ export class UpdateBookHandler implements ICommandHandler<UpdateBookCommand> {
         if (cmd.coverPath) {
             const oldCover = book.cover;
             book.cover = cmd.coverPath;
-            await unlink(oldCover).catch(() => {
+            await deleteUploadedFile(oldCover).catch(() => {
             });
         }
 
@@ -64,12 +75,6 @@ export class UpdateBookHandler implements ICommandHandler<UpdateBookCommand> {
 
         let authorIds = cmd.authorIds;
         if (authorIds) {
-            const authorsCount = await Author.countBy({id: In(authorIds)});
-            DoesNotExistException.ThrowIf(
-                authorsCount !== authorIds.length,
-                "One or more authors not found",
-            );
-
             await BookAuthor.delete({bookId: book.id});
             const bookAuthors = authorIds.map((authorId) =>
                 BookAuthor.create({bookId: book.id, authorId}),

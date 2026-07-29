@@ -5,18 +5,12 @@ import {Rating} from "@/features/library/entities/rating/rating.entity";
 import {FindOptionsWhere, ILike} from "typeorm";
 import {plainToInstance} from "class-transformer";
 import {GetBooksResponse} from "@/features/library/book/queries/get-books/get-books.response";
-import {PaginatedResultDto} from "@/features/common/dtos/paginated-result.dto";
+import {PaginatedResultDto} from "../../../../../core/dtos/paginated-result.dto";
 import {Cache} from "@nestjs/cache-manager";
-import {BOOKS_LIST_CACHE_KEY} from "@/features/library/book/book.cache";
-
-interface CachedBooksList {
-    totalCount: number;
-    totalPages: number;
-    currentPage: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
-    data: GetBooksResponse[];
-}
+import {
+    BOOKS_LIST_CACHE_KEY,
+    CachedBooksList,
+} from "@/features/library/book/book.cache";
 
 @QueryHandler(GetBooksQuery)
 export class GetBooksHandler implements IQueryHandler<GetBooksQuery> {

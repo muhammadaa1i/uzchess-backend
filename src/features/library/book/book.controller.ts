@@ -14,7 +14,7 @@ import {
 } from "@nestjs/common";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {multerStorageOptions} from "@/core/configs/multer.config";
-import {unlink} from "node:fs/promises";
+import {FileCleanupInterceptor} from "@/core/interceptors/file-cleanup.interceptor";
 import {ApiConsumes, ApiOkResponse} from "@nestjs/swagger";
 import {CommandBus, QueryBus} from "@nestjs/cqrs";
 import {Roles} from "@/core/decorators/roles.decorator";
@@ -33,7 +33,7 @@ import {GetBooksRequest} from "@/features/library/book/queries/get-books/get-boo
 import {GetBooksResponse} from "@/features/library/book/queries/get-books/get-books.response";
 import {GetBooksByIdQuery} from "@/features/library/book/queries/get-books-by-id/get-books-by-id.query";
 import {GetBooksByIdResponse} from "@/features/library/book/queries/get-books-by-id/get-books-by-id.response";
-import {PaginatedResultDto} from "@/features/common/dtos/paginated-result.dto";
+import {PaginatedResultDto} from "../../../core/dtos/paginated-result.dto";
 
 @Roles(Role.Admin)
 @Controller("books")
@@ -74,7 +74,7 @@ export class BookController {
     @UseInterceptors(
         FileInterceptor("cover", {
             storage: multerStorageOptions({
-                destination: "covers",
+                destination: "bookCovers",
                 extensions: ["jpg", "png", "jpeg", "svg"],
             }),
             limits: {
@@ -82,6 +82,7 @@ export class BookController {
                 files: 1,
             },
         }),
+        FileCleanupInterceptor,
     )
     async create(
         @Body()
@@ -91,27 +92,21 @@ export class BookController {
     ) {
         if (!cover) throw new BadRequestException();
 
-        try {
-            return await this.cmdBus.execute(
-                new CreateBookCommand(
-                    payload.title,
-                    payload.price,
-                    payload.discountPrice,
-                    payload.description,
-                    payload.pageCount,
-                    payload.publishedYear,
-                    payload.categoryId,
-                    payload.difficultyId,
-                    payload.languageId,
-                    payload.authorIds,
-                    cover.path,
-                ),
-            );
-        } catch (error) {
-            await unlink(cover.path).catch(() => {
-            });
-            throw error;
-        }
+        return await this.cmdBus.execute(
+            new CreateBookCommand(
+                payload.title,
+                payload.price,
+                payload.discountPrice,
+                payload.description,
+                payload.pageCount,
+                payload.publishedYear,
+                payload.categoryId,
+                payload.difficultyId,
+                payload.languageId,
+                payload.authorIds,
+                cover.path,
+            ),
+        );
     }
 
     @Patch("update/:id")
@@ -120,7 +115,7 @@ export class BookController {
     @UseInterceptors(
         FileInterceptor("cover", {
             storage: multerStorageOptions({
-                destination: "covers",
+                destination: "bookCovers",
                 extensions: ["jpg", "png", "jpeg", "svg"],
             }),
             limits: {
@@ -128,6 +123,7 @@ export class BookController {
                 files: 1,
             },
         }),
+        FileCleanupInterceptor,
     )
     async update(
         @Param("id", ParseIntPipe)
@@ -137,28 +133,22 @@ export class BookController {
         @UploadedFile()
         cover: Express.Multer.File,
     ) {
-        try {
-            return await this.cmdBus.execute(
-                new UpdateBookCommand(
-                    id,
-                    payload.title,
-                    payload.price,
-                    payload.discountPrice,
-                    payload.description,
-                    payload.pageCount,
-                    payload.publishedYear,
-                    payload.categoryId,
-                    payload.difficultyId,
-                    payload.languageId,
-                    payload.authorIds,
-                    cover?.path,
-                ),
-            );
-        } catch (error) {
-            if (cover) await unlink(cover.path).catch(() => {
-            });
-            throw error;
-        }
+        return await this.cmdBus.execute(
+            new UpdateBookCommand(
+                id,
+                payload.title,
+                payload.price,
+                payload.discountPrice,
+                payload.description,
+                payload.pageCount,
+                payload.publishedYear,
+                payload.categoryId,
+                payload.difficultyId,
+                payload.languageId,
+                payload.authorIds,
+                cover?.path,
+            ),
+        );
     }
 
     @Delete("delete/:id")

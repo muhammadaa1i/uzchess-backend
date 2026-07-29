@@ -2,6 +2,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { DeleteLanguageCommand } from "@/features/library/languages/commands/delete-language/delete-language.command";
 import { Language } from "../../../entities/languages/language.entity";
 import { Book } from "@/features/library/entities/book/book.entity";
+import { Course } from "@/features/common/entities/course/course.entity";
 import { ConflictException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { DeleteLanguageResponse } from "@/features/library/languages/commands/delete-language/delete-language.response";
@@ -20,10 +21,12 @@ export class DeleteLanguageHandler implements ICommandHandler<DeleteLanguageComm
     const language = await Language.findOneBy({ id: cmd.id });
     DoesNotExistException.ThrowIfNull(language, "Language not found");
 
-    const inUse = await Book.existsBy({ languageId: cmd.id });
+    const inUse =
+      (await Book.existsBy({ languageId: cmd.id })) ||
+      (await Course.existsBy({ languageId: cmd.id }));
     if (inUse)
       throw new ConflictException(
-        "Language is still in use by one or more books",
+        "Language is still in use by one or more books or courses",
       );
 
     await Language.remove(language);

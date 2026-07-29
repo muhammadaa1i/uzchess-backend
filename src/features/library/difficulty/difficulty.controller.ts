@@ -13,8 +13,10 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { multerStorageOptions } from "@/core/configs/multer.config";
-import { unlink } from "node:fs/promises";
+import {
+  multerStorageOptions,
+  deleteUploadedFile,
+} from "@/core/configs/multer.config";
 import { CreateDifficultyRequest } from "@/features/library/difficulty/commands/create-difficulty/create-difficulty.request";
 import { UpdateDifficultyRequest } from "@/features/library/difficulty/commands/update-difficulty/update-difficulty.request";
 import { ApiConsumes, ApiOkResponse } from "@nestjs/swagger";
@@ -86,7 +88,7 @@ export class DifficultyController {
         new CreateDifficultyCommand(payload.degree, icon.path),
       );
     } catch (error) {
-      await unlink(icon.path).catch(() => {});
+      await deleteUploadedFile(icon.path).catch(() => {});
       throw error;
     }
   }
@@ -119,7 +121,7 @@ export class DifficultyController {
         new UpdateDifficultyCommand(id, payload.degree, icon?.path),
       );
     } catch (error) {
-      if (icon) await unlink(icon.path).catch(() => {});
+      if (icon) await deleteUploadedFile(icon.path).catch(() => {});
       throw error;
     }
   }

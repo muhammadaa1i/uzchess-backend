@@ -9,7 +9,7 @@ import {
     MaxLength,
     Min,
 } from "class-validator";
-import {Type} from "class-transformer";
+import {Transform, Type} from "class-transformer";
 
 export class UpdateBookRequest {
     @ApiProperty({required: false})
@@ -26,12 +26,18 @@ export class UpdateBookRequest {
     @Min(0)
     price?: number;
 
-    @ApiProperty({required: false})
+    @ApiProperty({
+        required: false,
+        nullable: true,
+        description: "Send an empty value to clear the discount price",
+    })
     @IsOptional()
-    @Type(() => Number)
+    @Transform(({value}) =>
+        value === undefined ? undefined : value === null || value === "" ? null : Number(value),
+    )
     @IsInt()
     @Min(0)
-    discountPrice?: number;
+    discountPrice?: number | null;
 
     @ApiProperty({required: false})
     @IsOptional()

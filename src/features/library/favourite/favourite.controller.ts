@@ -32,13 +32,13 @@ export class FavouriteController {
 
   @Post("add/:id")
   @ApiOkResponse({ type: AddFavouriteResponse })
-  async add(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
+  async create(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
     return await this.cmdBus.execute(new AddFavouriteCommand(id, req.user!.id));
   }
 
   @Delete("remove/:id")
   @ApiOkResponse({ type: RemoveFavouriteResponse })
-  async remove(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
+  async delete(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
     return await this.cmdBus.execute(
       new RemoveFavouriteCommand(id, req.user!.id),
     );

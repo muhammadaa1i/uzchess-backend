@@ -3,7 +3,7 @@ export class UpdateBookCommand {
         public readonly id: number,
         public readonly title: string | undefined,
         public readonly price: number | undefined,
-        public readonly discountPrice: number | undefined,
+        public readonly discountPrice: number | null | undefined,
         public readonly description: string | undefined,
         public readonly pageCount: number | undefined,
         public readonly publishedYear: number | undefined,

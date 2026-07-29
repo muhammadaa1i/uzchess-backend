@@ -22,7 +22,7 @@ export class RatingController {
 
   @Post("rate/:id")
   @ApiOkResponse({ type: CreateRatingResponse })
-  async rate(
+  async create(
     @Param("id", ParseIntPipe) id: number,
     @Body() payload: CreateRatingRequest,
     @Req() req: Request,

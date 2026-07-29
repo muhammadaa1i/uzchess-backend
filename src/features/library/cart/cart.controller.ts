@@ -32,13 +32,13 @@ export class CartController {
 
   @Post("add/:id")
   @ApiOkResponse({ type: AddCartItemResponse })
-  async add(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
+  async create(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
     return await this.cmdBus.execute(new AddCartItemCommand(id, req.user!.id));
   }
 
   @Delete("remove/:id")
   @ApiOkResponse({ type: RemoveCartItemResponse })
-  async remove(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
+  async delete(@Param("id", ParseIntPipe) id: number, @Req() req: Request) {
     return await this.cmdBus.execute(
       new RemoveCartItemCommand(id, req.user!.id),
     );

@@ -2,11 +2,12 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { DeleteDifficultyCommand } from "@/features/library/difficulty/commands/delete-difficulty/delete-difficulty.command";
 import { Difficulty } from "@/features/library/entities/difficulty/difficulty.entity";
 import { Book } from "@/features/library/entities/book/book.entity";
+import { Course } from "@/features/common/entities/course/course.entity";
 import { ConflictException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { DeleteDifficultyResponse } from "@/features/library/difficulty/commands/delete-difficulty/delete-difficulty.response";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
-import { unlink } from "node:fs/promises";
+import { deleteUploadedFile } from "@/core/configs/multer.config";
 import { Cache } from "@nestjs/cache-manager";
 import {
   DIFFICULTIES_LIST_CACHE_KEY,
@@ -22,14 +23,16 @@ export class DeleteDifficultyHandler implements ICommandHandler<DeleteDifficulty
 
     DoesNotExistException.ThrowIfNull(difficulty, "Difficulty not found");
 
-    const inUse = await Book.existsBy({ difficultyId: cmd.id });
+    const inUse =
+      (await Book.existsBy({ difficultyId: cmd.id })) ||
+      (await Course.existsBy({ difficultyId: cmd.id }));
     if (inUse)
       throw new ConflictException(
-        "Difficulty is still in use by one or more books",
+        "Difficulty is still in use by one or more books or courses",
       );
 
     await Difficulty.remove(difficulty);
-    await unlink(difficulty.icon).catch(() => {});
+    await deleteUploadedFile(difficulty.icon).catch(() => {});
 
     await Promise.all([
       this.cache.del(DIFFICULTIES_LIST_CACHE_KEY),

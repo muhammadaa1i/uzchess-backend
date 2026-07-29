@@ -6,7 +6,7 @@ import { AlreadyExistException } from "@/core/exceptions/already-exist.exception
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { plainToInstance } from "class-transformer";
 import { UpdateDifficultyResponse } from "@/features/library/difficulty/commands/update-difficulty/update-difficulty.response";
-import { unlink } from "node:fs/promises";
+import { deleteUploadedFile } from "@/core/configs/multer.config";
 import { Cache } from "@nestjs/cache-manager";
 import {
   DIFFICULTIES_LIST_CACHE_KEY,
@@ -33,7 +33,7 @@ export class UpdateDifficultyHandler implements ICommandHandler<UpdateDifficulty
     if (cmd.iconPath) {
       const oldIcon = difficulty.icon;
       difficulty.icon = cmd.iconPath;
-      await unlink(oldIcon).catch(() => {});
+      await deleteUploadedFile(oldIcon).catch(() => {});
     }
 
     const saved = await difficulty.save();
