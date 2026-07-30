@@ -10,7 +10,7 @@ import {
   Query,
 } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { ApiOkResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Roles } from "@/core/decorators/roles.decorator";
 import { Role } from "@/core/enums/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
@@ -28,6 +28,7 @@ import { GetSectionsResponse } from "@/features/common/section/queries/get-secti
 import { GetSectionsByIdQuery } from "@/features/common/section/queries/get-sections-by-id/get-sections-by-id.query";
 import { GetSectionsByIdResponse } from "@/features/common/section/queries/get-sections-by-id/get-sections-by-id.response";
 
+@ApiTags("Course Sections")
 @Roles(Role.Admin)
 @Controller("courses/sections")
 export class SectionController {
@@ -40,9 +41,7 @@ export class SectionController {
   @Get("read")
   @ApiOkResponse({ type: [GetSectionsResponse] })
   async getAll(@Query() payload: GetSectionsRequest) {
-    return await this.queryBus.execute(
-      new GetSectionsQuery(payload.courseId),
-    );
+    return await this.queryBus.execute(new GetSectionsQuery(payload.courseId));
   }
 
   @Public()

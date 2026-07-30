@@ -7,7 +7,7 @@ import { ConflictException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { DeleteDifficultyResponse } from "@/features/library/difficulty/commands/delete-difficulty/delete-difficulty.response";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
-import { deleteUploadedFile } from "@/core/configs/multer.config";
+import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 import { Cache } from "@nestjs/cache-manager";
 import {
   DIFFICULTIES_LIST_CACHE_KEY,

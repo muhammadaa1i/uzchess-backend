@@ -10,7 +10,7 @@ import {
   Query,
 } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { ApiOkResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Roles } from "@/core/decorators/roles.decorator";
 import { Role } from "@/core/enums/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
@@ -28,6 +28,7 @@ import { GetLanguagesResponse } from "@/features/library/languages/queries/get-l
 import { GetLanguagesByIdQuery } from "@/features/library/languages/queries/get-languages-by-id/get-languages-by-id.query";
 import { GetLanguagesByIdResponse } from "@/features/library/languages/queries/get-languages-by-id/get-languages-by-id.response";
 
+@ApiTags("Languages")
 @Roles(Role.Admin)
 @Controller("languages")
 export class LanguagesController {

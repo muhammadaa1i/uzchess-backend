@@ -16,10 +16,10 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import {
   multerStorageOptions,
   deleteUploadedFile,
-} from "@/core/configs/multer.config";
+} from "@/core/configs/multer/multer.config";
 import { CreateDifficultyRequest } from "@/features/library/difficulty/commands/create-difficulty/create-difficulty.request";
 import { UpdateDifficultyRequest } from "@/features/library/difficulty/commands/update-difficulty/update-difficulty.request";
-import { ApiConsumes, ApiOkResponse } from "@nestjs/swagger";
+import { ApiConsumes, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDifficultyCommand } from "@/features/library/difficulty/commands/create-difficulty/create-difficulty.command";
 import { UpdateDifficultyCommand } from "@/features/library/difficulty/commands/update-difficulty/update-difficulty.command";
@@ -36,6 +36,7 @@ import { GetDifficultiesResponse } from "@/features/library/difficulty/queries/g
 import { GetDifficultiesByIdResponse } from "@/features/library/difficulty/queries/get-difficulty-by-id/get-difficulties-by-id.response";
 import { GetDifficultiesByIdQuery } from "@/features/library/difficulty/queries/get-difficulty-by-id/get-difficulties-by-id.query";
 
+@ApiTags("Difficulty")
 @Roles(Role.Admin)
 @Controller("difficulty")
 export class DifficultyController {

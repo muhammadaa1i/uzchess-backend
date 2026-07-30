@@ -13,9 +13,9 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { multerStorageOptions } from "@/core/configs/multer.config";
+import { multerStorageOptions } from "@/core/configs/multer/multer.config";
 import { FileCleanupInterceptor } from "@/core/interceptors/file-cleanup.interceptor";
-import { ApiConsumes, ApiOkResponse } from "@nestjs/swagger";
+import { ApiConsumes, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { Roles } from "@/core/decorators/roles.decorator";
 import { Role } from "@/core/enums/role.enum";
@@ -56,6 +56,7 @@ type LessonFiles = {
   thumbnail?: Express.Multer.File[];
 };
 
+@ApiTags("Course Lessons")
 @Roles(Role.Admin)
 @Controller("courses/lessons")
 export class LessonController {
@@ -68,9 +69,7 @@ export class LessonController {
   @Get("read")
   @ApiOkResponse({ type: [GetLessonsResponse] })
   async getAll(@Query() payload: GetLessonsRequest) {
-    return await this.queryBus.execute(
-      new GetLessonsQuery(payload.sectionId),
-    );
+    return await this.queryBus.execute(new GetLessonsQuery(payload.sectionId));
   }
 
   @Public()

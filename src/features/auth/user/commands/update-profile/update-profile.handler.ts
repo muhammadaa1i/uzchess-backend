@@ -4,7 +4,7 @@ import { User } from "@/features/auth/entities/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { plainToInstance } from "class-transformer";
 import { UpdateProfileResponse } from "@/features/auth/user/commands/update-profile/update-profile.response";
-import { deleteUploadedFile } from "@/core/configs/multer.config";
+import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 
 @CommandHandler(UpdateProfileCommand)
 export class UpdateProfileHandler implements ICommandHandler<UpdateProfileCommand> {

@@ -5,7 +5,7 @@ import {
     NestInterceptor,
 } from "@nestjs/common";
 import {Observable, catchError, throwError} from "rxjs";
-import {deleteUploadedFile} from "@/core/configs/multer.config";
+import {deleteUploadedFile} from "@/core/configs/multer/multer.config";
 import type {Request} from "express";
 
 @Injectable()

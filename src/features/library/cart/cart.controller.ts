@@ -9,7 +9,7 @@ import {
 } from "@nestjs/common";
 import type { Request } from "express";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { ApiOkResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { AddCartItemCommand } from "@/features/library/cart/commands/add-cart-item/add-cart-item.command";
 import { AddCartItemResponse } from "@/features/library/cart/commands/add-cart-item/add-cart-item.response";
 import { RemoveCartItemCommand } from "@/features/library/cart/commands/remove-cart-item/remove-cart-item.command";
@@ -17,6 +17,7 @@ import { RemoveCartItemResponse } from "@/features/library/cart/commands/remove-
 import { GetCartItemsQuery } from "@/features/library/cart/queries/get-cart-items/get-cart-items.query";
 import { GetCartItemsResponse } from "@/features/library/cart/queries/get-cart-items/get-cart-items.response";
 
+@ApiTags("Book Cart")
 @Controller("cart")
 export class CartController {
   constructor(
