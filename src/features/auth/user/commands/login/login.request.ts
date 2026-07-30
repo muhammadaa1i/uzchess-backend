@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { RegisterCommand } from "@/features/auth/user/register/register.command";
+import { LoginCommand } from "@/features/auth/user/commands/login/login.command";
 
-export class RegisterRequest {
+export class LoginRequest {
   @IsString()
   @IsNotEmpty()
   @MaxLength(64)
@@ -11,17 +11,11 @@ export class RegisterRequest {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(64)
-  @ApiProperty()
-  fullName: string;
-
-  @IsString()
-  @IsNotEmpty()
   @MaxLength(32)
   @ApiProperty()
   password: string;
 
   toCommand() {
-    return new RegisterCommand(this);
+    return new LoginCommand(this);
   }
 }

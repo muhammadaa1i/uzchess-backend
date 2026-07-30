@@ -15,6 +15,9 @@ export class User extends BaseModel {
   @Column({ length: 128 })
   password: string;
 
+  @Column({ type: "varchar", length: 256, nullable: true })
+  avatar: string | null;
+
   @OneToMany(() => UserRole, (ur) => ur.user)
   userRoles: Relation<UserRole>[];
 

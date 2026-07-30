@@ -19,7 +19,7 @@ import { GetCategoriesByIdQuery } from "@/features/library/category/queries/get-
 import { GetCategoriesByIdResponse } from "@/features/library/category/queries/get-categories-by-id/get-categories-by-id.response";
 import { GetCategoriesRequest } from "@/features/library/category/queries/get-categories/get-categories.request";
 import { GetCategoriesQuery } from "@/features/library/category/queries/get-categories/get-categories.query";
-import { ApiOkResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { GetCategoriesResponse } from "@/features/library/category/queries/get-categories/get-categories.response";
 import { PaginatedResultDto } from "../../../core/dtos/paginated-result.dto";
 import { CreateCategoryResponse } from "@/features/library/category/commands/create-category/create-category.response";
@@ -29,8 +29,9 @@ import { Roles } from "@/core/decorators/roles.decorator";
 import { Role } from "@/core/enums/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 
+@ApiTags("Book Categories")
 @Roles(Role.Admin)
-@Controller("category")
+@Controller("books/categories")
 export class CategoryController {
   constructor(
     private readonly cmdBus: CommandBus,

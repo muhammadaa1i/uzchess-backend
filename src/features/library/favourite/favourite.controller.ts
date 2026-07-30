@@ -9,7 +9,7 @@ import {
 } from "@nestjs/common";
 import type { Request } from "express";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { ApiOkResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { AddFavouriteCommand } from "@/features/library/favourite/commands/add-favourite/add-favourite.command";
 import { AddFavouriteResponse } from "@/features/library/favourite/commands/add-favourite/add-favourite.response";
 import { RemoveFavouriteCommand } from "@/features/library/favourite/commands/remove-favourite/remove-favourite.command";
@@ -17,6 +17,7 @@ import { RemoveFavouriteResponse } from "@/features/library/favourite/commands/r
 import { GetFavouritesQuery } from "@/features/library/favourite/queries/get-favourites/get-favourites.query";
 import { GetFavouritesResponse } from "@/features/library/favourite/queries/get-favourites/get-favourites.response";
 
+@ApiTags("Book Favourite")
 @Controller("favourites")
 export class FavouriteController {
   constructor(

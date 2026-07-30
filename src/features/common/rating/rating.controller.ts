@@ -11,7 +11,7 @@ import {
 } from "@nestjs/common";
 import type {Request} from "express";
 import {CommandBus, QueryBus} from "@nestjs/cqrs";
-import {ApiOkResponse} from "@nestjs/swagger";
+import {ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {CreateCourseRatingRequest} from "@/features/common/rating/commands/create-rating/create-rating.request";
 import {CreateRatingCommand} from "@/features/common/rating/commands/create-rating/create-rating.command";
 import {CreateCourseRatingResponse} from "@/features/common/rating/commands/create-rating/create-rating.response";
@@ -23,6 +23,7 @@ import {GetCourseReviewsResponse} from "@/features/common/rating/queries/get-cou
 import {PaginatedResultDto} from "@/core/dtos/paginated-result.dto";
 import {Public} from "@/core/decorators/public.decorator";
 
+@ApiTags("Course Rating")
 @Controller("courses")
 export class RatingController {
     constructor(

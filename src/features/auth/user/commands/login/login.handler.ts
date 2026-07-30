@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { LoginCommand } from "@/features/auth/user/login/login.command";
+import { LoginCommand } from "@/features/auth/user/commands/login/login.command";
 import { User } from "@/features/auth/entities/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import argon2 from "argon2";
