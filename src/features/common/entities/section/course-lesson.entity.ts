@@ -23,6 +23,9 @@ export class CourseLesson extends BaseModel {
     @Column("integer")
     order: number;
 
+    @Column({default: false})
+    isFree: boolean;
+
     @ManyToOne(() => CourseSection, (section) => section.lessons, {
         onDelete: "CASCADE",
     })

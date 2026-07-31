@@ -7,6 +7,7 @@ import { SectionModule } from "@/features/common/section/section.module";
 import { LessonModule } from "@/features/common/lesson/lesson.module";
 import { CategoryModule } from "@/features/common/category/category.module";
 import { PurchaseModule } from "@/features/common/purchase/purchase.module";
+import { ProgressModule } from "@/features/common/progress/progress.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PurchaseModule } from "@/features/common/purchase/purchase.module";
     LessonModule,
     CategoryModule,
     PurchaseModule,
+    ProgressModule,
   ],
 })
 export class CommonModule {}

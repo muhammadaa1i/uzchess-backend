@@ -17,7 +17,7 @@ async function bootstrap() {
   );
 
   configureSwagger(app);
-  const port = Number(process.env.PORT ?? 8000);
+  const port = Number(process.env.PORT) || 8000;
   await app.listen(port);
   openSwaggerWindowsOnce(`http://localhost:${port}`, port);
 }
