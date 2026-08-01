@@ -8,6 +8,7 @@ import { LessonModule } from "@/features/common/lesson/lesson.module";
 import { CategoryModule } from "@/features/common/category/category.module";
 import { PurchaseModule } from "@/features/common/purchase/purchase.module";
 import { ProgressModule } from "@/features/common/progress/progress.module";
+import { CertificateModule } from "@/features/common/certificate/certificate.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ProgressModule } from "@/features/common/progress/progress.module";
     CategoryModule,
     PurchaseModule,
     ProgressModule,
+    CertificateModule,
   ],
 })
 export class CommonModule {}

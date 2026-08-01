@@ -13,6 +13,7 @@ import { SectionModule } from "@/features/common/section/section.module";
 import { LessonModule } from "@/features/common/lesson/lesson.module";
 import { PurchaseModule } from "@/features/common/purchase/purchase.module";
 import { ProgressModule } from "@/features/common/progress/progress.module";
+import { CertificateModule } from "@/features/common/certificate/certificate.module";
 import { CategoryModule as CourseCategoryModule } from "@/features/common/category/category.module";
 import { RatingModule as CourseRatingModule } from "@/features/common/rating/rating.module";
 import { FavouriteModule as CourseFavouriteModule } from "@/features/common/favourite/favourite.module";
@@ -47,6 +48,7 @@ export const SWAGGER_DOC_GROUPS: SwaggerDocGroup[] = [
       SectionModule,
       LessonModule,
       ProgressModule,
+      CertificateModule,
     ],
   },
   {
