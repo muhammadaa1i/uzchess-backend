@@ -41,7 +41,7 @@ export class LanguagesController {
   @Get("read")
   @ApiOkResponse({ type: [GetLanguagesResponse] })
   async getAll(@Query() payload: GetLanguagesRequest) {
-    return await this.queryBus.execute(new GetLanguagesQuery(payload.search));
+    return await this.queryBus.execute(new GetLanguagesQuery(payload));
   }
 
   @Public()
@@ -54,9 +54,7 @@ export class LanguagesController {
   @Post("create")
   @ApiOkResponse({ type: CreateLanguageResponse })
   async create(@Body() payload: CreateLanguageRequest) {
-    return await this.cmdBus.execute(
-      new CreateLanguageCommand(payload.title, payload.code),
-    );
+    return await this.cmdBus.execute(new CreateLanguageCommand(payload));
   }
 
   @Patch("update/:id")
@@ -65,9 +63,7 @@ export class LanguagesController {
     @Param("id", ParseIntPipe) id: number,
     @Body() payload: UpdateLanguageRequest,
   ) {
-    return await this.cmdBus.execute(
-      new UpdateLanguageCommand(id, payload.title, payload.code),
-    );
+    return await this.cmdBus.execute(new UpdateLanguageCommand(id, payload));
   }
 
   @Delete("delete/:id")

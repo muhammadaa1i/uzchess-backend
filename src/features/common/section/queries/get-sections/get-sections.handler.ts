@@ -11,12 +11,12 @@ export class GetSectionsHandler implements IQueryHandler<GetSectionsQuery> {
   constructor(private readonly cache: Cache) {}
 
   async execute(query: GetSectionsQuery) {
-    const cacheKey = sectionsListCacheKey(query.courseId);
+    const cacheKey = sectionsListCacheKey(query.payload.courseId);
     const cached = await this.cache.get<GetSectionsResponse[]>(cacheKey);
     if (cached) return cached;
 
     const sections = await CourseSection.find({
-      where: { courseId: query.courseId },
+      where: { courseId: query.payload.courseId },
       order: { order: "ASC" },
     });
 

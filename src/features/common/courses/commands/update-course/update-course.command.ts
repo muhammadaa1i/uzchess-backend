@@ -1,15 +1,9 @@
+import { UpdateCourseRequest } from "@/features/common/courses/commands/update-course/update-course.request";
+
 export class UpdateCourseCommand {
-    constructor(
-        public readonly id: number,
-        public readonly title: string | undefined,
-        public readonly price: number | undefined,
-        public readonly discountPrice: number | null | undefined,
-        public readonly description: string | undefined,
-        public readonly categoryId: number | undefined,
-        public readonly difficultyId: number | undefined,
-        public readonly languageId: number | undefined,
-        public readonly authorIds: number[] | undefined,
-        public readonly coverPath: string | undefined,
-    ) {
-    }
+  constructor(
+    public readonly id: number,
+    public readonly payload: UpdateCourseRequest,
+    public readonly coverPath: string | undefined,
+  ) {}
 }

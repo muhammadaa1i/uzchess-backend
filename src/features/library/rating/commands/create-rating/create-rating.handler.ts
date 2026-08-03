@@ -24,12 +24,12 @@ export class CreateRatingHandler implements ICommandHandler<CreateRatingCommand>
       userId: cmd.userId,
     });
     if (rating) {
-      rating.score = cmd.score;
+      rating.score = cmd.payload.score;
     } else {
       rating = Rating.create({
         bookId: cmd.bookId,
         userId: cmd.userId,
-        score: cmd.score,
+        score: cmd.payload.score,
       });
     }
     await Rating.save(rating);
@@ -49,7 +49,7 @@ export class CreateRatingHandler implements ICommandHandler<CreateRatingCommand>
       CreateRatingResponse,
       {
         bookId: cmd.bookId,
-        score: cmd.score,
+        score: cmd.payload.score,
         averageRating: ratingAgg?.average
           ? Math.round(parseFloat(ratingAgg.average) * 10) / 10
           : 0,

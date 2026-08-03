@@ -21,13 +21,13 @@ export class UpdateDifficultyHandler implements ICommandHandler<UpdateDifficulty
     const difficulty = await Difficulty.findOneBy({ id: cmd.id });
     DoesNotExistException.ThrowIfNull(difficulty, "Difficulty not found");
 
-    if (cmd.degree) {
+    if (cmd.payload.degree) {
       const alreadyExist = await Difficulty.existsBy({
         id: Not(cmd.id),
-        degree: ILike(cmd.degree),
+        degree: ILike(cmd.payload.degree),
       });
       AlreadyExistException.ThrowIf(alreadyExist);
-      difficulty.degree = cmd.degree;
+      difficulty.degree = cmd.payload.degree;
     }
 
     if (cmd.iconPath) {

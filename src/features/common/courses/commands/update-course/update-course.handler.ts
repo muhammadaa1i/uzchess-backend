@@ -25,33 +25,36 @@ export class UpdateCourseHandler implements ICommandHandler<UpdateCourseCommand>
     const course = await Course.findOneBy({ id: cmd.id });
     DoesNotExistException.ThrowIfNull(course, "Course not found");
 
-    if (cmd.categoryId !== undefined) {
+    if (cmd.payload.categoryId !== undefined) {
       const categoryExists = await CoursesCategory.existsBy({
-        id: cmd.categoryId,
+        id: cmd.payload.categoryId,
       });
       DoesNotExistException.ThrowIf(!categoryExists, "Category not found");
-      course.categoryId = cmd.categoryId;
+      course.categoryId = cmd.payload.categoryId;
     }
 
-    if (cmd.difficultyId !== undefined) {
+    if (cmd.payload.difficultyId !== undefined) {
       const difficultyExists = await Difficulty.existsBy({
-        id: cmd.difficultyId,
+        id: cmd.payload.difficultyId,
       });
       DoesNotExistException.ThrowIf(!difficultyExists, "Difficulty not found");
-      course.difficultyId = cmd.difficultyId;
+      course.difficultyId = cmd.payload.difficultyId;
     }
 
-    if (cmd.languageId !== undefined) {
-      const languageExists = await Language.existsBy({ id: cmd.languageId });
+    if (cmd.payload.languageId !== undefined) {
+      const languageExists = await Language.existsBy({
+        id: cmd.payload.languageId,
+      });
       DoesNotExistException.ThrowIf(!languageExists, "Language not found");
-      course.languageId = cmd.languageId;
+      course.languageId = cmd.payload.languageId;
     }
 
-    if (cmd.title !== undefined) course.title = cmd.title;
-    if (cmd.price !== undefined) course.price = cmd.price;
-    if (cmd.discountPrice !== undefined)
-      course.discountPrice = cmd.discountPrice;
-    if (cmd.description !== undefined) course.description = cmd.description;
+    if (cmd.payload.title !== undefined) course.title = cmd.payload.title;
+    if (cmd.payload.price !== undefined) course.price = cmd.payload.price;
+    if (cmd.payload.discountPrice !== undefined)
+      course.discountPrice = cmd.payload.discountPrice;
+    if (cmd.payload.description !== undefined)
+      course.description = cmd.payload.description;
 
     if (cmd.coverPath) {
       const oldCover = course.cover;
@@ -61,7 +64,7 @@ export class UpdateCourseHandler implements ICommandHandler<UpdateCourseCommand>
 
     await course.save();
 
-    let authorIds = cmd.authorIds;
+    let authorIds = cmd.payload.authorIds;
     if (authorIds) {
       const authorsCount = await Author.countBy({ id: In(authorIds) });
       DoesNotExistException.ThrowIf(

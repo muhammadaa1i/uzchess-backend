@@ -12,7 +12,7 @@ export class GetCategoriesHandler implements IQueryHandler<GetCategoriesQuery> {
   constructor(private readonly cache: Cache) {}
 
   async execute(query: GetCategoriesQuery) {
-    if (!query.search) {
+    if (!query.payload.search) {
       const cached = await this.cache.get<GetCategoriesResponse[]>(
         CATEGORIES_LIST_CACHE_KEY,
       );
@@ -20,7 +20,7 @@ export class GetCategoriesHandler implements IQueryHandler<GetCategoriesQuery> {
     }
 
     const where: FindOptionsWhere<Category> = {};
-    if (query.search) where.title = ILike(`%${query.search}%`);
+    if (query.payload.search) where.title = ILike(`%${query.payload.search}%`);
 
     const categories = await Category.find({ where });
 
@@ -28,7 +28,8 @@ export class GetCategoriesHandler implements IQueryHandler<GetCategoriesQuery> {
       excludeExtraneousValues: true,
     });
 
-    if (!query.search) await this.cache.set(CATEGORIES_LIST_CACHE_KEY, result);
+    if (!query.payload.search)
+      await this.cache.set(CATEGORIES_LIST_CACHE_KEY, result);
 
     return result;
   }

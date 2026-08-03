@@ -49,9 +49,7 @@ export class DifficultyController {
   @Get("read")
   @ApiOkResponse({ type: [GetDifficultiesResponse] })
   async getAll(@Query() payload: GetDifficultiesRequest) {
-    return await this.queryBus.execute(
-      new GetDifficultiesQuery(payload.search),
-    );
+    return await this.queryBus.execute(new GetDifficultiesQuery(payload));
   }
 
   @Public()
@@ -86,7 +84,7 @@ export class DifficultyController {
 
     try {
       return await this.cmdBus.execute(
-        new CreateDifficultyCommand(payload.degree, icon.path),
+        new CreateDifficultyCommand(payload, icon.path),
       );
     } catch (error) {
       await deleteUploadedFile(icon.path).catch(() => {});
@@ -119,7 +117,7 @@ export class DifficultyController {
   ) {
     try {
       return await this.cmdBus.execute(
-        new UpdateDifficultyCommand(id, payload.degree, icon?.path),
+        new UpdateDifficultyCommand(id, payload, icon?.path),
       );
     } catch (error) {
       if (icon) await deleteUploadedFile(icon.path).catch(() => {});

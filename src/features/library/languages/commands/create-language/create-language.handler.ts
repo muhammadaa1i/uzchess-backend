@@ -13,14 +13,21 @@ export class CreateLanguageHandler implements ICommandHandler<CreateLanguageComm
   constructor(private readonly cache: Cache) {}
 
   async execute(cmd: CreateLanguageCommand) {
-    const titleExists = await Language.existsBy({ title: ILike(cmd.title) });
-    const codeExists = await Language.existsBy({ code: ILike(cmd.code) });
+    const titleExists = await Language.existsBy({
+      title: ILike(cmd.payload.title),
+    });
+    const codeExists = await Language.existsBy({
+      code: ILike(cmd.payload.code),
+    });
     AlreadyExistException.ThrowIf(
       titleExists || codeExists,
       "Language with this title or code already exists",
     );
 
-    const newLanguage = Language.create({ title: cmd.title, code: cmd.code });
+    const newLanguage = Language.create({
+      title: cmd.payload.title,
+      code: cmd.payload.code,
+    });
     const saved = await Language.save(newLanguage);
 
     await this.cache.del(LANGUAGES_LIST_CACHE_KEY);

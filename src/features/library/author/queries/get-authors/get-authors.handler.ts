@@ -12,7 +12,7 @@ export class GetAuthorsHandler implements IQueryHandler<GetAuthorsQuery> {
   constructor(private readonly cache: Cache) {}
 
   async execute(query: GetAuthorsQuery) {
-    if (!query.search) {
+    if (!query.payload.search) {
       const cached = await this.cache.get<GetAuthorsResponse[]>(
         AUTHORS_LIST_CACHE_KEY,
       );
@@ -20,14 +20,16 @@ export class GetAuthorsHandler implements IQueryHandler<GetAuthorsQuery> {
     }
 
     const where: FindOptionsWhere<Author> = {};
-    if (query.search) where.fullName = ILike(`%${query.search}%`);
+    if (query.payload.search)
+      where.fullName = ILike(`%${query.payload.search}%`);
 
     const authors = await Author.find({ where });
     const result = plainToInstance(GetAuthorsResponse, authors, {
       excludeExtraneousValues: true,
     });
 
-    if (!query.search) await this.cache.set(AUTHORS_LIST_CACHE_KEY, result);
+    if (!query.payload.search)
+      await this.cache.set(AUTHORS_LIST_CACHE_KEY, result);
 
     return result;
   }

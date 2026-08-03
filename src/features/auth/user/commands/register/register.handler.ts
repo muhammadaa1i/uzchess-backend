@@ -12,7 +12,11 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
     const alreadyExist = await User.existsBy({ username: payload.username });
     AlreadyExistException.ThrowIf(alreadyExist);
 
-    const newUser = User.create(payload);
+    const newUser = User.create({
+      username: payload.username,
+      fullName: payload.fullName,
+      password: payload.password,
+    });
     newUser.password = await argon2.hash(newUser.password);
 
     return plainToInstance(RegisterResponse, await User.save(newUser), {

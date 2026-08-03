@@ -12,7 +12,7 @@ export class GetLanguagesHandler implements IQueryHandler<GetLanguagesQuery> {
   constructor(private readonly cache: Cache) {}
 
   async execute(query: GetLanguagesQuery) {
-    if (!query.search) {
+    if (!query.payload.search) {
       const cached = await this.cache.get<GetLanguagesResponse[]>(
         LANGUAGES_LIST_CACHE_KEY,
       );
@@ -20,7 +20,7 @@ export class GetLanguagesHandler implements IQueryHandler<GetLanguagesQuery> {
     }
 
     const where: FindOptionsWhere<Language> = {};
-    if (query.search) where.title = ILike(`%${query.search}%`);
+    if (query.payload.search) where.title = ILike(`%${query.payload.search}%`);
 
     const languages = await Language.find({ where });
 
@@ -28,7 +28,8 @@ export class GetLanguagesHandler implements IQueryHandler<GetLanguagesQuery> {
       excludeExtraneousValues: true,
     });
 
-    if (!query.search) await this.cache.set(LANGUAGES_LIST_CACHE_KEY, result);
+    if (!query.payload.search)
+      await this.cache.set(LANGUAGES_LIST_CACHE_KEY, result);
 
     return result;
   }

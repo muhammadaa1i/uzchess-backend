@@ -1,7 +1,8 @@
+import { UpdateSectionRequest } from "@/features/common/section/commands/update-section/update-section.request";
+
 export class UpdateSectionCommand {
   constructor(
     public readonly id: number,
-    public readonly title: string | undefined,
-    public readonly order: number | undefined,
+    public readonly payload: UpdateSectionRequest,
   ) {}
 }

@@ -6,12 +6,10 @@ import { GetCourseReviewsResponse } from "@/features/common/rating/queries/get-c
 import { PaginatedResultDto } from "@/core/dtos/paginated-result.dto";
 
 @QueryHandler(GetCourseReviewsQuery)
-export class GetCourseReviewsHandler
-  implements IQueryHandler<GetCourseReviewsQuery>
-{
+export class GetCourseReviewsHandler implements IQueryHandler<GetCourseReviewsQuery> {
   async execute(query: GetCourseReviewsQuery) {
-    const take = query.size ?? 5;
-    const currentPage = query.page ?? 1;
+    const take = query.payload.size ?? 5;
+    const currentPage = query.payload.page ?? 1;
     const skip = (currentPage - 1) * take;
 
     const [reviews, totalCount] = await CourseRating.findAndCount({

@@ -29,7 +29,7 @@ export class RatingController {
     @Req() req: Request,
   ) {
     return await this.cmdBus.execute(
-      new CreateRatingCommand(id, req.user!.id, payload.score),
+      new CreateRatingCommand(id, req.user!.id, payload),
     );
   }
 

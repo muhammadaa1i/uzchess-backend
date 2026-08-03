@@ -1,11 +1,5 @@
+import { GetCoursesRequest } from "@/features/common/courses/queries/get-courses/get-courses.request";
+
 export class GetCoursesQuery {
-  constructor(
-    public readonly search?: string,
-    public readonly categoryId?: number,
-    public readonly difficultyId?: number,
-    public readonly languageId?: number,
-    public readonly minRating?: number,
-    public readonly page?: number,
-    public readonly size?: number,
-  ) {}
+  constructor(public readonly payload: GetCoursesRequest) {}
 }

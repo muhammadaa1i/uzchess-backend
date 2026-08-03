@@ -1,10 +1,9 @@
-import {PaymentProvider} from "@/core/enums/payment-provider.enum";
+import { CreatePurchaseRequest } from "@/features/common/purchase/commands/create-purchase/create-purchase.request";
 
 export class CreatePurchaseCommand {
-    constructor(
-        public readonly userId: number,
-        public readonly courseId: number,
-        public readonly provider: PaymentProvider,
-    ) {
-    }
+  constructor(
+    public readonly userId: number,
+    public readonly courseId: number,
+    public readonly payload: CreatePurchaseRequest,
+  ) {}
 }

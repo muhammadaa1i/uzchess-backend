@@ -12,17 +12,15 @@ import {
 import { courseByIdCacheKey } from "@/features/common/courses/course.cache";
 
 @CommandHandler(UpdateSectionCommand)
-export class UpdateSectionHandler
-  implements ICommandHandler<UpdateSectionCommand>
-{
+export class UpdateSectionHandler implements ICommandHandler<UpdateSectionCommand> {
   constructor(private readonly cache: Cache) {}
 
   async execute(cmd: UpdateSectionCommand) {
     const section = await CourseSection.findOneBy({ id: cmd.id });
     DoesNotExistException.ThrowIfNull(section, "Section not found");
 
-    if (cmd.title !== undefined) section.title = cmd.title;
-    if (cmd.order !== undefined) section.order = cmd.order;
+    if (cmd.payload.title !== undefined) section.title = cmd.payload.title;
+    if (cmd.payload.order !== undefined) section.order = cmd.payload.order;
 
     const saved = await section.save();
 

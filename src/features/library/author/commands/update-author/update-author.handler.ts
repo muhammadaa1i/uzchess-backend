@@ -19,7 +19,7 @@ export class UpdateAuthorHandler implements ICommandHandler<UpdateAuthorCommand>
 
     DoesNotExistException.ThrowIfNull(author, "Author is not found");
 
-    author.fullName = cmd.fullName;
+    author.fullName = cmd.payload.fullName;
     const saved = await author.save();
 
     await Promise.all([

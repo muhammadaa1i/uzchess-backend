@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+} from "@nestjs/common";
 import type { Request } from "express";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
@@ -30,7 +38,7 @@ export class PurchaseController {
     @Req() req: Request,
   ) {
     return await this.cmdBus.execute(
-      new CreatePurchaseCommand(req.user!.id, id, payload.provider),
+      new CreatePurchaseCommand(req.user!.id, id, payload),
     );
   }
 }

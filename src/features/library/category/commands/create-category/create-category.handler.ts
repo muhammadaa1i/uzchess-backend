@@ -14,13 +14,13 @@ export class CreateCategoryHandler implements ICommandHandler<CreateCategoryComm
 
   async execute(cmd: CreateCategoryCommand) {
     const category = await Category.findOne({
-      where: { title: ILike(cmd.title) },
+      where: { title: ILike(cmd.payload.title) },
     });
 
     if (category)
       throw new ConflictException("Category with this name already exist");
 
-    const newCategory = Category.create({ title: cmd.title });
+    const newCategory = Category.create({ title: cmd.payload.title });
     const saved = await Category.save(newCategory);
 
     await this.cache.del(CATEGORIES_LIST_CACHE_KEY);

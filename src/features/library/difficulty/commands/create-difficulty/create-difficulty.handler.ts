@@ -14,12 +14,12 @@ export class CreateDifficultyHandler implements ICommandHandler<CreateDifficulty
 
   async execute(cmd: CreateDifficultyCommand) {
     const alreadyExist = await Difficulty.existsBy({
-      degree: ILike(cmd.degree),
+      degree: ILike(cmd.payload.degree),
     });
     AlreadyExistException.ThrowIf(alreadyExist);
 
     const newDifficulty = {
-      degree: cmd.degree,
+      degree: cmd.payload.degree,
       icon: cmd.iconPath,
     } as Difficulty;
     const saved = await Difficulty.save(newDifficulty);

@@ -11,7 +11,7 @@ export class CreateAuthorHandler implements ICommandHandler<CreateAuthorCommand>
   constructor(private readonly cache: Cache) {}
 
   async execute(cmd: CreateAuthorCommand) {
-    const author = Author.create({ fullName: cmd.fullName });
+    const author = Author.create({ fullName: cmd.payload.fullName });
     const saved = await Author.save(author);
 
     await this.cache.del(AUTHORS_LIST_CACHE_KEY);

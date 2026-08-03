@@ -41,7 +41,7 @@ export class AuthorController {
   @Get("read")
   @ApiOkResponse({ type: [GetAuthorsResponse] })
   async getAll(@Query() payload: GetAuthorsRequest) {
-    return await this.queryBus.execute(new GetAuthorsQuery(payload.search));
+    return await this.queryBus.execute(new GetAuthorsQuery(payload));
   }
 
   @Public()
@@ -54,7 +54,7 @@ export class AuthorController {
   @Post("create")
   @ApiOkResponse({ type: CreateAuthorResponse })
   async create(@Body() payload: CreateAuthorRequest) {
-    return await this.cmdBus.execute(new CreateAuthorCommand(payload.fullName));
+    return await this.cmdBus.execute(new CreateAuthorCommand(payload));
   }
 
   @Patch("update/:id")
@@ -63,7 +63,7 @@ export class AuthorController {
     @Param("id", ParseIntPipe) id: number,
     @Body() payload: UpdateAuthorRequest,
   ) {
-    return this.cmdBus.execute(new UpdateAuthorCommand(id, payload.fullName));
+    return this.cmdBus.execute(new UpdateAuthorCommand(id, payload));
   }
 
   @Delete("delete/:id")

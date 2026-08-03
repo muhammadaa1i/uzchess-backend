@@ -12,7 +12,7 @@ export class GetDifficultiesHandler implements IQueryHandler<GetDifficultiesQuer
   constructor(private readonly cache: Cache) {}
 
   async execute(query: GetDifficultiesQuery) {
-    if (!query.search) {
+    if (!query.payload.search) {
       const cached = await this.cache.get<GetDifficultiesResponse[]>(
         DIFFICULTIES_LIST_CACHE_KEY,
       );
@@ -20,14 +20,14 @@ export class GetDifficultiesHandler implements IQueryHandler<GetDifficultiesQuer
     }
 
     const where: FindOptionsWhere<Difficulty> = {};
-    if (query.search) where.degree = ILike(`%${query.search}%`);
+    if (query.payload.search) where.degree = ILike(`%${query.payload.search}%`);
 
     const difficulties = await Difficulty.find({ where });
     const result = plainToInstance(GetDifficultiesResponse, difficulties, {
       excludeExtraneousValues: true,
     });
 
-    if (!query.search)
+    if (!query.payload.search)
       await this.cache.set(DIFFICULTIES_LIST_CACHE_KEY, result);
 
     return result;

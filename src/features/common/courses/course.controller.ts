@@ -48,17 +48,7 @@ export class CourseController {
   @Get("read")
   @ApiOkResponse({ type: PaginatedResultDto(GetCoursesResponse) })
   async getAll(@Query() payload: GetCoursesRequest) {
-    return await this.queryBus.execute(
-      new GetCoursesQuery(
-        payload.search,
-        payload.categoryId,
-        payload.difficultyId,
-        payload.languageId,
-        payload.minRating,
-        payload.page,
-        payload.size,
-      ),
-    );
+    return await this.queryBus.execute(new GetCoursesQuery(payload));
   }
 
   @Public()
@@ -93,17 +83,7 @@ export class CourseController {
     if (!cover) throw new BadRequestException();
 
     return await this.cmdBus.execute(
-      new CreateCourseCommand(
-        payload.title,
-        payload.price,
-        payload.discountPrice,
-        payload.description,
-        payload.categoryId,
-        payload.difficultyId,
-        payload.languageId,
-        payload.authorIds,
-        cover.path,
-      ),
+      new CreateCourseCommand(payload, cover.path),
     );
   }
 
@@ -132,18 +112,7 @@ export class CourseController {
     cover: Express.Multer.File,
   ) {
     return await this.cmdBus.execute(
-      new UpdateCourseCommand(
-        id,
-        payload.title,
-        payload.price,
-        payload.discountPrice,
-        payload.description,
-        payload.categoryId,
-        payload.difficultyId,
-        payload.languageId,
-        payload.authorIds,
-        cover?.path,
-      ),
+      new UpdateCourseCommand(id, payload, cover?.path),
     );
   }
 

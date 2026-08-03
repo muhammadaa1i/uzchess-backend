@@ -1,11 +1,9 @@
+import { CreateLessonRequest } from "@/features/common/lesson/commands/create-lesson/create-lesson.request";
+
 export class CreateLessonCommand {
-    constructor(
-        public readonly sectionId: number,
-        public readonly title: string,
-        public readonly duration: number,
-        public readonly order: number,
-        public readonly videoPath: string,
-        public readonly thumbnailPath: string | undefined,
-    ) {
-    }
+  constructor(
+    public readonly payload: CreateLessonRequest,
+    public readonly videoPath: string,
+    public readonly thumbnailPath: string | undefined,
+  ) {}
 }

@@ -44,7 +44,7 @@ export class CategoryController {
   // @ApiOkResponse({type: PaginatedResultDto(GetCategoriesResponse)})
   @ApiOkResponse({ type: [GetCategoriesResponse] })
   async getAll(@Query() payload: GetCategoriesRequest) {
-    return await this.queryBus.execute(new GetCategoriesQuery(payload.search));
+    return await this.queryBus.execute(new GetCategoriesQuery(payload));
   }
 
   @Public()
@@ -57,7 +57,7 @@ export class CategoryController {
   @Post("create")
   @ApiOkResponse({ type: CreateCategoryResponse })
   async create(@Body() payload: CreateCategoryRequest) {
-    return await this.cmdBus.execute(new CreateCategoryCommand(payload.title));
+    return await this.cmdBus.execute(new CreateCategoryCommand(payload));
   }
 
   @Patch("update/:id")
@@ -66,9 +66,7 @@ export class CategoryController {
     @Param("id", ParseIntPipe) id: number,
     @Body() payload: UpdateCategoryRequest,
   ) {
-    return await this.cmdBus.execute(
-      new UpdateCategoryCommand(id, payload.title),
-    );
+    return await this.cmdBus.execute(new UpdateCategoryCommand(id, payload));
   }
 
   @Delete("delete/:id")

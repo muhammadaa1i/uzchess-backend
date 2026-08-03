@@ -41,7 +41,7 @@ export class SectionController {
   @Get("read")
   @ApiOkResponse({ type: [GetSectionsResponse] })
   async getAll(@Query() payload: GetSectionsRequest) {
-    return await this.queryBus.execute(new GetSectionsQuery(payload.courseId));
+    return await this.queryBus.execute(new GetSectionsQuery(payload));
   }
 
   @Public()
@@ -54,9 +54,7 @@ export class SectionController {
   @Post("create")
   @ApiOkResponse({ type: CreateSectionResponse })
   async create(@Body() payload: CreateSectionRequest) {
-    return await this.cmdBus.execute(
-      new CreateSectionCommand(payload.courseId, payload.title, payload.order),
-    );
+    return await this.cmdBus.execute(new CreateSectionCommand(payload));
   }
 
   @Patch("update/:id")
@@ -65,9 +63,7 @@ export class SectionController {
     @Param("id", ParseIntPipe) id: number,
     @Body() payload: UpdateSectionRequest,
   ) {
-    return await this.cmdBus.execute(
-      new UpdateSectionCommand(id, payload.title, payload.order),
-    );
+    return await this.cmdBus.execute(new UpdateSectionCommand(id, payload));
   }
 
   @Delete("delete/:id")

@@ -23,14 +23,14 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
 
     const titleExists = await Category.existsBy({
       id: Not(cmd.id),
-      title: ILike(cmd.title),
+      title: ILike(cmd.payload.title),
     });
     AlreadyExistException.ThrowIf(
       titleExists,
       "Category with this name already exist",
     );
 
-    category.title = cmd.title;
+    category.title = cmd.payload.title;
     const saved = await category.save();
 
     await Promise.all([

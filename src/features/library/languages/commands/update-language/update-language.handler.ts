@@ -22,19 +22,19 @@ export class UpdateLanguageHandler implements ICommandHandler<UpdateLanguageComm
 
     const titleExists = await Language.existsBy({
       id: Not(cmd.id),
-      title: ILike(cmd.title),
+      title: ILike(cmd.payload.title),
     });
     const codeExists = await Language.existsBy({
       id: Not(cmd.id),
-      code: ILike(cmd.code),
+      code: ILike(cmd.payload.code),
     });
     AlreadyExistException.ThrowIf(
       titleExists || codeExists,
       "Language with this title or code already exists",
     );
 
-    language.title = cmd.title;
-    language.code = cmd.code;
+    language.title = cmd.payload.title;
+    language.code = cmd.payload.code;
     const saved = await language.save();
 
     await Promise.all([

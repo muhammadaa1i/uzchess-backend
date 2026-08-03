@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run start:dev        # run with watch mode (primary dev loop)
+npm run start:dev        # run with watch mode (primary dev loop) — auto-opens the Swagger tabs in the browser once on boot
 npm run start:debug      # watch mode + --inspect-brk
 npm run build             # nest build (swc)
 npm run lint              # eslint --fix over src,apps,libs,test
@@ -18,8 +18,8 @@ npx jest -t "test name"                # run tests matching a name
 npm run test:e2e         # jest --config ./test/jest-e2e.json
 
 npm run generate         # nest build && typeorm migration:generate (writes to src/migrations)
-npm run migrate          # nest build && typeorm migration:run
-npm run revert           # typeorm migration:revert
+npm run migrate           # nest build && typeorm migration:run
+npm run revert            # typeorm migration:revert
 ```
 
 There are currently no `*.spec.ts` files in the repo despite Jest being fully configured — don't assume test coverage exists for a feature just because the tooling is present.
@@ -28,9 +28,14 @@ Migration commands operate on the **built** output (`dist/src/data-source.js`), 
 
 ## Environment
 
-Config comes from `.env` (gitignored) via `process.loadEnvFile()` in `src/env.ts`. Required vars: `DATABASE_URL`, `JWT_SECRET` (see `.env.example`).
+Config comes from `.env` (gitignored) via `process.loadEnvFile()` in `src/env.ts`. There is no `.env.example` checked in. Required vars, inferred from usage:
 
-`src/env.ts` must stay the *first* import in both `src/main.ts` and `src/data-source.ts`. `src/core/configs/typeorm.config.ts` reads `process.env.DATABASE_URL` at module-evaluation time (not inside a factory), so if anything imports the TypeORM config before `env.ts` has run, `DATABASE_URL` will be `undefined`.
+- `DATABASE_URL` — Postgres connection string (`src/core/configs/typeorm/typeorm.config.ts`)
+- `JWT_SECRET` — signs/verifies auth tokens (`app.module.ts` `JwtModule.register`)
+- `PORT` — optional, defaults to `8000` (`src/main.ts`)
+- `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL` — Cloudflare R2 object storage (`src/core/configs/r2/r2.config.ts`)
+
+`src/env.ts` must stay the *first* import in `src/main.ts` and `src/data-source.ts`. `src/core/configs/typeorm/typeorm.config.ts` reads `process.env.DATABASE_URL` at module-evaluation time (not inside a factory), so if anything imports the TypeORM config before `env.ts` has run, `DATABASE_URL` will be `undefined`.
 
 ## Architecture
 
@@ -44,6 +49,7 @@ Each CRUD operation is its own vertical slice, not grouped by technical layer:
 features/<domain>/<entity>/
   <entity>.controller.ts
   <entity>.module.ts
+  <entity>.cache.ts               # cache key constants for this slice (optional, read-heavy slices only)
   commands/<action>-<entity>/
     <action>-<entity>.command.ts   # plain constructor-arg data
     <action>-<entity>.handler.ts   # @CommandHandler, does the work
@@ -56,11 +62,14 @@ Controllers only depend on `CommandBus`/`QueryBus` — they build a Command/Quer
 
 Guard-clause exceptions live in `src/core/exceptions/`: `DoesNotExistException.ThrowIfNull/ThrowIf` (404) and `AlreadyExistException.ThrowIf` (409), used inline in handlers instead of manual `if/throw`.
 
+Read-heavy slices (`author`, `book`, `category`, `difficulty`, `languages` under `library`) define a `<entity>.cache.ts` exporting cache-key constants/builders (e.g. `AUTHORS_LIST_CACHE_KEY`, `authorByIdCacheKey(id)`) used with `cache-manager` in query handlers; write handlers for the same entity must invalidate those same keys.
+
 ### Domain modules
 
 - `features/auth` — `User`/`Role`/`Permission` entities plus join tables `UserRole`, `RolePermission`, `UserPermission` (the last two allow both role-derived permissions and direct per-user allow/deny overrides). `login.handler.ts` signs a JWT with `{ id, roles: Role[] }`.
-- `features/library` — the catalog domain: `author`, `category`, `difficulty`, `book`, `languages`, `rating` slices, with entities under `entities/<name>/<name>.entity.ts`. `Book` belongs to one `Category`/`Difficulty`/`Language` and has many `BookAuthor` (join entity for the author m:n); `Rating` is a unique `(bookId, userId)` score row cascading on delete from both `Book` and `User`. This whole domain was `features/book` until the most recent commit, which renamed it to `library` and filled in the `book`/`languages`/`rating` slices — don't trust stale mental models of this path from before that commit.
-- `features/common` — currently just the `CoursesCategory` entity (`features/common/entity/courses-category.entity.ts`) and an empty `course.module.ts`/`CommonModule` scaffold with no controllers or handlers yet. (Despite the name, `Language` lives under `features/library/entities/languages`, not here.)
+- `features/library` — the book catalog domain: `author`, `book`, `cart`, `category`, `difficulty`, `favourite`, `languages`, `rating` slices, with entities under `entities/<name>/<name>.entity.ts`. `Book` belongs to one `Category`/`Difficulty`/`Language` and has many `BookAuthor` (join entity for the author m:n); `Rating`/`Favourite`/`CartItem` are unique `(bookId, userId)`-style rows cascading on delete from both `Book` and `User`.
+- `features/common` — the course domain: `category`, `certificate`, `courses`, `favourite`, `lesson`, `progress`, `purchase`, `rating`, `section` slices, entities under `entities/<name>/<name>.entity.ts`. `Course` belongs to one `CoursesCategory`/`Difficulty`/`Language` (the latter two reused from `features/library/entities`), has many `CourseAuthor` and `CourseSection` (ordered, cascades to many ordered `CourseLesson`, which carries `video`/`thumbnail` R2 URLs, `duration`, `isFree`). `CoursePurchase`, `LessonProgress`, and `Certificate` are all unique `(courseId|lessonId, userId)` rows cascading on delete from both the course/lesson and `User`.
+- Both domains independently define `Category`, `Rating`, and `Favourite` slices/modules for their own entity (book vs. course) with the same class names — importers alias them (`import { CategoryModule as BookCategoryModule } ...` / `... as CourseCategoryModule`) to avoid collisions. Follow this convention when wiring a new cross-domain import.
 
 ### Request pipeline / guards
 
@@ -68,8 +77,8 @@ Three global `APP_GUARD`s run in this order (registration order in `app.module.t
 
 Decorators: `@Public()` marks a route to skip enforcement, `@Roles(Role.Admin, ...)` (checked by `RoleGuard`), `@PermissionDecorator('resource:action')` (checked by `PermissionGuard`, which caches the resolved permission set per user in `cache-manager` under key `permission:<userId>`).
 
-File uploads go through `multerStorageOptions()` (`src/core/configs/multer.config.ts`), which writes into `uploads/<destination>/` with a randomized filename and an extension allowlist; `main.ts` serves that directory statically at `/uploads/`.
+File uploads go through `multerStorageOptions()` (`src/core/configs/multer/multer.config.ts`), which streams the file directly to **Cloudflare R2** (not local disk) via a custom `StorageEngine` and returns a public R2 URL as `file.path`; there's no static file serving in `main.ts`. `FileCleanupInterceptor` (`src/core/interceptors/file-cleanup.interceptor.ts`) deletes any files already uploaded to R2 if the route handler throws afterward. `LessonFilesInterceptor` (`src/core/interceptors/lesson-files.interceptor.ts`) is a preconfigured `FileFieldsInterceptor` for lesson `video`+`thumbnail` uploads specifically. New interceptors belong in `src/core/interceptors/`.
 
-Swagger UI is mounted at `/swagger` (`src/core/configs/swagger.config.ts`), using bearer auth.
+Swagger is split into three independently-mounted docs, defined in `src/core/configs/swagger/swagger-doc-groups.ts` and built by `swagger-document.builder.ts` (one `SwaggerModule.setup()` call per group, each filtered via `include: [...]`): `/swagger/books`, `/swagger/courses`, `/swagger/account`. When adding a new module, add it to the relevant group's `include` array (or ask the user which group it belongs to if unclear) — there is no single shared `/swagger` mount. All groups use bearer auth.
 
 Path alias `@/*` maps to `src/*` (see `tsconfig.json`); imports in this codebase inconsistently mix `@/...` and relative paths — prefer `@/...` for new code to match the majority.

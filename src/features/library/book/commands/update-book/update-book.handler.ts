@@ -28,40 +28,53 @@ export class UpdateBookHandler implements ICommandHandler<UpdateBookCommand> {
     // Validate all foreign keys up front so a bad reference never leaves
     // some fields persisted while the request as a whole fails (see
     // create-book.handler.ts for the same validate-then-mutate ordering).
-    if (cmd.categoryId !== undefined) {
-      const categoryExists = await Category.existsBy({ id: cmd.categoryId });
+    if (cmd.payload.categoryId !== undefined) {
+      const categoryExists = await Category.existsBy({
+        id: cmd.payload.categoryId,
+      });
       DoesNotExistException.ThrowIf(!categoryExists, "Category not found");
     }
 
-    if (cmd.difficultyId !== undefined) {
+    if (cmd.payload.difficultyId !== undefined) {
       const difficultyExists = await Difficulty.existsBy({
-        id: cmd.difficultyId,
+        id: cmd.payload.difficultyId,
       });
       DoesNotExistException.ThrowIf(!difficultyExists, "Difficulty not found");
     }
 
-    if (cmd.languageId !== undefined) {
-      const languageExists = await Language.existsBy({ id: cmd.languageId });
+    if (cmd.payload.languageId !== undefined) {
+      const languageExists = await Language.existsBy({
+        id: cmd.payload.languageId,
+      });
       DoesNotExistException.ThrowIf(!languageExists, "Language not found");
     }
 
-    if (cmd.authorIds) {
-      const authorsCount = await Author.countBy({ id: In(cmd.authorIds) });
+    if (cmd.payload.authorIds) {
+      const authorsCount = await Author.countBy({
+        id: In(cmd.payload.authorIds),
+      });
       DoesNotExistException.ThrowIf(
-        authorsCount !== cmd.authorIds.length,
+        authorsCount !== cmd.payload.authorIds.length,
         "One or more authors not found",
       );
     }
 
-    if (cmd.categoryId !== undefined) book.categoryId = cmd.categoryId;
-    if (cmd.difficultyId !== undefined) book.difficultyId = cmd.difficultyId;
-    if (cmd.languageId !== undefined) book.languageId = cmd.languageId;
-    if (cmd.title !== undefined) book.title = cmd.title;
-    if (cmd.price !== undefined) book.price = cmd.price;
-    if (cmd.discountPrice !== undefined) book.discountPrice = cmd.discountPrice;
-    if (cmd.description !== undefined) book.description = cmd.description;
-    if (cmd.pageCount !== undefined) book.pageCount = cmd.pageCount;
-    if (cmd.publishedYear !== undefined) book.publishedYear = cmd.publishedYear;
+    if (cmd.payload.categoryId !== undefined)
+      book.categoryId = cmd.payload.categoryId;
+    if (cmd.payload.difficultyId !== undefined)
+      book.difficultyId = cmd.payload.difficultyId;
+    if (cmd.payload.languageId !== undefined)
+      book.languageId = cmd.payload.languageId;
+    if (cmd.payload.title !== undefined) book.title = cmd.payload.title;
+    if (cmd.payload.price !== undefined) book.price = cmd.payload.price;
+    if (cmd.payload.discountPrice !== undefined)
+      book.discountPrice = cmd.payload.discountPrice;
+    if (cmd.payload.description !== undefined)
+      book.description = cmd.payload.description;
+    if (cmd.payload.pageCount !== undefined)
+      book.pageCount = cmd.payload.pageCount;
+    if (cmd.payload.publishedYear !== undefined)
+      book.publishedYear = cmd.payload.publishedYear;
 
     if (cmd.coverPath) {
       const oldCover = book.cover;
@@ -71,7 +84,7 @@ export class UpdateBookHandler implements ICommandHandler<UpdateBookCommand> {
 
     await book.save();
 
-    let authorIds = cmd.authorIds;
+    let authorIds = cmd.payload.authorIds;
     if (authorIds) {
       await BookAuthor.delete({ bookId: book.id });
       const bookAuthors = authorIds.map((authorId) =>

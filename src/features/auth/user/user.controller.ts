@@ -10,10 +10,12 @@ import {
 } from "@nestjs/common";
 import type { Request } from "express";
 import { RegisterRequest } from "@/features/auth/user/commands/register/register.request";
+import { RegisterCommand } from "@/features/auth/user/commands/register/register.command";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiConsumes, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { RegisterResponse } from "@/features/auth/user/commands/register/register.response";
 import { LoginRequest } from "@/features/auth/user/commands/login/login.request";
+import { LoginCommand } from "@/features/auth/user/commands/login/login.command";
 import { Public } from "@/core/decorators/public.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerStorageOptions } from "@/core/configs/multer/multer.config";
@@ -36,13 +38,13 @@ export class UserController {
   @ApiOkResponse({ type: RegisterResponse })
   @Post("register")
   async register(@Body() payload: RegisterRequest) {
-    return await this.cmdBus.execute(payload.toCommand());
+    return await this.cmdBus.execute(new RegisterCommand(payload));
   }
 
   @Public()
   @Post("login")
   async login(@Body() payload: LoginRequest) {
-    return await this.cmdBus.execute(payload.toCommand());
+    return await this.cmdBus.execute(new LoginCommand(payload));
   }
 
   @Get("profile")
