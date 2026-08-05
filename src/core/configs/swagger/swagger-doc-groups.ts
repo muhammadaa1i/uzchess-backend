@@ -5,6 +5,7 @@ import {AuthorModule} from "@/features/library/author/author.module";
 import {DifficultyModule} from "@/features/library/difficulty/difficulty.module";
 import {LanguagesModule} from "@/features/library/languages/languages.module";
 import {CartModule} from "@/features/library/cart/cart.module";
+import {OrderModule} from "@/features/library/order/order.module";
 import {CategoryModule as BookCategoryModule} from "@/features/library/category/category.module";
 import {RatingModule as BookRatingModule} from "@/features/library/rating/rating.module";
 import {FavouriteModule as BookFavouriteModule} from "@/features/library/favourite/favourite.module";
@@ -59,6 +60,7 @@ export const SWAGGER_DOC_GROUPS: SwaggerDocGroup[] = [
             CartModule,
             BookFavouriteModule,
             CourseFavouriteModule,
+            OrderModule,
         ],
     },
 ];
