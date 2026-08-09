@@ -15,5 +15,6 @@ export function buildSwaggerDocument(
 
   return SwaggerModule.createDocument(app, config, {
     include: group.include,
+    autoTagControllers: false,
   });
 }

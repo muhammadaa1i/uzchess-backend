@@ -12,5 +12,13 @@ export class RegisterResponse {
 
     @ApiProperty()
     @Expose()
-    fullName: string;
+    email: string;
+
+    @ApiProperty()
+    @Expose()
+    firstName: string;
+
+    @ApiProperty()
+    @Expose()
+    lastName: string;
 }

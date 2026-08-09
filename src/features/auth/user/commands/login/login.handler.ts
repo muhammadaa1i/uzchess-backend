@@ -12,7 +12,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
   async execute({ payload }: LoginCommand) {
     const user = await User.findOne({
-      where: { username: payload.username },
+      where: { email: payload.email },
       relations: { userRoles: { role: true } },
     });
     DoesNotExistException.ThrowIfNull(

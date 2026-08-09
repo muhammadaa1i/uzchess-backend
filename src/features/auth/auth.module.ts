@@ -1,19 +1,9 @@
 import { Module } from "@nestjs/common";
-import { RegisterHandler } from "src/features/auth/user/commands/register/register.handler";
-import { UserController } from "./user/user.controller";
 import { CqrsModule } from "@nestjs/cqrs";
-import { LoginHandler } from "src/features/auth/user/commands/login/login.handler";
-import { GetProfileHandler } from "@/features/auth/user/queries/get-profile/get-profile.handler";
-import { UpdateProfileHandler } from "@/features/auth/user/commands/update-profile/update-profile.handler";
+import { UserModule } from "@/features/auth/user/user.module";
+import { ProfileModule } from "@/features/auth/profile/profile.module";
 
 @Module({
-  imports: [CqrsModule],
-  controllers: [UserController],
-  providers: [
-    RegisterHandler,
-    LoginHandler,
-    GetProfileHandler,
-    UpdateProfileHandler,
-  ],
+  imports: [CqrsModule, UserModule, ProfileModule],
 })
 export class AuthModule {}

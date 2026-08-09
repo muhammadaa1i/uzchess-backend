@@ -66,7 +66,7 @@ export class GetCertificateHandler implements IQueryHandler<GetCertificateQuery>
     DoesNotExistException.ThrowIfNull(user, "User not found");
 
     return await generateCertificatePdf({
-      fullName: user.fullName,
+      fullName: `${user.firstName} ${user.lastName}`,
       courseTitle: course.title,
       code: certificate.code,
       issuedAt: certificate.createdAt,

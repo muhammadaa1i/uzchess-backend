@@ -22,7 +22,7 @@ import { LibraryModule } from "@/features/library/library.module";
       global: true,
       secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: "7d",
+        expiresIn: "365d",
       },
     }),
     TypeOrmModule.forRoot(typeOrmConfig),

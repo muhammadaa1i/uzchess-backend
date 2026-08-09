@@ -9,12 +9,17 @@ import { RegisterResponse } from "@/features/auth/user/commands/register/registe
 @CommandHandler(RegisterCommand)
 export class RegisterHandler implements ICommandHandler<RegisterCommand> {
   async execute({ payload }: RegisterCommand) {
-    const alreadyExist = await User.existsBy({ username: payload.username });
-    AlreadyExistException.ThrowIf(alreadyExist);
+    const usernameTaken = await User.existsBy({ username: payload.username });
+    AlreadyExistException.ThrowIf(usernameTaken);
+
+    const emailTaken = await User.existsBy({ email: payload.email });
+    AlreadyExistException.ThrowIf(emailTaken);
 
     const newUser = User.create({
       username: payload.username,
-      fullName: payload.fullName,
+      email: payload.email,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
       password: payload.password,
     });
     newUser.password = await argon2.hash(newUser.password);

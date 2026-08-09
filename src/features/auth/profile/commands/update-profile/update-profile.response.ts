@@ -12,9 +12,21 @@ export class UpdateProfileResponse {
 
   @ApiProperty()
   @Expose()
-  fullName: string;
+  firstName: string;
+
+  @ApiProperty()
+  @Expose()
+  lastName: string;
 
   @ApiProperty({ nullable: true })
   @Expose()
   avatar: string | null;
+
+  @ApiProperty({ nullable: true })
+  @Expose()
+  email: string | null;
+
+  @ApiProperty({ nullable: true })
+  @Expose()
+  birthDate: Date | null;
 }

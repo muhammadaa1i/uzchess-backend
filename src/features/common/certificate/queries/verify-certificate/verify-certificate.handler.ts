@@ -22,7 +22,7 @@ export class VerifyCertificateHandler
         return plainToInstance(
             VerifyCertificateResponse,
             {
-                studentName: certificate.user.fullName,
+                studentName: `${certificate.user.firstName} ${certificate.user.lastName}`,
                 courseTitle: certificate.course.title,
                 issuedAt: certificate.createdAt,
             },

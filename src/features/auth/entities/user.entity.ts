@@ -10,13 +10,22 @@ export class User extends BaseModel {
   username: string;
 
   @Column({ length: 64 })
-  fullName: string;
+  firstName: string;
+
+  @Column({ length: 64 })
+  lastName: string;
 
   @Column({ length: 128 })
   password: string;
 
   @Column({ type: "varchar", length: 256, nullable: true })
   avatar: string | null;
+
+  @Column({ type: "varchar", length: 128, unique: true, nullable: true })
+  email: string | null;
+
+  @Column({ type: "date", nullable: true })
+  birthDate: Date | null;
 
   @OneToMany(() => UserRole, (ur) => ur.user)
   userRoles: Relation<UserRole>[];

@@ -29,7 +29,7 @@ export class GetCourseReviewsHandler implements IQueryHandler<GetCourseReviewsQu
       reviews.map((review) => ({
         id: review.id,
         userId: review.userId,
-        userFullName: review.user.fullName,
+        userFullName: `${review.user.firstName} ${review.user.lastName}`,
         score: review.score,
         comment: review.comment,
         createdAt: review.createdAt,

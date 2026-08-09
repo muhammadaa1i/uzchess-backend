@@ -1,81 +1,38 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Req,
-  UploadedFile,
-  UseInterceptors,
-} from "@nestjs/common";
-import type { Request } from "express";
-import { RegisterRequest } from "@/features/auth/user/commands/register/register.request";
-import { RegisterCommand } from "@/features/auth/user/commands/register/register.command";
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { ApiConsumes, ApiOkResponse, ApiTags } from "@nestjs/swagger";
-import { RegisterResponse } from "@/features/auth/user/commands/register/register.response";
-import { LoginRequest } from "@/features/auth/user/commands/login/login.request";
-import { LoginCommand } from "@/features/auth/user/commands/login/login.command";
-import { Public } from "@/core/decorators/public.decorator";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerStorageOptions } from "@/core/configs/multer/multer.config";
-import { FileCleanupInterceptor } from "@/core/interceptors/file-cleanup.interceptor";
-import { GetProfileQuery } from "@/features/auth/user/queries/get-profile/get-profile.query";
-import { GetProfileResponse } from "@/features/auth/user/queries/get-profile/get-profile.response";
-import { UpdateProfileRequest } from "@/features/auth/user/commands/update-profile/update-profile.request";
-import { UpdateProfileCommand } from "@/features/auth/user/commands/update-profile/update-profile.command";
-import { UpdateProfileResponse } from "@/features/auth/user/commands/update-profile/update-profile.response";
+import {Body, Controller, Post, Req} from "@nestjs/common";
+import type {Request} from "express";
+import {RegisterRequest} from "@/features/auth/user/commands/register/register.request";
+import {RegisterCommand} from "@/features/auth/user/commands/register/register.command";
+import {CommandBus} from "@nestjs/cqrs";
+import {ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {RegisterResponse} from "@/features/auth/user/commands/register/register.response";
+import {LoginRequest} from "@/features/auth/user/commands/login/login.request";
+import {LoginCommand} from "@/features/auth/user/commands/login/login.command";
+import {Public} from "@/core/decorators/public.decorator";
+import {LogoutCommand} from "@/features/auth/user/commands/logout/logout.command";
+import {LogoutResponse} from "@/features/auth/user/commands/logout/logout.response";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class UserController {
-  constructor(
-    private readonly cmdBus: CommandBus,
-    private readonly queryBus: QueryBus,
-  ) {}
+    constructor(private readonly cmdBus: CommandBus) {
+    }
 
-  @Public()
-  @ApiOkResponse({ type: RegisterResponse })
-  @Post("register")
-  async register(@Body() payload: RegisterRequest) {
-    return await this.cmdBus.execute(new RegisterCommand(payload));
-  }
+    @Public()
+    @ApiOkResponse({type: RegisterResponse})
+    @Post("register")
+    async register(@Body() payload: RegisterRequest) {
+        return await this.cmdBus.execute(new RegisterCommand(payload));
+    }
 
-  @Public()
-  @Post("login")
-  async login(@Body() payload: LoginRequest) {
-    return await this.cmdBus.execute(new LoginCommand(payload));
-  }
+    @Public()
+    @Post("login")
+    async login(@Body() payload: LoginRequest) {
+        return await this.cmdBus.execute(new LoginCommand(payload));
+    }
 
-  @Get("profile")
-  @ApiOkResponse({ type: GetProfileResponse })
-  async getById(@Req() req: Request) {
-    return await this.queryBus.execute(new GetProfileQuery(req.user!.id));
-  }
-
-  @Patch("profile")
-  @ApiOkResponse({ type: UpdateProfileResponse })
-  @ApiConsumes("multipart/form-data")
-  @UseInterceptors(
-    FileInterceptor("avatar", {
-      storage: multerStorageOptions({
-        destination: "avatars",
-        extensions: ["jpg", "png", "jpeg", "svg"],
-      }),
-      limits: {
-        fileSize: 1024 * 1024 * 5,
-        files: 1,
-      },
-    }),
-    FileCleanupInterceptor,
-  )
-  async update(
-    @Body() payload: UpdateProfileRequest,
-    @UploadedFile() avatar: Express.Multer.File,
-    @Req() req: Request,
-  ) {
-    return await this.cmdBus.execute(
-      new UpdateProfileCommand(req.user!.id, payload.fullName, avatar?.path),
-    );
-  }
+    @ApiOkResponse({type: LogoutResponse})
+    @Post("logout")
+    async logout(@Req() req: Request) {
+        return await this.cmdBus.execute(new LogoutCommand(req.user!.id));
+    }
 }

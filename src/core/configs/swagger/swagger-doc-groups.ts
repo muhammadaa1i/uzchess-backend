@@ -1,5 +1,6 @@
 import {Type} from "@nestjs/common";
-import {AuthModule} from "@/features/auth/auth.module";
+import {UserModule} from "@/features/auth/user/user.module";
+import {ProfileModule} from "@/features/auth/profile/profile.module";
 import {BookModule} from "@/features/library/book/book.module";
 import {AuthorModule} from "@/features/library/author/author.module";
 import {DifficultyModule} from "@/features/library/difficulty/difficulty.module";
@@ -56,7 +57,8 @@ export const SWAGGER_DOC_GROUPS: SwaggerDocGroup[] = [
         path: "swagger/account",
         title: "UzChess Backend API - Account",
         include: [
-            AuthModule,
+            UserModule,
+            ProfileModule,
             CartModule,
             BookFavouriteModule,
             CourseFavouriteModule,
