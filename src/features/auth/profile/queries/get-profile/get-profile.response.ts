@@ -8,10 +8,6 @@ export class GetProfileResponse {
 
     @ApiProperty()
     @Expose()
-    username: string;
-
-    @ApiProperty()
-    @Expose()
     firstName: string;
 
     @ApiProperty()
@@ -25,6 +21,10 @@ export class GetProfileResponse {
     @ApiProperty({nullable: true})
     @Expose()
     email: string | null;
+
+    @ApiProperty()
+    @Expose()
+    isEmailVerified: boolean;
 
     @ApiProperty({nullable: true})
     @Expose()

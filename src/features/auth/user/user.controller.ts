@@ -10,6 +10,10 @@ import {LoginCommand} from "@/features/auth/user/commands/login/login.command";
 import {Public} from "@/core/decorators/public.decorator";
 import {LogoutCommand} from "@/features/auth/user/commands/logout/logout.command";
 import {LogoutResponse} from "@/features/auth/user/commands/logout/logout.response";
+import {LoginResponse} from "@/features/auth/user/commands/login/login.response";
+import {RefreshTokenRequest} from "@/features/auth/user/commands/refresh-token/refresh-token.request";
+import {RefreshTokenCommand} from "@/features/auth/user/commands/refresh-token/refresh-token.command";
+import {RefreshTokenResponse} from "@/features/auth/user/commands/refresh-token/refresh-token.response";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -25,9 +29,17 @@ export class UserController {
     }
 
     @Public()
+    @ApiOkResponse({type: LoginResponse})
     @Post("login")
     async login(@Body() payload: LoginRequest) {
         return await this.cmdBus.execute(new LoginCommand(payload));
+    }
+
+    @Public()
+    @ApiOkResponse({type: RefreshTokenResponse})
+    @Post("refresh")
+    async refresh(@Body() payload: RefreshTokenRequest) {
+        return await this.cmdBus.execute(new RefreshTokenCommand(payload));
     }
 
     @ApiOkResponse({type: LogoutResponse})

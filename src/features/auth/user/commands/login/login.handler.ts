@@ -1,10 +1,14 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { LoginCommand } from "@/features/auth/user/commands/login/login.command";
 import { User } from "@/features/auth/entities/user.entity";
+import { RefreshToken } from "@/features/auth/entities/refresh-token.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import argon2 from "argon2";
+import { createHash, randomBytes } from "crypto";
 import { JwtService } from "@nestjs/jwt";
 import { Role } from "@/core/enums/role.enum";
+import { plainToInstance } from "class-transformer";
+import { LoginResponse } from "@/features/auth/user/commands/login/login.response";
 
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand> {
@@ -33,6 +37,22 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
     const accessToken = this.jwtService.sign(jwtPayload);
 
-    return { accessToken: accessToken };
+    const rawRefreshToken = randomBytes(64).toString("hex");
+    const tokenHash = createHash("sha256")
+      .update(rawRefreshToken)
+      .digest("hex");
+
+    const refreshToken = RefreshToken.create({
+      userId: user.id,
+      tokenHash,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+    await RefreshToken.save(refreshToken);
+
+    return plainToInstance(
+      LoginResponse,
+      { accessToken, refreshToken: rawRefreshToken },
+      { excludeExtraneousValues: true },
+    );
   }
 }

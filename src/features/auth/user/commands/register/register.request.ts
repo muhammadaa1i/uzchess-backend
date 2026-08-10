@@ -6,7 +6,13 @@ export class RegisterRequest {
   @IsNotEmpty()
   @MaxLength(64)
   @ApiProperty()
-  username: string;
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(64)
+  @ApiProperty()
+  lastName: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -16,19 +22,12 @@ export class RegisterRequest {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(64)
-  @ApiProperty()
-  firstName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(64)
-  @ApiProperty()
-  lastName: string;
-
-  @IsString()
-  @IsNotEmpty()
   @MaxLength(32)
   @ApiProperty()
   password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  confirmPassword: string;
 }

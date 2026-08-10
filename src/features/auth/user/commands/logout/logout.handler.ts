@@ -2,21 +2,15 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { LogoutCommand } from "@/features/auth/user/commands/logout/logout.command";
 import { LogoutResponse } from "@/features/auth/user/commands/logout/logout.response";
 import { plainToInstance } from "class-transformer";
-import { Cache } from "@nestjs/cache-manager";
-import {
-  logoutCacheKey,
-  LOGOUT_MARKER_TTL_MS,
-} from "@/features/auth/user/user.cache";
+import { IsNull } from "typeorm";
+import { RefreshToken } from "@/features/auth/entities/refresh-token.entity";
 
 @CommandHandler(LogoutCommand)
 export class LogoutHandler implements ICommandHandler<LogoutCommand> {
-  constructor(private readonly cache: Cache) {}
-
   async execute({ userId }: LogoutCommand) {
-    await this.cache.set(
-      logoutCacheKey(userId),
-      Date.now(),
-      LOGOUT_MARKER_TTL_MS,
+    await RefreshToken.update(
+      { userId, revokedAt: IsNull() },
+      { revokedAt: new Date().toISOString() },
     );
 
     return plainToInstance(

@@ -6,9 +6,6 @@ import { UserPermission } from "@/features/auth/entities/user-permission.entity"
 
 @Entity("users")
 export class User extends BaseModel {
-  @Column({ length: 64, unique: true })
-  username: string;
-
   @Column({ length: 64 })
   firstName: string;
 
@@ -23,6 +20,9 @@ export class User extends BaseModel {
 
   @Column({ type: "varchar", length: 128, unique: true, nullable: true })
   email: string | null;
+
+  @Column({ default: false })
+  isEmailVerified: boolean;
 
   @Column({ type: "date", nullable: true })
   birthDate: Date | null;

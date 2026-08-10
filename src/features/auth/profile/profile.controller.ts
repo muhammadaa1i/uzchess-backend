@@ -21,6 +21,11 @@ import {ResendEmailResponse} from "@/features/auth/profile/commands/resend-email
 import {ConfirmEmailRequest} from "@/features/auth/profile/commands/confirm-email/confirm-email.request";
 import {ConfirmEmailCommand} from "@/features/auth/profile/commands/confirm-email/confirm-email.command";
 import {ConfirmEmailResponse} from "@/features/auth/profile/commands/confirm-email/confirm-email.response";
+import {VerifyEmailResendCommand} from "@/features/auth/profile/commands/verify-email-resend/verify-email-resend.command";
+import {VerifyEmailResendResponse} from "@/features/auth/profile/commands/verify-email-resend/verify-email-resend.response";
+import {VerifyEmailConfirmRequest} from "@/features/auth/profile/commands/verify-email-confirm/verify-email-confirm.request";
+import {VerifyEmailConfirmCommand} from "@/features/auth/profile/commands/verify-email-confirm/verify-email-confirm.command";
+import {VerifyEmailConfirmResponse} from "@/features/auth/profile/commands/verify-email-confirm/verify-email-confirm.response";
 
 @ApiTags("Profile")
 @Controller("profile")
@@ -96,6 +101,25 @@ export class ProfileController {
     ) {
         return await this.cmdBus.execute(
             new ConfirmEmailCommand(req.user!.id, payload),
+        );
+    }
+
+    @Post("verify-email/resend")
+    @ApiOkResponse({type: VerifyEmailResendResponse})
+    async resendVerifyEmail(@Req() req: Request) {
+        return await this.cmdBus.execute(
+            new VerifyEmailResendCommand(req.user!.id),
+        );
+    }
+
+    @Post("verify-email/confirm")
+    @ApiOkResponse({type: VerifyEmailConfirmResponse})
+    async confirmVerifyEmail(
+        @Body() payload: VerifyEmailConfirmRequest,
+        @Req() req: Request,
+    ) {
+        return await this.cmdBus.execute(
+            new VerifyEmailConfirmCommand(req.user!.id, payload),
         );
     }
 }

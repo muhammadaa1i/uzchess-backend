@@ -8,10 +8,6 @@ export class UpdateProfileResponse {
 
   @ApiProperty()
   @Expose()
-  username: string;
-
-  @ApiProperty()
-  @Expose()
   firstName: string;
 
   @ApiProperty()

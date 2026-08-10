@@ -7,6 +7,8 @@ import {ChangePasswordHandler} from "@/features/auth/profile/commands/change-pas
 import {ChangeEmailHandler} from "@/features/auth/profile/commands/change-email/change-email.handler";
 import {ResendEmailHandler} from "@/features/auth/profile/commands/resend-email/resend-email.handler";
 import {ConfirmEmailHandler} from "@/features/auth/profile/commands/confirm-email/confirm-email.handler";
+import {VerifyEmailResendHandler} from "@/features/auth/profile/commands/verify-email-resend/verify-email-resend.handler";
+import {VerifyEmailConfirmHandler} from "@/features/auth/profile/commands/verify-email-confirm/verify-email-confirm.handler";
 
 @Module({
     imports: [CqrsModule],
@@ -18,6 +20,8 @@ import {ConfirmEmailHandler} from "@/features/auth/profile/commands/confirm-emai
         ChangeEmailHandler,
         ResendEmailHandler,
         ConfirmEmailHandler,
+        VerifyEmailResendHandler,
+        VerifyEmailConfirmHandler,
     ],
 })
 export class ProfileModule {
