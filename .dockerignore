@@ -6,3 +6,5 @@ dist
 coverage
 .vscode
 .idea
+*.spec.ts
+.claude

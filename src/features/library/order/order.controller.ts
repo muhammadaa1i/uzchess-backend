@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Req,
+} from "@nestjs/common";
 import type { Request } from "express";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CreateOrderCommand } from "@/features/library/order/commands/create-order/create-order.command";
+import { CreateOrderRequest } from "@/features/library/order/commands/create-order/create-order.request";
 import { CreateOrderResponse } from "@/features/library/order/commands/create-order/create-order.response";
 import { GetOrdersQuery } from "@/features/library/order/queries/get-orders/get-orders.query";
 import { GetOrdersResponse } from "@/features/library/order/queries/get-orders/get-orders.response";
@@ -28,8 +38,10 @@ export class OrderController {
 
   @Post("checkout")
   @ApiOkResponse({ type: CreateOrderResponse })
-  async create(@Req() req: Request) {
-    return await this.cmdBus.execute(new CreateOrderCommand(req.user!.id));
+  async create(@Body() payload: CreateOrderRequest, @Req() req: Request) {
+    return await this.cmdBus.execute(
+      new CreateOrderCommand(req.user!.id, payload),
+    );
   }
 
   @Roles(Role.Admin)

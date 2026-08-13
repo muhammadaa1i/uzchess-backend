@@ -22,6 +22,10 @@ export class UpdateProfileResponse {
   @Expose()
   email: string | null;
 
+  @ApiProperty()
+  @Expose()
+  isEmailVerified: boolean;
+
   @ApiProperty({ nullable: true })
   @Expose()
   birthDate: Date | null;

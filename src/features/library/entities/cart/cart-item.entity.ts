@@ -13,6 +13,9 @@ export class CartItem extends BaseModel {
   @Column()
   userId: number;
 
+  @Column({ type: "integer", default: 1 })
+  quantity: number;
+
   @ManyToOne(() => Book, { onDelete: "CASCADE" })
   @JoinColumn({ name: "bookId" })
   book: Relation<Book>;

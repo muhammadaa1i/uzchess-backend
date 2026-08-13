@@ -66,9 +66,9 @@ export class LessonController {
         @Body() payload: CreateLessonRequest,
         @UploadedFiles() files: LessonFiles,
     ) {
-        const video = files.video?.[0];
+        const video = files?.video?.[0];
         if (!video) throw new BadRequestException();
-        const thumbnail = files.thumbnail?.[0];
+        const thumbnail = files?.thumbnail?.[0];
 
         return await this.cmdBus.execute(
             new CreateLessonCommand(payload, video.path, thumbnail?.path),
@@ -84,8 +84,8 @@ export class LessonController {
         @Body() payload: UpdateLessonRequest,
         @UploadedFiles() files: LessonFiles,
     ) {
-        const video = files.video?.[0];
-        const thumbnail = files.thumbnail?.[0];
+        const video = files?.video?.[0];
+        const thumbnail = files?.thumbnail?.[0];
 
         return await this.cmdBus.execute(
             new UpdateLessonCommand(id, payload, video?.path, thumbnail?.path),

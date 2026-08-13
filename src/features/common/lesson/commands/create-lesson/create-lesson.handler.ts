@@ -29,6 +29,7 @@ export class CreateLessonHandler implements ICommandHandler<CreateLessonCommand>
       thumbnail: cmd.thumbnailPath ?? null,
       duration: cmd.payload.duration,
       order: cmd.payload.order,
+      isFree: cmd.payload.isFree ?? false,
     });
     const saved = await CourseLesson.save(lesson);
 

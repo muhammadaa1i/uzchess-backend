@@ -25,6 +25,7 @@ export class UpdateLessonHandler implements ICommandHandler<UpdateLessonCommand>
     if (cmd.payload.duration !== undefined)
       lesson.duration = cmd.payload.duration;
     if (cmd.payload.order !== undefined) lesson.order = cmd.payload.order;
+    if (cmd.payload.isFree !== undefined) lesson.isFree = cmd.payload.isFree;
 
     if (cmd.videoPath) {
       const oldVideo = lesson.video;

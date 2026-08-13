@@ -22,6 +22,7 @@ export class AddCartItemHandler implements ICommandHandler<AddCartItemCommand> {
     const cartItem = CartItem.create({
       bookId: cmd.bookId,
       userId: cmd.userId,
+      quantity: 1,
     });
     await CartItem.save(cartItem);
 

@@ -1,6 +1,14 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsInt, IsNotEmpty, IsString, MaxLength, Min} from "class-validator";
-import {Type} from "class-transformer";
+import {
+    IsBoolean,
+    IsInt,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    MaxLength,
+    Min,
+} from "class-validator";
+import {Transform, Type} from "class-transformer";
 
 export class CreateLessonRequest {
     @ApiProperty()
@@ -25,6 +33,12 @@ export class CreateLessonRequest {
     @IsInt()
     @Min(1)
     order: number;
+
+    @ApiProperty({required: false, default: false})
+    @IsOptional()
+    @Transform(({value}) => (value === undefined ? undefined : value === true || value === "true"))
+    @IsBoolean()
+    isFree?: boolean;
 
     @ApiProperty({type: "string", format: "binary"})
     video: any;

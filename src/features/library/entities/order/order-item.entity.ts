@@ -15,6 +15,9 @@ export class OrderItem extends BaseModel {
   @Column("integer")
   price: number;
 
+  @Column({ type: "integer", default: 1 })
+  quantity: number;
+
   @ManyToOne(() => Order, { onDelete: "CASCADE" })
   @JoinColumn({ name: "orderId" })
   order: Relation<Order>;

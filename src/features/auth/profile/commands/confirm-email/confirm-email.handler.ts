@@ -43,6 +43,7 @@ export class ConfirmEmailHandler implements ICommandHandler<ConfirmEmailCommand>
         );
 
         user.email = pending.newEmail;
+        user.isEmailVerified = true;
         await user.save();
 
         await Promise.all([

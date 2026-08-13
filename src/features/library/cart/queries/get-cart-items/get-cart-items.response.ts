@@ -57,4 +57,8 @@ export class GetCartItemsResponse {
   @ApiProperty()
   @Expose()
   ratingsCount: number;
+
+  @ApiProperty()
+  @Expose()
+  quantity: number;
 }

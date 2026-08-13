@@ -40,6 +40,10 @@ export class GetCartItemsHandler implements IQueryHandler<GetCartItemsQuery> {
       ]),
     );
 
+    const quantityByBookId = new Map(
+      cartItems.map((item) => [item.bookId, item.quantity]),
+    );
+
     return plainToInstance(
       GetCartItemsResponse,
       books.map((book) => ({
@@ -49,6 +53,7 @@ export class GetCartItemsHandler implements IQueryHandler<GetCartItemsQuery> {
           averageRating: 0,
           ratingsCount: 0,
         }),
+        quantity: quantityByBookId.get(book.id) ?? 1,
       })),
       { excludeExtraneousValues: true },
     );

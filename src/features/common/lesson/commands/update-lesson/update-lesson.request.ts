@@ -1,5 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {
+    IsBoolean,
     IsInt,
     IsNotEmpty,
     IsOptional,
@@ -7,7 +8,7 @@ import {
     MaxLength,
     Min,
 } from "class-validator";
-import {Type} from "class-transformer";
+import {Transform, Type} from "class-transformer";
 
 export class UpdateLessonRequest {
     @ApiProperty({required: false})
@@ -30,6 +31,12 @@ export class UpdateLessonRequest {
     @IsInt()
     @Min(1)
     order?: number;
+
+    @ApiProperty({required: false})
+    @IsOptional()
+    @Transform(({value}) => (value === undefined ? undefined : value === true || value === "true"))
+    @IsBoolean()
+    isFree?: boolean;
 
     @ApiProperty({type: "string", format: "binary", required: false})
     @IsOptional()

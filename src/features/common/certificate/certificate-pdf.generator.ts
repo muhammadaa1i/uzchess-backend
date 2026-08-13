@@ -66,6 +66,41 @@ function fitFontSize(
   return size;
 }
 
+// Greedily wraps `text` into at most `maxLines` lines that each fit within
+// `maxWidth` at `size`. If the words don't fit within `maxLines` even so, the
+// overflow is folded into the final line rather than dropped, so it may end
+// up wider than `maxWidth` in that case.
+export function wrapTextToLines(
+  font: PDFFont,
+  text: string,
+  size: number,
+  maxWidth: number,
+  maxLines: number,
+): string[] {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    const candidate = currentLine ? `${currentLine} ${word}` : word;
+    if (currentLine && font.widthOfTextAtSize(candidate, size) > maxWidth) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = candidate;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+
+  if (lines.length > maxLines) {
+    return [
+      ...lines.slice(0, maxLines - 1),
+      lines.slice(maxLines - 1).join(" "),
+    ];
+  }
+  return lines;
+}
+
 function drawTemplateBackground(page: PDFPage, image: PDFImage) {
   page.drawImage(image, {
     x: 0,
@@ -97,14 +132,37 @@ function drawStudentName(page: PDFPage, font: PDFFont, fullName: string) {
 
 function drawCourseLine(page: PDFPage, font: PDFFont, courseTitle: string) {
   const text = `For successfully completing the course "${courseTitle}"`;
-  const size = fitFontSize(font, text, 525, 14, 9);
-  const width = font.widthOfTextAtSize(text, size);
-  page.drawText(text, {
-    x: (TEMPLATE_WIDTH - width) / 2,
-    y: 288,
-    size,
-    font,
-    color: TEXT_DARK,
+  const maxWidth = 525;
+  const minSize = 9;
+  const size = fitFontSize(font, text, maxWidth, 14, minSize);
+
+  if (font.widthOfTextAtSize(text, size) <= maxWidth) {
+    const width = font.widthOfTextAtSize(text, size);
+    page.drawText(text, {
+      x: (TEMPLATE_WIDTH - width) / 2,
+      y: 288,
+      size,
+      font,
+      color: TEXT_DARK,
+    });
+    return;
+  }
+
+  // Even at the font floor the line is too wide for the masked region (e.g. a
+  // very long course title) — wrap onto a second line instead of letting the
+  // text run past the mask into the template's decorative border.
+  const lines = wrapTextToLines(font, text, minSize, maxWidth, 2);
+  const lineHeight = 14;
+  const startY = 296;
+  lines.forEach((line, index) => {
+    const width = font.widthOfTextAtSize(line, minSize);
+    page.drawText(line, {
+      x: (TEMPLATE_WIDTH - width) / 2,
+      y: startY - index * lineHeight,
+      size: minSize,
+      font,
+      color: TEXT_DARK,
+    });
   });
 }
 

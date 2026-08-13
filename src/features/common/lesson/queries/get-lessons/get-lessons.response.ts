@@ -29,4 +29,8 @@ export class GetLessonsResponse {
     @ApiProperty()
     @Expose()
     order: number;
+
+    @ApiProperty()
+    @Expose()
+    isFree: boolean;
 }

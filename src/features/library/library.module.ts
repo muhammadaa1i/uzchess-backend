@@ -9,6 +9,8 @@ import { RatingModule } from "@/features/library/rating/rating.module";
 import { CartModule } from "@/features/library/cart/cart.module";
 import { FavouriteModule } from "@/features/library/favourite/favourite.module";
 import { OrderModule } from "@/features/library/order/order.module";
+import { CouponModule } from "@/features/library/coupon/coupon.module";
+import { DeliverySettingModule } from "@/features/library/delivery-setting/delivery-setting.module";
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { OrderModule } from "@/features/library/order/order.module";
     CartModule,
     FavouriteModule,
     OrderModule,
+    CouponModule,
+    DeliverySettingModule,
   ],
 })
 export class LibraryModule {}
