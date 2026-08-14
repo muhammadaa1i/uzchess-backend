@@ -16,6 +16,18 @@ export class Order extends BaseModel {
   @Column("integer")
   totalPrice: number;
 
+  @Column({ unique: true })
+  orderNumber: string;
+
+  @Column()
+  fullName: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
+  email: string;
+
   @ManyToOne(() => User, { onDelete: "CASCADE" })
   @JoinColumn({ name: "userId" })
   user: Relation<User>;

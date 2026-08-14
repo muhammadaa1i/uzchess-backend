@@ -25,7 +25,11 @@ describe("CreateOrderHandler", () => {
     const bookFindSpy = jest.spyOn(Book, "find");
     const orderSaveSpy = jest.spyOn(Order, "save");
 
-    const payload: CreateOrderRequest = {};
+    const payload: CreateOrderRequest = {
+      fullName: "John Doe",
+      phone: "+998901234567",
+      email: "john@example.com",
+    };
     await expect(
       handler.execute(new CreateOrderCommand(9, payload)),
     ).rejects.toBeInstanceOf(DoesNotExistException);
@@ -50,19 +54,37 @@ describe("CreateOrderHandler", () => {
       isActive: true,
       expiresAt: null,
     } as any);
-    jest.spyOn(DeliverySetting, "findOne").mockResolvedValue({ fee: 20 } as any);
+    jest
+      .spyOn(DeliverySetting, "findOne")
+      .mockResolvedValue({ fee: 20 } as any);
 
-    const createdOrder: any = { id: 42, userId: 9, status: OrderStatus.Processing, totalPrice: 0 };
+    const createdOrder: any = {
+      id: 42,
+      userId: 9,
+      status: OrderStatus.Processing,
+      totalPrice: 0,
+    };
     jest.spyOn(Order, "create").mockImplementation((data: any) => {
       Object.assign(createdOrder, data);
       return createdOrder;
     });
-    const orderSaveSpy = jest.spyOn(Order, "save").mockImplementation(async (o: any) => o);
-    jest.spyOn(OrderItem, "create").mockImplementation((data: any) => data as any);
-    const orderItemSaveSpy = jest.spyOn(OrderItem, "save").mockResolvedValue([] as any);
-    const cartRemoveSpy = jest.spyOn(CartItem, "remove").mockResolvedValue([] as any);
+    const orderSaveSpy = jest
+      .spyOn(Order, "save")
+      .mockImplementation(async (o: any) => o);
+    jest.spyOn(OrderItem, "create").mockImplementation((data: any) => data);
+    const orderItemSaveSpy = jest
+      .spyOn(OrderItem, "save")
+      .mockResolvedValue([] as any);
+    const cartRemoveSpy = jest
+      .spyOn(CartItem, "remove")
+      .mockResolvedValue([] as any);
 
-    const payload: CreateOrderRequest = { code: "fix10" };
+    const payload: CreateOrderRequest = {
+      code: "fix10",
+      fullName: "John Doe",
+      phone: "+998901234567",
+      email: "john@example.com",
+    };
     const result = await handler.execute(new CreateOrderCommand(9, payload));
 
     // book1 uses discountPrice (80) * qty 2 = 160; book2 uses price (50) * qty 1 = 50
@@ -70,11 +92,26 @@ describe("CreateOrderHandler", () => {
     expect(createdOrder.totalPrice).toBe(220);
     expect(result.totalPrice).toBe(220);
     expect(result.status).toBe(OrderStatus.Processing);
+    expect(createdOrder.orderNumber).toEqual(expect.any(String));
+    expect(result.orderNumber).toEqual(expect.any(String));
+    expect(result.fullName).toBe("John Doe");
+    expect(result.phone).toBe("+998901234567");
+    expect(result.email).toBe("john@example.com");
 
     expect(orderSaveSpy).toHaveBeenCalled();
     expect(orderItemSaveSpy).toHaveBeenCalledWith([
-      expect.objectContaining({ orderId: 42, bookId: 1, price: 80, quantity: 2 }),
-      expect.objectContaining({ orderId: 42, bookId: 2, price: 50, quantity: 1 }),
+      expect.objectContaining({
+        orderId: 42,
+        bookId: 1,
+        price: 80,
+        quantity: 2,
+      }),
+      expect.objectContaining({
+        orderId: 42,
+        bookId: 2,
+        price: 50,
+        quantity: 1,
+      }),
     ]);
     expect(cartRemoveSpy).toHaveBeenCalledWith(cartItems);
   });
