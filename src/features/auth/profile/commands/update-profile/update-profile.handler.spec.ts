@@ -5,7 +5,7 @@ jest.mock("@/core/configs/multer/multer.config", () => ({
 import { UpdateProfileHandler } from "@/features/auth/profile/commands/update-profile/update-profile.handler";
 import { UpdateProfileCommand } from "@/features/auth/profile/commands/update-profile/update-profile.command";
 import { UpdateProfileRequest } from "@/features/auth/profile/commands/update-profile/update-profile.request";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 

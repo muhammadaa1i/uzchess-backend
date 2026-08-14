@@ -1,6 +1,6 @@
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
 import {ConfirmEmailCommand} from "@/features/auth/profile/commands/confirm-email/confirm-email.command";
-import {User} from "@/features/auth/entities/user.entity";
+import {User} from "@/features/auth/entities/user/user.entity";
 import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception";
 import {GoneException} from "@/core/exceptions/gone.exception";
 import {plainToInstance} from "class-transformer";

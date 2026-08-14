@@ -1,6 +1,6 @@
 import { ExecutionContext } from "@nestjs/common";
 import { PermissionGuard } from "@/core/guards/permission.guard";
-import { Permission } from "@/features/auth/entities/permission.entity";
+import { Permission } from "@/features/auth/entities/permission/permission.entity";
 
 describe("PermissionGuard", () => {
   let guard: PermissionGuard;

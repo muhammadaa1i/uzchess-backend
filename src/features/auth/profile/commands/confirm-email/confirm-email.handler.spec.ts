@@ -1,7 +1,7 @@
 import { ConfirmEmailHandler } from "@/features/auth/profile/commands/confirm-email/confirm-email.handler";
 import { ConfirmEmailCommand } from "@/features/auth/profile/commands/confirm-email/confirm-email.command";
 import { ConfirmEmailRequest } from "@/features/auth/profile/commands/confirm-email/confirm-email.request";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { GoneException } from "@/core/exceptions/gone.exception";
 import {

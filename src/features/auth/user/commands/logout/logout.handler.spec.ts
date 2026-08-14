@@ -1,7 +1,7 @@
 import { IsNull } from "typeorm";
 import { LogoutHandler } from "@/features/auth/user/commands/logout/logout.handler";
 import { LogoutCommand } from "@/features/auth/user/commands/logout/logout.command";
-import { RefreshToken } from "@/features/auth/entities/refresh-token.entity";
+import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
 
 describe("LogoutHandler", () => {
   let handler: LogoutHandler;

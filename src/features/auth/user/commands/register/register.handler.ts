@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { BadRequestException } from "@nestjs/common";
 import { RegisterCommand } from "@/features/auth/user/commands/register/register.command";
-import { User } from "@/features/auth/entities/user.entity";
-import { RefreshToken } from "@/features/auth/entities/refresh-token.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
+import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
 import argon2 from "argon2";
 import { createHash, randomBytes } from "crypto";

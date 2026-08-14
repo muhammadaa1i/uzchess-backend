@@ -16,6 +16,6 @@ export class Coupon extends BaseModel {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: "timestamptz", nullable: true })
+  @Column({ type: "timestamp", precision: 0, nullable: true })
   expiresAt: Date | null;
 }

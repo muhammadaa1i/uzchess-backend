@@ -3,7 +3,7 @@ import { LogoutCommand } from "@/features/auth/user/commands/logout/logout.comma
 import { LogoutResponse } from "@/features/auth/user/commands/logout/logout.response";
 import { plainToInstance } from "class-transformer";
 import { IsNull } from "typeorm";
-import { RefreshToken } from "@/features/auth/entities/refresh-token.entity";
+import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
 
 @CommandHandler(LogoutCommand)
 export class LogoutHandler implements ICommandHandler<LogoutCommand> {

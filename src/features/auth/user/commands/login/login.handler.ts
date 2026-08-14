@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { LoginCommand } from "@/features/auth/user/commands/login/login.command";
-import { User } from "@/features/auth/entities/user.entity";
-import { RefreshToken } from "@/features/auth/entities/refresh-token.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
+import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import argon2 from "argon2";
 import { createHash, randomBytes } from "crypto";

@@ -1,7 +1,7 @@
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
 import {BadRequestException} from "@nestjs/common";
 import {ChangePasswordCommand} from "@/features/auth/profile/commands/change-password/change-password.command";
-import {User} from "@/features/auth/entities/user.entity";
+import {User} from "@/features/auth/entities/user/user.entity";
 import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception";
 import argon2 from "argon2";
 import {plainToInstance} from "class-transformer";

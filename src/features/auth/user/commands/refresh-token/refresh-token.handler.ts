@@ -1,7 +1,7 @@
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
 import {UnauthorizedException} from "@nestjs/common";
 import {RefreshTokenCommand} from "@/features/auth/user/commands/refresh-token/refresh-token.command";
-import {RefreshToken} from "@/features/auth/entities/refresh-token.entity";
+import {RefreshToken} from "@/features/auth/entities/refresh-token/refresh-token.entity";
 import {createHash, randomBytes} from "crypto";
 import {JwtService} from "@nestjs/jwt";
 import {Role} from "@/core/enums/role.enum";

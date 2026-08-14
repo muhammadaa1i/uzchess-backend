@@ -3,7 +3,7 @@ import { createHash } from "crypto";
 import { RefreshTokenHandler } from "@/features/auth/user/commands/refresh-token/refresh-token.handler";
 import { RefreshTokenCommand } from "@/features/auth/user/commands/refresh-token/refresh-token.command";
 import { RefreshTokenRequest } from "@/features/auth/user/commands/refresh-token/refresh-token.request";
-import { RefreshToken } from "@/features/auth/entities/refresh-token.entity";
+import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
 import { Role } from "@/core/enums/role.enum";
 
 describe("RefreshTokenHandler", () => {

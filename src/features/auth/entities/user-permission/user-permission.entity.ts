@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import type { Relation } from "typeorm";
-import { User } from "@/features/auth/entities/user.entity";
-import { Permission } from "@/features/auth/entities/permission.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
+import { Permission } from "@/features/auth/entities/permission/permission.entity";
 import { BaseModel } from "@/core/base.model";
 
 @Entity("userPermissions")

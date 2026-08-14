@@ -1,6 +1,6 @@
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
 import {VerifyEmailConfirmCommand} from "@/features/auth/profile/commands/verify-email-confirm/verify-email-confirm.command";
-import {User} from "@/features/auth/entities/user.entity";
+import {User} from "@/features/auth/entities/user/user.entity";
 import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception";
 import {AlreadyExistException} from "@/core/exceptions/already-exist.exception";
 import {GoneException} from "@/core/exceptions/gone.exception";

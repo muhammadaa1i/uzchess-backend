@@ -9,9 +9,9 @@ export abstract class BaseModel extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @CreateDateColumn({ type: "timestamptz" })
+  @CreateDateColumn({ type: "timestamp", precision: 0 })
   createdAt: string;
 
-  @UpdateDateColumn({ type: "timestamptz" })
+  @UpdateDateColumn({ type: "timestamp", precision: 0 })
   updatedAt: string;
 }

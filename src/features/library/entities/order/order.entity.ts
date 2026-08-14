@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { OrderItem } from "@/features/library/entities/order/order-item.entity";
 import { OrderStatus } from "@/core/enums/order-status.enum";
 

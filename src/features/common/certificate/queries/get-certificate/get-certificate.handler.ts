@@ -8,7 +8,7 @@ import { CoursePurchase } from "@/features/common/entities/purchase/course-purch
 import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
 import { LessonProgress } from "@/features/common/entities/progress/lesson-progress.entity";
 import { Certificate } from "@/features/common/entities/certificate/certificate.entity";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { randomUUID } from "crypto";
 

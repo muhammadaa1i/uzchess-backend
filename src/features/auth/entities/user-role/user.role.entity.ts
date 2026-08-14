@@ -1,8 +1,8 @@
 import { BaseModel } from "@/core/base.model";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import type { Relation } from "typeorm";
-import { Role } from "@/features/auth/entities/role.entity";
-import { User } from "@/features/auth/entities/user.entity";
+import { Role } from "@/features/auth/entities/role/role.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 
 @Entity("userRoles")
 export class UserRole extends BaseModel {

@@ -4,7 +4,7 @@ jest.mock("@/core/configs/mail/mail.service", () => ({
 
 import { VerifyEmailResendHandler } from "@/features/auth/profile/commands/verify-email-resend/verify-email-resend.handler";
 import { VerifyEmailResendCommand } from "@/features/auth/profile/commands/verify-email-resend/verify-email-resend.command";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
 import { TooManyRequestsException } from "@/core/exceptions/too-many-requests.exception";

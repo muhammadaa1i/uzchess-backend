@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
 import { Book } from "@/features/library/entities/book/book.entity";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 
 @Entity("cart_items")
 @Index(["bookId", "userId"], { unique: true })

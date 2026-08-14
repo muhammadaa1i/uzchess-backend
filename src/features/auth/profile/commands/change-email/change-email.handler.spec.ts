@@ -6,7 +6,7 @@ import argon2 from "argon2";
 import { ChangeEmailHandler } from "@/features/auth/profile/commands/change-email/change-email.handler";
 import { ChangeEmailCommand } from "@/features/auth/profile/commands/change-email/change-email.command";
 import { ChangeEmailRequest } from "@/features/auth/profile/commands/change-email/change-email.request";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
 import { TooManyRequestsException } from "@/core/exceptions/too-many-requests.exception";

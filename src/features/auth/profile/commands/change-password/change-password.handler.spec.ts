@@ -2,7 +2,7 @@ import argon2 from "argon2";
 import { ChangePasswordHandler } from "@/features/auth/profile/commands/change-password/change-password.handler";
 import { ChangePasswordCommand } from "@/features/auth/profile/commands/change-password/change-password.command";
 import { ChangePasswordRequest } from "@/features/auth/profile/commands/change-password/change-password.request";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("ChangePasswordHandler", () => {

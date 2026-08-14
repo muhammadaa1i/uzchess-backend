@@ -1,8 +1,8 @@
 import { BaseModel } from "@/core/base.model";
 import { Column, Entity, OneToMany } from "typeorm";
 import type { Relation } from "typeorm";
-import { RolePermission } from "@/features/auth/entities/role-permission.entity";
-import { UserPermission } from "@/features/auth/entities/user-permission.entity";
+import { RolePermission } from "@/features/auth/entities/role-permission/role-permission.entity";
+import { UserPermission } from "@/features/auth/entities/user-permission/user-permission.entity";
 
 @Entity("permissions")
 export class Permission extends BaseModel {

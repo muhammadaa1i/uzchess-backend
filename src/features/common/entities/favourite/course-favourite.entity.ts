@@ -2,7 +2,7 @@ import {Column, Entity, Index, JoinColumn, ManyToOne} from "typeorm";
 import type {Relation} from "typeorm";
 import {BaseModel} from "@/core/base.model";
 import {Course} from "@/features/common/entities/course/course.entity";
-import {User} from "@/features/auth/entities/user.entity";
+import {User} from "@/features/auth/entities/user/user.entity";
 
 @Entity("courseFavourites")
 @Index(["courseId", "userId"], {unique: true})

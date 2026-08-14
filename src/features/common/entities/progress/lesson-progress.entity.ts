@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
 import { CourseLesson } from "@/features/common/entities/section/course-lesson.entity";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 
 @Entity("lessonProgresses")
 @Index(["lessonId", "userId"], { unique: true })

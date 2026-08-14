@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UpdateProfileCommand } from "@/features/auth/profile/commands/update-profile/update-profile.command";
-import { User } from "@/features/auth/entities/user.entity";
+import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { plainToInstance } from "class-transformer";
 import { UpdateProfileResponse } from "@/features/auth/profile/commands/update-profile/update-profile.response";
