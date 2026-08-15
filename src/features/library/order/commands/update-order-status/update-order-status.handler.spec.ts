@@ -8,9 +8,15 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 
 describe("UpdateOrderStatusHandler", () => {
   let handler: UpdateOrderStatusHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new UpdateOrderStatusHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new UpdateOrderStatusHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());

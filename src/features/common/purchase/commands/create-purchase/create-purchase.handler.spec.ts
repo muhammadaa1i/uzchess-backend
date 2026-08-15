@@ -10,6 +10,7 @@ import { PaymentProvider } from "@/core/enums/payment-provider.enum";
 
 describe("CreatePurchaseHandler", () => {
   let handler: CreatePurchaseHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   const payload = (overrides: Partial<CreatePurchaseRequest> = {}) =>
     ({
@@ -18,7 +19,12 @@ describe("CreatePurchaseHandler", () => {
     }) as CreatePurchaseRequest;
 
   beforeEach(() => {
-    handler = new CreatePurchaseHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new CreatePurchaseHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());

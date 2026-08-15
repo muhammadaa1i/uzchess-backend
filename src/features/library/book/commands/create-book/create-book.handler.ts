@@ -11,7 +11,10 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 import { plainToInstance } from "class-transformer";
 import { CreateBookResponse } from "@/features/library/book/commands/create-book/create-book.response";
 import { Cache } from "@nestjs/cache-manager";
-import { BOOKS_LIST_CACHE_KEY } from "@/features/library/book/book.cache";
+import {
+  BOOKS_LIST_CACHE_KEY,
+  TOP_RATED_BOOKS_CACHE_KEY,
+} from "@/features/library/book/book.cache";
 
 @CommandHandler(CreateBookCommand)
 export class CreateBookHandler implements ICommandHandler<CreateBookCommand> {
@@ -60,7 +63,10 @@ export class CreateBookHandler implements ICommandHandler<CreateBookCommand> {
     );
     await BookAuthor.save(bookAuthors);
 
-    await this.cache.del(BOOKS_LIST_CACHE_KEY);
+    await Promise.all([
+      this.cache.del(BOOKS_LIST_CACHE_KEY),
+      this.cache.del(TOP_RATED_BOOKS_CACHE_KEY),
+    ]);
 
     return plainToInstance(
       CreateBookResponse,

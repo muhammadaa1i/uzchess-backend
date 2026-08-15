@@ -2,6 +2,8 @@ import { GetBooksResponse } from "@/features/library/book/queries/get-books/get-
 
 export const BOOKS_LIST_CACHE_KEY = "books:list";
 
+export const TOP_RATED_BOOKS_CACHE_KEY = "books:top-rated";
+
 export function bookByIdCacheKey(id: number) {
   return `books:${id}`;
 }

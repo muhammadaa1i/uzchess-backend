@@ -11,11 +11,15 @@ import { In, QueryFailedError } from "typeorm";
 import { plainToInstance } from "class-transformer";
 import { CreateOrderResponse } from "@/features/library/order/commands/create-order/create-order.response";
 import { resolveCoupon } from "@/features/library/cart/cart-pricing.util";
+import { Cache } from "@nestjs/cache-manager";
+import { TOP_RATED_BOOKS_CACHE_KEY } from "@/features/library/book/book.cache";
 
 const MAX_ORDER_NUMBER_ATTEMPTS = 5;
 
 @CommandHandler(CreateOrderCommand)
 export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
+  constructor(private readonly cache: Cache) {}
+
   async execute(cmd: CreateOrderCommand) {
     const cartItems = await CartItem.findBy({ userId: cmd.userId });
     DoesNotExistException.ThrowIf(!cartItems.length, "Cart is empty");
@@ -77,6 +81,8 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
     await OrderItem.save(orderItems);
 
     await CartItem.remove(cartItems);
+
+    await this.cache.del(TOP_RATED_BOOKS_CACHE_KEY);
 
     return plainToInstance(CreateOrderResponse, order!, {
       excludeExtraneousValues: true,

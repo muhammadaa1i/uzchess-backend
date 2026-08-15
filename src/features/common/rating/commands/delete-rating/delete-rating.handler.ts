@@ -7,6 +7,7 @@ import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception"
 import {Cache} from "@nestjs/cache-manager";
 import {
     COURSES_LIST_CACHE_KEY,
+    TOP_RATED_COURSES_CACHE_KEY,
     courseByIdCacheKey,
 } from "@/features/common/courses/course.cache";
 
@@ -28,6 +29,7 @@ export class DeleteRatingHandler
         await Promise.all([
             this.cache.del(COURSES_LIST_CACHE_KEY),
             this.cache.del(courseByIdCacheKey(cmd.courseId)),
+            this.cache.del(TOP_RATED_COURSES_CACHE_KEY),
         ]);
 
         return plainToInstance(DeleteCourseRatingResponse, {

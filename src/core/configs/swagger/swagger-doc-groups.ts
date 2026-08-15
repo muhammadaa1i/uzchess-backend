@@ -21,6 +21,11 @@ import { CertificateModule } from "@/features/common/certificate/certificate.mod
 import { CategoryModule as CourseCategoryModule } from "@/features/common/category/category.module";
 import { RatingModule as CourseRatingModule } from "@/features/common/rating/rating.module";
 import { FavouriteModule as CourseFavouriteModule } from "@/features/common/favourite/favourite.module";
+import { PlayerModule } from "@/features/home/player/player.module";
+import { GameModule } from "@/features/home/game/game.module";
+import { GameOfDayModule } from "@/features/home/game-of-day/game-of-day.module";
+import { NewsModule } from "@/features/home/news/news.module";
+import { BannerModule } from "@/features/home/banner/banner.module";
 
 export interface SwaggerDocGroup {
   path: string;
@@ -67,6 +72,17 @@ export const SWAGGER_DOC_GROUPS: SwaggerDocGroup[] = [
       BookFavouriteModule,
       CourseFavouriteModule,
       OrderModule,
+    ],
+  },
+  {
+    path: "swagger/home",
+    title: "UzChess Backend API - Home",
+    include: [
+      PlayerModule,
+      GameModule,
+      GameOfDayModule,
+      NewsModule,
+      BannerModule,
     ],
   },
 ];

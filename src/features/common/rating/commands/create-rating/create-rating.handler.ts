@@ -10,6 +10,7 @@ import { CreateCourseRatingResponse } from "@/features/common/rating/commands/cr
 import { Cache } from "@nestjs/cache-manager";
 import {
   COURSES_LIST_CACHE_KEY,
+  TOP_RATED_COURSES_CACHE_KEY,
   courseByIdCacheKey,
 } from "@/features/common/courses/course.cache";
 
@@ -56,6 +57,7 @@ export class CreateRatingHandler implements ICommandHandler<CreateRatingCommand>
     await Promise.all([
       this.cache.del(COURSES_LIST_CACHE_KEY),
       this.cache.del(courseByIdCacheKey(cmd.courseId)),
+      this.cache.del(TOP_RATED_COURSES_CACHE_KEY),
     ]);
 
     return plainToInstance(

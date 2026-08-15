@@ -33,6 +33,8 @@ import { GetCoursesRequest } from "@/features/common/courses/queries/get-courses
 import { GetCoursesResponse } from "@/features/common/courses/queries/get-courses/get-courses.response";
 import { GetCoursesByIdQuery } from "@/features/common/courses/queries/get-courses-by-id/get-courses-by-id.query";
 import { GetCoursesByIdResponse } from "@/features/common/courses/queries/get-courses-by-id/get-courses-by-id.response";
+import { GetTopRatedCoursesQuery } from "@/features/common/courses/queries/get-top-rated-courses/get-top-rated-courses.query";
+import { GetTopRatedCoursesResponse } from "@/features/common/courses/queries/get-top-rated-courses/get-top-rated-courses.response";
 import { PaginatedResultDto } from "@/core/dtos/paginated-result.dto";
 
 @ApiTags("Courses")
@@ -56,6 +58,13 @@ export class CourseController {
   @ApiOkResponse({ type: GetCoursesByIdResponse })
   async getById(@Param("id", ParseIntPipe) id: number) {
     return await this.queryBus.execute(new GetCoursesByIdQuery(id));
+  }
+
+  @Public()
+  @Get("top-rated")
+  @ApiOkResponse({ type: [GetTopRatedCoursesResponse] })
+  async getTopRated() {
+    return await this.queryBus.execute(new GetTopRatedCoursesQuery());
   }
 
   @Post("create")

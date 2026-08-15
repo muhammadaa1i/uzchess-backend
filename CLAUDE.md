@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run start:dev        # run with watch mode (primary dev loop) — auto-opens the Swagger tabs in the browser once on boot
+npm run start:dev        # run with watch mode (primary dev loop) — prints Swagger doc links to the terminal on boot
 npm run start:debug      # watch mode + --inspect-brk
 npm run build             # nest build (swc)
 npm run lint              # eslint --fix over src,apps,libs,test

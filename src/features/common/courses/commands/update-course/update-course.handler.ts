@@ -14,6 +14,7 @@ import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 import { Cache } from "@nestjs/cache-manager";
 import {
   COURSES_LIST_CACHE_KEY,
+  TOP_RATED_COURSES_CACHE_KEY,
   courseByIdCacheKey,
 } from "@/features/common/courses/course.cache";
 
@@ -85,6 +86,7 @@ export class UpdateCourseHandler implements ICommandHandler<UpdateCourseCommand>
     await Promise.all([
       this.cache.del(COURSES_LIST_CACHE_KEY),
       this.cache.del(courseByIdCacheKey(cmd.id)),
+      this.cache.del(TOP_RATED_COURSES_CACHE_KEY),
     ]);
 
     return plainToInstance(

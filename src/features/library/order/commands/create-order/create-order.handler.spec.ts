@@ -13,9 +13,15 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 
 describe("CreateOrderHandler", () => {
   let handler: CreateOrderHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new CreateOrderHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new CreateOrderHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());

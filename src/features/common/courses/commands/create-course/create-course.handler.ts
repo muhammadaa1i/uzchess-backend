@@ -11,7 +11,10 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 import { plainToInstance } from "class-transformer";
 import { CreateCourseResponse } from "@/features/common/courses/commands/create-course/create-course.response";
 import { Cache } from "@nestjs/cache-manager";
-import { COURSES_LIST_CACHE_KEY } from "@/features/common/courses/course.cache";
+import {
+  COURSES_LIST_CACHE_KEY,
+  TOP_RATED_COURSES_CACHE_KEY,
+} from "@/features/common/courses/course.cache";
 
 @CommandHandler(CreateCourseCommand)
 export class CreateCourseHandler implements ICommandHandler<CreateCourseCommand> {
@@ -58,7 +61,10 @@ export class CreateCourseHandler implements ICommandHandler<CreateCourseCommand>
     );
     await CourseAuthor.save(courseAuthors);
 
-    await this.cache.del(COURSES_LIST_CACHE_KEY);
+    await Promise.all([
+      this.cache.del(COURSES_LIST_CACHE_KEY),
+      this.cache.del(TOP_RATED_COURSES_CACHE_KEY),
+    ]);
 
     return plainToInstance(
       CreateCourseResponse,
