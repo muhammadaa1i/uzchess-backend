@@ -20,6 +20,7 @@ export class CreatePlayerHandler implements ICommandHandler<CreatePlayerCommand>
       blitzRating: cmd.payload.blitzRating,
       blitzRatingChange: cmd.payload.blitzRatingChange ?? null,
       rankChange: cmd.payload.rankChange ?? null,
+      birthDate: cmd.payload.birthDate ? new Date(cmd.payload.birthDate) : null,
     });
     const saved = await Player.save(player);
 

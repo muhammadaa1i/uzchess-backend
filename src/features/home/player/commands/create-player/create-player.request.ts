@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
+  IsDateString,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -69,6 +70,11 @@ export class CreatePlayerRequest {
   @Type(() => Number)
   @IsInt()
   rankChange?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsDateString()
+  birthDate?: string;
 
   @ApiProperty({ type: "string", format: "binary", required: false })
   avatar?: any;

@@ -6,10 +6,11 @@ import { GetGamesResponse } from "@/features/home/game/queries/get-games/get-gam
 
 @QueryHandler(GetGamesQuery)
 export class GetGamesHandler implements IQueryHandler<GetGamesQuery> {
-  async execute() {
+  async execute(query: GetGamesQuery) {
     const games = await Game.find({
       relations: { whitePlayer: true, blackPlayer: true },
       order: { playedAt: "DESC" },
+      take: query.payload.limit ?? 5,
     });
 
     return plainToInstance(

@@ -112,6 +112,33 @@ describe("UpdatePlayerHandler", () => {
     expect(result.rankChange).toBe(-4);
   });
 
+  it("applies birthDate when explicitly provided", async () => {
+    const player = {
+      id: 1,
+      name: "Player",
+      avatarUrl: null,
+      country: "USA",
+      title: PlayerTitle.None,
+      classicalRating: 2000,
+      classicalRatingChange: null,
+      rapidRating: 2000,
+      rapidRatingChange: null,
+      blitzRating: 2000,
+      blitzRatingChange: null,
+      rankChange: null,
+      birthDate: null,
+      save: jest.fn(),
+    };
+    player.save.mockImplementation(() => Promise.resolve(player));
+    jest.spyOn(Player, "findOneBy").mockResolvedValue(player as any);
+
+    await handler.execute(
+      new UpdatePlayerCommand(1, { birthDate: "2000-01-01" }, undefined),
+    );
+
+    expect(player.birthDate).toEqual(new Date("2000-01-01"));
+  });
+
   it("throws DoesNotExistException (404) when the player doesn't exist", async () => {
     jest.spyOn(Player, "findOneBy").mockResolvedValue(null);
 

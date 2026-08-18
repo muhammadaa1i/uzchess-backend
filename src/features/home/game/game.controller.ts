@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
@@ -22,9 +23,16 @@ import { UpdateGameResponse } from "@/features/home/game/commands/update-game/up
 import { DeleteGameCommand } from "@/features/home/game/commands/delete-game/delete-game.command";
 import { DeleteGameResponse } from "@/features/home/game/commands/delete-game/delete-game.response";
 import { GetGamesQuery } from "@/features/home/game/queries/get-games/get-games.query";
+import { GetGamesRequest } from "@/features/home/game/queries/get-games/get-games.request";
 import { GetGamesResponse } from "@/features/home/game/queries/get-games/get-games.response";
 import { GetGamesByIdQuery } from "@/features/home/game/queries/get-games-by-id/get-games-by-id.query";
 import { GetGamesByIdResponse } from "@/features/home/game/queries/get-games-by-id/get-games-by-id.response";
+import { GetGamesListQuery } from "@/features/home/game/queries/get-games-list/get-games-list.query";
+import { GetGamesListRequest } from "@/features/home/game/queries/get-games-list/get-games-list.request";
+import { GetGamesListResponse } from "@/features/home/game/queries/get-games-list/get-games-list.response";
+import { GetGamesFiltersQuery } from "@/features/home/game/queries/get-games-filters/get-games-filters.query";
+import { GetGamesFiltersResponse } from "@/features/home/game/queries/get-games-filters/get-games-filters.response";
+import { PaginatedResultDto } from "@/core/dtos/paginated-result.dto";
 
 @ApiTags("Games")
 @Roles(Role.Admin)
@@ -38,8 +46,8 @@ export class GameController {
   @Public()
   @Get("read")
   @ApiOkResponse({ type: [GetGamesResponse] })
-  async getAll() {
-    return await this.queryBus.execute(new GetGamesQuery());
+  async getAll(@Query() payload: GetGamesRequest) {
+    return await this.queryBus.execute(new GetGamesQuery(payload));
   }
 
   @Public()
@@ -47,6 +55,20 @@ export class GameController {
   @ApiOkResponse({ type: GetGamesByIdResponse })
   async getById(@Param("id", ParseIntPipe) id: number) {
     return await this.queryBus.execute(new GetGamesByIdQuery(id));
+  }
+
+  @Public()
+  @Get("list")
+  @ApiOkResponse({ type: PaginatedResultDto(GetGamesListResponse) })
+  async getGamesList(@Query() payload: GetGamesListRequest) {
+    return await this.queryBus.execute(new GetGamesListQuery(payload));
+  }
+
+  @Public()
+  @Get("filters")
+  @ApiOkResponse({ type: GetGamesFiltersResponse })
+  async getGamesFilters() {
+    return await this.queryBus.execute(new GetGamesFiltersQuery());
   }
 
   @Post("create")

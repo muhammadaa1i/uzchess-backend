@@ -1,0 +1,38 @@
+services:
+  backend:
+    build: .
+    container_name: uzchess-backend
+    command:
+      sh -c "npx typeorm -d ./dist/src/data-source.js migration:run && node dist/src/main.js"
+    ports:
+      - "8000:8000"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://postgres:001007@database:5432/uzchess
+    networks:
+      - uzchess
+    depends_on:
+      database:
+        condition: service_healthy
+  database:
+    image: postgres:18-alpine
+    container_name: uzchess-database
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - uzchess
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "001007"
+      POSTGRES_DB: uzchess
+networks:
+  uzchess:
+    driver: bridge

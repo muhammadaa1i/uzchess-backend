@@ -50,4 +50,8 @@ export class UpdatePlayerResponse {
   @ApiProperty({ required: false, nullable: true })
   @Expose()
   rankChange: number | null;
+
+  @ApiProperty({ nullable: true })
+  @Expose()
+  birthDate: Date | null;
 }

@@ -36,4 +36,7 @@ export class Player extends BaseModel {
 
   @Column("integer", { nullable: true })
   rankChange: number | null;
+
+  @Column({ type: "date", nullable: true })
+  birthDate: Date | null;
 }

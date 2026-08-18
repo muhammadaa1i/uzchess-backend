@@ -25,4 +25,8 @@ export class GetPlayersByIdResponse {
   @ApiProperty({ required: false, nullable: true })
   @Expose()
   rankChange: number | null;
+
+  @ApiProperty({ nullable: true })
+  @Expose()
+  birthDate: Date | null;
 }

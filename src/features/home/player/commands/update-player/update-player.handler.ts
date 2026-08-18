@@ -30,6 +30,8 @@ export class UpdatePlayerHandler implements ICommandHandler<UpdatePlayerCommand>
       player.blitzRatingChange = cmd.payload.blitzRatingChange;
     if (cmd.payload.rankChange !== undefined)
       player.rankChange = cmd.payload.rankChange;
+    if (cmd.payload.birthDate !== undefined)
+      player.birthDate = new Date(cmd.payload.birthDate);
 
     if (cmd.avatarPath) {
       const oldAvatar = player.avatarUrl;

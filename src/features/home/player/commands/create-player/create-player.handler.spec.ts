@@ -27,6 +27,7 @@ describe("CreatePlayerHandler", () => {
       blitzRating: 2880,
       blitzRatingChange: -3,
       rankChange: 3,
+      birthDate: new Date("2000-01-01"),
     } as any);
     const saveSpy = jest.spyOn(Player, "save").mockImplementation((p) => p);
 
@@ -41,6 +42,7 @@ describe("CreatePlayerHandler", () => {
       blitzRating: 2880,
       blitzRatingChange: -3,
       rankChange: 3,
+      birthDate: "2000-01-01",
     };
     const result = await handler.execute(
       new CreatePlayerCommand(
@@ -62,12 +64,14 @@ describe("CreatePlayerHandler", () => {
         blitzRating: 2880,
         blitzRatingChange: -3,
         rankChange: 3,
+        birthDate: new Date("2000-01-01"),
       }),
     );
     expect(saveSpy).toHaveBeenCalled();
     expect(result.name).toBe("Magnus Carlsen");
     expect(result.classicalRating).toBe(2830);
     expect(result.rankChange).toBe(3);
+    expect(result.birthDate).toEqual(new Date("2000-01-01"));
   });
 
   it("defaults avatarUrl, title and rating changes when not provided", async () => {
@@ -84,6 +88,7 @@ describe("CreatePlayerHandler", () => {
       blitzRating: 1500,
       blitzRatingChange: null,
       rankChange: null,
+      birthDate: null,
     } as any);
     jest.spyOn(Player, "save").mockImplementation((p) => p);
 
@@ -102,5 +107,6 @@ describe("CreatePlayerHandler", () => {
     expect(result.title).toBe(PlayerTitle.None);
     expect(result.classicalRatingChange).toBeNull();
     expect(result.rankChange).toBeNull();
+    expect(result.birthDate).toBeNull();
   });
 });
