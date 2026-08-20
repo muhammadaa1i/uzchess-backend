@@ -6,14 +6,31 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 
 describe("GetGamesByIdHandler", () => {
   let handler: GetGamesByIdHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new GetGamesByIdHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new GetGamesByIdHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
 
+  it("returns the cached value when a cache hit exists, without querying the DB", async () => {
+    cache.get.mockResolvedValue({ id: 1, whitePlayerName: "Cached" });
+    const findSpy = jest.spyOn(Game, "findOne");
+
+    const result = await handler.execute(new GetGamesByIdQuery(1));
+
+    expect(result).toEqual({ id: 1, whitePlayerName: "Cached" });
+    expect(findSpy).not.toHaveBeenCalled();
+  });
+
   it("returns the game with flattened player summaries on the happy path", async () => {
+    cache.get.mockResolvedValue(undefined);
     jest.spyOn(Game, "findOne").mockResolvedValue({
       id: 1,
       whitePlayerId: 1,
@@ -31,9 +48,11 @@ describe("GetGamesByIdHandler", () => {
 
     expect(result.id).toBe(1);
     expect(result.whitePlayerName).toBe("Magnus Carlsen");
+    expect(cache.set).toHaveBeenCalledWith("games:1", result);
   });
 
   it("throws DoesNotExistException (404) for an unknown id", async () => {
+    cache.get.mockResolvedValue(undefined);
     jest.spyOn(Game, "findOne").mockResolvedValue(null);
 
     await expect(

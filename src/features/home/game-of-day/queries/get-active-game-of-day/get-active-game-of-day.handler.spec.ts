@@ -5,14 +5,31 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 
 describe("GetActiveGameOfDayHandler", () => {
   let handler: GetActiveGameOfDayHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new GetActiveGameOfDayHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new GetActiveGameOfDayHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
 
+  it("returns the cached value when a cache hit exists, without querying the DB", async () => {
+    cache.get.mockResolvedValue({ id: 1, whitePlayerName: "Cached" });
+    const findSpy = jest.spyOn(GameOfDay, "findOne");
+
+    const result = await handler.execute();
+
+    expect(result).toEqual({ id: 1, whitePlayerName: "Cached" });
+    expect(findSpy).not.toHaveBeenCalled();
+  });
+
   it("returns the active row on the happy path", async () => {
+    cache.get.mockResolvedValue(undefined);
     const findSpy = jest.spyOn(GameOfDay, "findOne").mockResolvedValue({
       id: 1,
       videoUrl: "video.mp4",
@@ -33,9 +50,11 @@ describe("GetActiveGameOfDayHandler", () => {
       relations: { whitePlayer: true, blackPlayer: true },
     });
     expect(result.whitePlayerName).toBe("Magnus Carlsen");
+    expect(cache.set).toHaveBeenCalledWith("game-of-day:active", result);
   });
 
   it("throws DoesNotExistException (404) when there is no active row", async () => {
+    cache.get.mockResolvedValue(undefined);
     jest.spyOn(GameOfDay, "findOne").mockResolvedValue(null);
 
     await expect(handler.execute()).rejects.toBeInstanceOf(

@@ -9,6 +9,7 @@ import { GameType } from "@/core/enums/game-type.enum";
 
 describe("GetGamesListHandler", () => {
   let handler: GetGamesListHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   const makePlayer = (overrides: Record<string, any> = {}) => ({
     id: 1,
@@ -36,10 +37,25 @@ describe("GetGamesListHandler", () => {
     }) as unknown as Game;
 
   beforeEach(() => {
-    handler = new GetGamesListHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new GetGamesListHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
+
+  it("returns the cached list on a default (no-filter) query when a cache hit exists", async () => {
+    cache.get.mockResolvedValue({ totalCount: 1, data: [] });
+    const findSpy = jest.spyOn(Game, "find");
+
+    const result = await handler.execute(new GetGamesListQuery({}));
+
+    expect(result).toEqual({ totalCount: 1, data: [] });
+    expect(findSpy).not.toHaveBeenCalled();
+  });
 
   it("sorts by playedAt desc by default and defaults to page 1, size 10 when no payload given", async () => {
     jest.spyOn(Game, "find").mockResolvedValue([
@@ -54,6 +70,7 @@ describe("GetGamesListHandler", () => {
     expect(result.totalCount).toBe(2);
     expect(result.data[0].id).toBe(2);
     expect(result.data[1].id).toBe(1);
+    expect(cache.set).toHaveBeenCalledWith("games:list", result);
   });
 
   it("sorts by movesCount desc when sortBy=moves", async () => {

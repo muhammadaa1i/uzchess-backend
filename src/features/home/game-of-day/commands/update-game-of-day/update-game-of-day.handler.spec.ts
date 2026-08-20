@@ -11,9 +11,15 @@ import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 
 describe("UpdateGameOfDayHandler", () => {
   let handler: UpdateGameOfDayHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new UpdateGameOfDayHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new UpdateGameOfDayHandler(cache as any);
     (deleteUploadedFile as jest.Mock).mockClear();
   });
 
@@ -50,6 +56,7 @@ describe("UpdateGameOfDayHandler", () => {
   it("deactivates other active rows when set to isActive: true", async () => {
     const gameOfDay = makeGameOfDay();
     jest.spyOn(GameOfDay, "findOneBy").mockResolvedValue(gameOfDay);
+    jest.spyOn(GameOfDay, "find").mockResolvedValue([{ id: 2 }] as any);
     const updateSpy = jest
       .spyOn(GameOfDay, "update")
       .mockResolvedValue(undefined as any);
@@ -63,6 +70,22 @@ describe("UpdateGameOfDayHandler", () => {
       { isActive: false },
     );
     expect(gameOfDay.isActive).toBe(true);
+  });
+
+  it("also invalidates the byId cache of every row it deactivates, so a stale isActive:true doesn't linger", async () => {
+    const gameOfDay = makeGameOfDay();
+    jest.spyOn(GameOfDay, "findOneBy").mockResolvedValue(gameOfDay);
+    jest
+      .spyOn(GameOfDay, "find")
+      .mockResolvedValue([{ id: 2 }, { id: 3 }] as any);
+    jest.spyOn(GameOfDay, "update").mockResolvedValue(undefined as any);
+
+    await handler.execute(
+      new UpdateGameOfDayCommand(1, { isActive: true }, undefined, undefined),
+    );
+
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:2");
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:3");
   });
 
   it("updates liveStartTime when provided", async () => {
@@ -95,5 +118,18 @@ describe("UpdateGameOfDayHandler", () => {
     expect(gameOfDay.thumbnailUrl).toBe("new-thumb.png");
     expect(deleteUploadedFile).toHaveBeenCalledWith("old-video.mp4");
     expect(deleteUploadedFile).toHaveBeenCalledWith("old-thumb.png");
+  });
+
+  it("invalidates the active, list and by-id cache on success", async () => {
+    const gameOfDay = makeGameOfDay();
+    jest.spyOn(GameOfDay, "findOneBy").mockResolvedValue(gameOfDay);
+
+    await handler.execute(
+      new UpdateGameOfDayCommand(1, { durationSeconds: 400 }, undefined, undefined),
+    );
+
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:active");
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:list");
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:1");
   });
 });

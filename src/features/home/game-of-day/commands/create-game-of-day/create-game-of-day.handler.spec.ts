@@ -8,9 +8,15 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 
 describe("CreateGameOfDayHandler", () => {
   let handler: CreateGameOfDayHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new CreateGameOfDayHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new CreateGameOfDayHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -28,6 +34,7 @@ describe("CreateGameOfDayHandler", () => {
 
   it("creates a game-of-day and deactivates the previously active one", async () => {
     jest.spyOn(Player, "existsBy").mockResolvedValue(true);
+    jest.spyOn(GameOfDay, "find").mockResolvedValue([{ id: 99 }] as any);
     const updateSpy = jest
       .spyOn(GameOfDay, "update")
       .mockResolvedValue(undefined as any);
@@ -52,6 +59,26 @@ describe("CreateGameOfDayHandler", () => {
       { isActive: false },
     );
     expect(result.isActive).toBe(true);
+  });
+
+  it("also invalidates the byId cache of every row it deactivates, so a stale isActive:true doesn't linger", async () => {
+    jest.spyOn(Player, "existsBy").mockResolvedValue(true);
+    jest
+      .spyOn(GameOfDay, "find")
+      .mockResolvedValue([{ id: 99 }, { id: 100 }] as any);
+    jest.spyOn(GameOfDay, "update").mockResolvedValue(undefined as any);
+    jest.spyOn(GameOfDay, "create").mockReturnValue({
+      id: 1,
+      isActive: true,
+    } as any);
+    jest.spyOn(GameOfDay, "save").mockImplementation((g: any) => Promise.resolve(g));
+
+    await handler.execute(
+      new CreateGameOfDayCommand(payload, "video.mp4", "thumb.png"),
+    );
+
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:99");
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:100");
   });
 
   it("does not deactivate other rows when isActive is not set", async () => {
@@ -84,5 +111,23 @@ describe("CreateGameOfDayHandler", () => {
       ),
     ).rejects.toBeInstanceOf(DoesNotExistException);
     expect(saveSpy).not.toHaveBeenCalled();
+  });
+
+  it("invalidates the active and list cache on success", async () => {
+    jest.spyOn(Player, "existsBy").mockResolvedValue(true);
+    jest.spyOn(GameOfDay, "find").mockResolvedValue([]);
+    jest.spyOn(GameOfDay, "update").mockResolvedValue(undefined as any);
+    jest.spyOn(GameOfDay, "create").mockReturnValue({
+      id: 1,
+      isActive: true,
+    } as any);
+    jest.spyOn(GameOfDay, "save").mockImplementation((g: any) => Promise.resolve(g));
+
+    await handler.execute(
+      new CreateGameOfDayCommand(payload, "video.mp4", "thumb.png"),
+    );
+
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:active");
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:list");
   });
 });

@@ -4,6 +4,7 @@ import { PlayerTitle } from "@/core/enums/player-title.enum";
 
 describe("GetRankingFiltersHandler", () => {
   let handler: GetRankingFiltersHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   const mockDistinctCountries = (rows: Array<{ country: string }>) => {
     const queryBuilder: any = {
@@ -16,7 +17,12 @@ describe("GetRankingFiltersHandler", () => {
   };
 
   beforeEach(() => {
-    handler = new GetRankingFiltersHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new GetRankingFiltersHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -43,5 +49,15 @@ describe("GetRankingFiltersHandler", () => {
     const result = await handler.execute();
 
     expect(result.countries).toEqual([]);
+  });
+
+  it("returns the cached result when a cache hit exists", async () => {
+    cache.get.mockResolvedValue({ countries: ["NOR"], titles: [] });
+    const findSpy = jest.spyOn(Player, "createQueryBuilder");
+
+    const result = await handler.execute();
+
+    expect(result).toEqual({ countries: ["NOR"], titles: [] });
+    expect(findSpy).not.toHaveBeenCalled();
   });
 });

@@ -6,10 +6,31 @@ import { plainToInstance } from "class-transformer";
 import { GetGamesListResponse } from "@/features/home/game/queries/get-games-list/get-games-list.response";
 import { PaginatedResultDto } from "@/core/dtos/paginated-result.dto";
 import { calculateAge } from "@/features/home/game/game-age.util";
+import { Cache } from "@nestjs/cache-manager";
+import {
+  CachedGamesList,
+  GAMES_LIST_CACHE_KEY,
+} from "@/features/home/game/game.cache";
 
 @QueryHandler(GetGamesListQuery)
 export class GetGamesListHandler implements IQueryHandler<GetGamesListQuery> {
+  constructor(private readonly cache: Cache) {}
+
   async execute(query: GetGamesListQuery) {
+    const isDefaultQuery =
+      !query.payload.country &&
+      query.payload.age === undefined &&
+      !query.payload.sortBy &&
+      !query.payload.page &&
+      !query.payload.size;
+
+    if (isDefaultQuery) {
+      const cached = await this.cache.get<CachedGamesList>(
+        GAMES_LIST_CACHE_KEY,
+      );
+      if (cached) return cached;
+    }
+
     let games = await Game.find({
       relations: { whitePlayer: true, blackPlayer: true },
     });
@@ -61,10 +82,14 @@ export class GetGamesListHandler implements IQueryHandler<GetGamesListQuery> {
       excludeExtraneousValues: true,
     });
 
-    return plainToInstance(
+    const result = plainToInstance(
       PaginatedResultDto(GetGamesListResponse),
       { totalCount, totalPages, currentPage, hasNext, hasPrevious, data },
       { excludeExtraneousValues: true },
     );
+
+    if (isDefaultQuery) await this.cache.set(GAMES_LIST_CACHE_KEY, result);
+
+    return result;
   }
 }

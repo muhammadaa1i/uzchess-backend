@@ -5,9 +5,16 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 import { plainToInstance } from "class-transformer";
 import { UpdateBannerResponse } from "@/features/home/banner/commands/update-banner/update-banner.response";
 import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
+import { Cache } from "@nestjs/cache-manager";
+import {
+  BANNERS_LIST_CACHE_KEY,
+  bannerByIdCacheKey,
+} from "@/features/home/banner/banner.cache";
 
 @CommandHandler(UpdateBannerCommand)
 export class UpdateBannerHandler implements ICommandHandler<UpdateBannerCommand> {
+  constructor(private readonly cache: Cache) {}
+
   async execute(cmd: UpdateBannerCommand) {
     const banner = await Banner.findOneBy({ id: cmd.id });
     DoesNotExistException.ThrowIfNull(banner, "Banner not found");
@@ -28,6 +35,11 @@ export class UpdateBannerHandler implements ICommandHandler<UpdateBannerCommand>
     }
 
     const saved = await banner.save();
+
+    await Promise.all([
+      this.cache.del(BANNERS_LIST_CACHE_KEY),
+      this.cache.del(bannerByIdCacheKey(cmd.id)),
+    ]);
 
     return plainToInstance(UpdateBannerResponse, saved, {
       excludeExtraneousValues: true,

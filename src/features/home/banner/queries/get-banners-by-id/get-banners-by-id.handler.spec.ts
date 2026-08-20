@@ -5,14 +5,31 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 
 describe("GetBannersByIdHandler", () => {
   let handler: GetBannersByIdHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new GetBannersByIdHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new GetBannersByIdHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
 
+  it("returns the cached value when a cache hit exists, without querying the DB", async () => {
+    cache.get.mockResolvedValue({ id: 1, title: "Cached" });
+    const findSpy = jest.spyOn(Banner, "findOneBy");
+
+    const result = await handler.execute(new GetBannersByIdQuery(1));
+
+    expect(result).toEqual({ id: 1, title: "Cached" });
+    expect(findSpy).not.toHaveBeenCalled();
+  });
+
   it("returns the banner on the happy path", async () => {
+    cache.get.mockResolvedValue(undefined);
     jest.spyOn(Banner, "findOneBy").mockResolvedValue({
       id: 1,
       title: "Title",
@@ -27,9 +44,11 @@ describe("GetBannersByIdHandler", () => {
 
     expect(result.id).toBe(1);
     expect(result.title).toBe("Title");
+    expect(cache.set).toHaveBeenCalledWith("banners:1", result);
   });
 
   it("throws DoesNotExistException (404) for an unknown id", async () => {
+    cache.get.mockResolvedValue(undefined);
     jest.spyOn(Banner, "findOneBy").mockResolvedValue(null);
 
     await expect(

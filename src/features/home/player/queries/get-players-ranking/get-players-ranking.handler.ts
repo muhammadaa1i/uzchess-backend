@@ -6,6 +6,11 @@ import { FindOptionsWhere } from "typeorm";
 import { plainToInstance } from "class-transformer";
 import { GetPlayersRankingResponse } from "@/features/home/player/queries/get-players-ranking/get-players-ranking.response";
 import { PaginatedResultDto } from "@/core/dtos/paginated-result.dto";
+import { Cache } from "@nestjs/cache-manager";
+import {
+  CachedPlayersRanking,
+  PLAYERS_RANKING_CACHE_KEY,
+} from "@/features/home/player/player.cache";
 
 const SORT_COLUMN_BY_SORT_BY: Record<
   RankingSortBy,
@@ -18,7 +23,23 @@ const SORT_COLUMN_BY_SORT_BY: Record<
 
 @QueryHandler(GetPlayersRankingQuery)
 export class GetPlayersRankingHandler implements IQueryHandler<GetPlayersRankingQuery> {
+  constructor(private readonly cache: Cache) {}
+
   async execute(query: GetPlayersRankingQuery) {
+    const isDefaultQuery =
+      !query.payload.country &&
+      !query.payload.title &&
+      !query.payload.sortBy &&
+      !query.payload.page &&
+      !query.payload.size;
+
+    if (isDefaultQuery) {
+      const cached = await this.cache.get<CachedPlayersRanking>(
+        PLAYERS_RANKING_CACHE_KEY,
+      );
+      if (cached) return cached;
+    }
+
     const where: FindOptionsWhere<Player> = {};
     if (query.payload.country) where.country = query.payload.country;
     if (query.payload.title) where.title = query.payload.title;
@@ -48,10 +69,15 @@ export class GetPlayersRankingHandler implements IQueryHandler<GetPlayersRanking
       excludeExtraneousValues: true,
     });
 
-    return plainToInstance(
+    const result = plainToInstance(
       PaginatedResultDto(GetPlayersRankingResponse),
       { totalCount, totalPages, currentPage, hasNext, hasPrevious, data },
       { excludeExtraneousValues: true },
     );
+
+    if (isDefaultQuery)
+      await this.cache.set(PLAYERS_RANKING_CACHE_KEY, result);
+
+    return result;
   }
 }

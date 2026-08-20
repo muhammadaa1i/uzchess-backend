@@ -5,9 +5,15 @@ import { Banner } from "@/features/home/entities/banner/banner.entity";
 
 describe("CreateBannerHandler", () => {
   let handler: CreateBannerHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new CreateBannerHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new CreateBannerHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -73,5 +79,15 @@ describe("CreateBannerHandler", () => {
     expect(result.linkUrl).toBeNull();
     expect(result.badgeText).toBeNull();
     expect(result.isActive).toBe(true);
+  });
+
+  it("invalidates the banners list cache on success", async () => {
+    jest.spyOn(Banner, "create").mockReturnValue({ id: 1 } as any);
+    jest.spyOn(Banner, "save").mockImplementation((b: any) => Promise.resolve(b));
+
+    const payload: CreateBannerRequest = { title: "Simple banner" };
+    await handler.execute(new CreateBannerCommand(payload, undefined));
+
+    expect(cache.del).toHaveBeenCalledWith("banners:list");
   });
 });

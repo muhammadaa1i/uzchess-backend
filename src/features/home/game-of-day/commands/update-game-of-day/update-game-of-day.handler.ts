@@ -7,9 +7,17 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 import { plainToInstance } from "class-transformer";
 import { UpdateGameOfDayResponse } from "@/features/home/game-of-day/commands/update-game-of-day/update-game-of-day.response";
 import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
+import { Cache } from "@nestjs/cache-manager";
+import {
+  ACTIVE_GAME_OF_DAY_CACHE_KEY,
+  GAME_OF_DAYS_LIST_CACHE_KEY,
+  gameOfDayByIdCacheKey,
+} from "@/features/home/game-of-day/game-of-day.cache";
 
 @CommandHandler(UpdateGameOfDayCommand)
 export class UpdateGameOfDayHandler implements ICommandHandler<UpdateGameOfDayCommand> {
+  constructor(private readonly cache: Cache) {}
+
   async execute(cmd: UpdateGameOfDayCommand) {
     const gameOfDay = await GameOfDay.findOneBy({ id: cmd.id });
     DoesNotExistException.ThrowIfNull(gameOfDay, "Game of the day not found");
@@ -34,7 +42,13 @@ export class UpdateGameOfDayHandler implements ICommandHandler<UpdateGameOfDayCo
       );
     }
 
+    let flippedIds: number[] = [];
     if (cmd.payload.isActive === true) {
+      const previouslyActive = await GameOfDay.find({
+        where: { isActive: true, id: Not(cmd.id) },
+        select: { id: true },
+      });
+      flippedIds = previouslyActive.map((row) => row.id);
       await GameOfDay.update(
         { isActive: true, id: Not(cmd.id) },
         { isActive: false },
@@ -67,6 +81,15 @@ export class UpdateGameOfDayHandler implements ICommandHandler<UpdateGameOfDayCo
     }
 
     const saved = await gameOfDay.save();
+
+    await Promise.all([
+      this.cache.del(ACTIVE_GAME_OF_DAY_CACHE_KEY),
+      this.cache.del(GAME_OF_DAYS_LIST_CACHE_KEY),
+      this.cache.del(gameOfDayByIdCacheKey(cmd.id)),
+      // Rows silently flipped to isActive:false above need their own byId
+      // cache entry cleared too, or they'd keep serving a stale isActive:true.
+      ...flippedIds.map((id) => this.cache.del(gameOfDayByIdCacheKey(id))),
+    ]);
 
     return plainToInstance(UpdateGameOfDayResponse, saved, {
       excludeExtraneousValues: true,

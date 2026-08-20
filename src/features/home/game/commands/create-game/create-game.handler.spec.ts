@@ -7,10 +7,16 @@ import { GameType } from "@/core/enums/game-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("CreateGameHandler", () => {
-  let handler: CreateGameHandler;
+    let handler: CreateGameHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new CreateGameHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new CreateGameHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -32,7 +38,9 @@ describe("CreateGameHandler", () => {
       ...payload,
       playedAt: new Date(payload.playedAt),
     } as any);
-    const saveSpy = jest.spyOn(Game, "save").mockImplementation((g) => g);
+    const saveSpy = jest
+      .spyOn(Game, "save")
+      .mockImplementation((g: any) => Promise.resolve(g));
 
     const result = await handler.execute(new CreateGameCommand(payload));
 
@@ -68,5 +76,21 @@ describe("CreateGameHandler", () => {
       handler.execute(new CreateGameCommand(payload)),
     ).rejects.toBeInstanceOf(DoesNotExistException);
     expect(saveSpy).not.toHaveBeenCalled();
+  });
+
+  it("invalidates the games list, filters and recent games cache on success", async () => {
+    jest.spyOn(Player, "existsBy").mockResolvedValue(true);
+    jest.spyOn(Game, "create").mockReturnValue({
+      id: 1,
+      ...payload,
+      playedAt: new Date(payload.playedAt),
+    } as any);
+    jest.spyOn(Game, "save").mockImplementation((g: any) => Promise.resolve(g));
+
+    await handler.execute(new CreateGameCommand(payload));
+
+    expect(cache.del).toHaveBeenCalledWith("games:list");
+    expect(cache.del).toHaveBeenCalledWith("games:filters");
+    expect(cache.del).toHaveBeenCalledWith("games:recent");
   });
 });

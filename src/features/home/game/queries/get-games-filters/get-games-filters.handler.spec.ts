@@ -4,6 +4,7 @@ import { GameType } from "@/core/enums/game-type.enum";
 
 describe("GetGamesFiltersHandler", () => {
   let handler: GetGamesFiltersHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   const makePlayer = (overrides: Record<string, any> = {}) => ({
     id: 1,
@@ -31,7 +32,12 @@ describe("GetGamesFiltersHandler", () => {
     }) as unknown as Game;
 
   beforeEach(() => {
-    handler = new GetGamesFiltersHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn().mockResolvedValue(undefined),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new GetGamesFiltersHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -83,5 +89,15 @@ describe("GetGamesFiltersHandler", () => {
 
     expect(result.countries).toEqual(["NOR", "USA"]);
     expect(result.ages).toEqual([]);
+  });
+
+  it("returns the cached result when a cache hit exists", async () => {
+    cache.get.mockResolvedValue({ countries: ["NOR"], ages: [20] });
+    const findSpy = jest.spyOn(Game, "find");
+
+    const result = await handler.execute();
+
+    expect(result).toEqual({ countries: ["NOR"], ages: [20] });
+    expect(findSpy).not.toHaveBeenCalled();
   });
 });

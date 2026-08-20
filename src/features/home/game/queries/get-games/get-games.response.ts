@@ -1,61 +1,61 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
-import { GameType } from "@/core/enums/game-type.enum";
+import {ApiProperty} from "@nestjs/swagger";
+import {Expose} from "class-transformer";
+import {GameType} from "@/core/enums/game-type.enum";
 
 export class GetGamesResponse {
-  @ApiProperty()
-  @Expose()
-  id: number;
+    @ApiProperty()
+    @Expose()
+    id: number;
 
-  @ApiProperty()
-  @Expose()
-  whitePlayerId: number;
+    @ApiProperty()
+    @Expose()
+    whitePlayerId: number;
 
-  @ApiProperty()
-  @Expose()
-  whitePlayerName: string;
+    @ApiProperty()
+    @Expose()
+    whitePlayerName: string;
 
-  @ApiProperty({ required: false, nullable: true })
-  @Expose()
-  whitePlayerAvatarUrl: string | null;
+    @ApiProperty({required: false, nullable: true})
+    @Expose()
+    whitePlayerAvatarUrl: string | null;
 
-  @ApiProperty()
-  @Expose()
-  whitePlayerRating: number;
+    @ApiProperty()
+    @Expose()
+    whitePlayerRating: number;
 
-  @ApiProperty()
-  @Expose()
-  blackPlayerId: number;
+    @ApiProperty()
+    @Expose()
+    blackPlayerId: number;
 
-  @ApiProperty()
-  @Expose()
-  blackPlayerName: string;
+    @ApiProperty()
+    @Expose()
+    blackPlayerName: string;
 
-  @ApiProperty({ required: false, nullable: true })
-  @Expose()
-  blackPlayerAvatarUrl: string | null;
+    @ApiProperty({required: false, nullable: true})
+    @Expose()
+    blackPlayerAvatarUrl: string | null;
 
-  @ApiProperty()
-  @Expose()
-  blackPlayerRating: number;
+    @ApiProperty()
+    @Expose()
+    blackPlayerRating: number;
 
-  @ApiProperty()
-  @Expose()
-  whiteScore: number;
+    @ApiProperty()
+    @Expose()
+    whiteScore: number;
 
-  @ApiProperty()
-  @Expose()
-  blackScore: number;
+    @ApiProperty()
+    @Expose()
+    blackScore: number;
 
-  @ApiProperty({ enum: GameType })
-  @Expose()
-  gameType: GameType;
+    @ApiProperty({enum: GameType})
+    @Expose()
+    gameType: GameType;
 
-  @ApiProperty()
-  @Expose()
-  movesCount: number;
+    @ApiProperty()
+    @Expose()
+    movesCount: number;
 
-  @ApiProperty()
-  @Expose()
-  playedAt: Date;
+    @ApiProperty()
+    @Expose()
+    playedAt: Date;
 }

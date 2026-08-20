@@ -4,17 +4,25 @@ import { Game } from "@/features/home/entities/game/game.entity";
 import { plainToInstance } from "class-transformer";
 import { GetGamesByIdResponse } from "@/features/home/game/queries/get-games-by-id/get-games-by-id.response";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
+import { Cache } from "@nestjs/cache-manager";
+import { gameByIdCacheKey } from "@/features/home/game/game.cache";
 
 @QueryHandler(GetGamesByIdQuery)
 export class GetGamesByIdHandler implements IQueryHandler<GetGamesByIdQuery> {
+  constructor(private readonly cache: Cache) {}
+
   async execute(query: GetGamesByIdQuery) {
+    const cacheKey = gameByIdCacheKey(query.id);
+    const cached = await this.cache.get<GetGamesByIdResponse>(cacheKey);
+    if (cached) return cached;
+
     const game = await Game.findOne({
       where: { id: query.id },
       relations: { whitePlayer: true, blackPlayer: true },
     });
     DoesNotExistException.ThrowIfNull(game, "Game not found");
 
-    return plainToInstance(
+    const result = plainToInstance(
       GetGamesByIdResponse,
       {
         ...game,
@@ -27,5 +35,9 @@ export class GetGamesByIdHandler implements IQueryHandler<GetGamesByIdQuery> {
       },
       { excludeExtraneousValues: true },
     );
+
+    await this.cache.set(cacheKey, result);
+
+    return result;
   }
 }

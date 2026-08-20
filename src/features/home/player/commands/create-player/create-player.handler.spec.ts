@@ -6,9 +6,15 @@ import { PlayerTitle } from "@/core/enums/player-title.enum";
 
 describe("CreatePlayerHandler", () => {
   let handler: CreatePlayerHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new CreatePlayerHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new CreatePlayerHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -108,5 +114,23 @@ describe("CreatePlayerHandler", () => {
     expect(result.classicalRatingChange).toBeNull();
     expect(result.rankChange).toBeNull();
     expect(result.birthDate).toBeNull();
+  });
+
+  it("invalidates the ranking, ranking-filters and top players cache on success", async () => {
+    jest.spyOn(Player, "create").mockReturnValue({ id: 1 } as any);
+    jest.spyOn(Player, "save").mockImplementation((p) => p);
+
+    const payload: CreatePlayerRequest = {
+      name: "New Player",
+      country: "USA",
+      classicalRating: 1500,
+      rapidRating: 1500,
+      blitzRating: 1500,
+    };
+    await handler.execute(new CreatePlayerCommand(payload, undefined));
+
+    expect(cache.del).toHaveBeenCalledWith("players:ranking");
+    expect(cache.del).toHaveBeenCalledWith("players:ranking-filters");
+    expect(cache.del).toHaveBeenCalledWith("players:top");
   });
 });

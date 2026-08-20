@@ -10,9 +10,15 @@ import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 
 describe("DeleteGameOfDayHandler", () => {
   let handler: DeleteGameOfDayHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new DeleteGameOfDayHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new DeleteGameOfDayHandler(cache as any);
     (deleteUploadedFile as jest.Mock).mockClear();
   });
 
@@ -45,5 +51,21 @@ describe("DeleteGameOfDayHandler", () => {
       handler.execute(new DeleteGameOfDayCommand(999)),
     ).rejects.toBeInstanceOf(DoesNotExistException);
     expect(removeSpy).not.toHaveBeenCalled();
+  });
+
+  it("invalidates the active, list and by-id cache on success", async () => {
+    const gameOfDay = {
+      id: 1,
+      videoUrl: "video.mp4",
+      thumbnailUrl: "thumb.png",
+    };
+    jest.spyOn(GameOfDay, "findOneBy").mockResolvedValue(gameOfDay as any);
+    jest.spyOn(GameOfDay, "remove").mockResolvedValue(gameOfDay as any);
+
+    await handler.execute(new DeleteGameOfDayCommand(1));
+
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:active");
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:list");
+    expect(cache.del).toHaveBeenCalledWith("game-of-day:1");
   });
 });

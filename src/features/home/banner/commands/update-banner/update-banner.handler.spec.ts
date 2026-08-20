@@ -11,9 +11,15 @@ import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 
 describe("UpdateBannerHandler", () => {
   let handler: UpdateBannerHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new UpdateBannerHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new UpdateBannerHandler(cache as any);
     (deleteUploadedFile as jest.Mock).mockClear();
   });
 
@@ -83,5 +89,26 @@ describe("UpdateBannerHandler", () => {
     await expect(
       handler.execute(new UpdateBannerCommand(999, payload, undefined)),
     ).rejects.toBeInstanceOf(DoesNotExistException);
+  });
+
+  it("invalidates the banners list and by-id cache on success", async () => {
+    const banner = {
+      id: 1,
+      title: "Old Title",
+      subtitle: null,
+      imageUrl: null,
+      linkUrl: null,
+      badgeText: null,
+      isActive: true,
+      save: jest.fn(),
+    };
+    banner.save.mockImplementation(() => Promise.resolve(banner));
+    jest.spyOn(Banner, "findOneBy").mockResolvedValue(banner as any);
+
+    const payload: UpdateBannerRequest = { title: "New Title" };
+    await handler.execute(new UpdateBannerCommand(1, payload, undefined));
+
+    expect(cache.del).toHaveBeenCalledWith("banners:list");
+    expect(cache.del).toHaveBeenCalledWith("banners:1");
   });
 });

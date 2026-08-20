@@ -9,6 +9,7 @@ import { PlayerTitle } from "@/core/enums/player-title.enum";
 
 describe("GetPlayersRankingHandler", () => {
   let handler: GetPlayersRankingHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   const makePlayer = (overrides: Partial<Player> = {}) =>
     ({
@@ -27,10 +28,25 @@ describe("GetPlayersRankingHandler", () => {
     }) as unknown as Player;
 
   beforeEach(() => {
-    handler = new GetPlayersRankingHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new GetPlayersRankingHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
+
+  it("returns the cached ranking on a default (no-filter) query when a cache hit exists", async () => {
+    cache.get.mockResolvedValue({ totalCount: 1, data: [] });
+    const findSpy = jest.spyOn(Player, "find");
+
+    const result = await handler.execute(new GetPlayersRankingQuery({}));
+
+    expect(result).toEqual({ totalCount: 1, data: [] });
+    expect(findSpy).not.toHaveBeenCalled();
+  });
 
   it("sorts by classical rating desc and defaults to page 1, size 10 when no payload given", async () => {
     const findSpy = jest.spyOn(Player, "find").mockResolvedValue([makePlayer()]);
@@ -45,6 +61,7 @@ describe("GetPlayersRankingHandler", () => {
     expect(result.currentPage).toBe(1);
     expect(result.totalCount).toBe(1);
     expect(result.data[0].rank).toBe(1);
+    expect(cache.set).toHaveBeenCalledWith("players:ranking", result);
   });
 
   it("sorts by rapid rating when sortBy=rapid", async () => {

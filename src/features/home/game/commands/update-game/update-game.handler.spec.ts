@@ -8,9 +8,15 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 
 describe("UpdateGameHandler", () => {
   let handler: UpdateGameHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new UpdateGameHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new UpdateGameHandler(cache as any);
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -61,5 +67,17 @@ describe("UpdateGameHandler", () => {
       handler.execute(new UpdateGameCommand(1, { whitePlayerId: 99 })),
     ).rejects.toBeInstanceOf(DoesNotExistException);
     expect(saveMock).not.toHaveBeenCalled();
+  });
+
+  it("invalidates the games list, filters, recent games and by-id cache on success", async () => {
+    const { game } = makeGame();
+    jest.spyOn(Game, "findOneBy").mockResolvedValue(game);
+
+    await handler.execute(new UpdateGameCommand(1, { whiteScore: 2 }));
+
+    expect(cache.del).toHaveBeenCalledWith("games:list");
+    expect(cache.del).toHaveBeenCalledWith("games:filters");
+    expect(cache.del).toHaveBeenCalledWith("games:recent");
+    expect(cache.del).toHaveBeenCalledWith("games:1");
   });
 });

@@ -10,9 +10,15 @@ import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 
 describe("DeleteNewsHandler", () => {
   let handler: DeleteNewsHandler;
+  let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
-    handler = new DeleteNewsHandler();
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn().mockResolvedValue(undefined),
+    };
+    handler = new DeleteNewsHandler(cache as any);
     (deleteUploadedFile as jest.Mock).mockClear();
   });
 
@@ -54,5 +60,16 @@ describe("DeleteNewsHandler", () => {
       handler.execute(new DeleteNewsCommand(999)),
     ).rejects.toBeInstanceOf(DoesNotExistException);
     expect(removeSpy).not.toHaveBeenCalled();
+  });
+
+  it("invalidates the news list and by-id cache on success", async () => {
+    const news = { id: 1, title: "Title", imageUrl: null };
+    jest.spyOn(News, "findOneBy").mockResolvedValue(news as any);
+    jest.spyOn(News, "remove").mockResolvedValue(news as any);
+
+    await handler.execute(new DeleteNewsCommand(1));
+
+    expect(cache.del).toHaveBeenCalledWith("news:list");
+    expect(cache.del).toHaveBeenCalledWith("news:1");
   });
 });
