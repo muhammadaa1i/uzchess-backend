@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { OrderStatus } from "@/core/enums/order-status.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
 
 export class CreateOrderResponse {
   @ApiProperty()

@@ -3,7 +3,7 @@ import { GetTopRatedBooksQuery } from "@/features/library/book/queries/get-top-r
 import { Book } from "@/features/library/entities/book/book.entity";
 import { Rating } from "@/features/library/entities/rating/rating.entity";
 import { OrderItem } from "@/features/library/entities/order/order-item.entity";
-import { OrderStatus } from "@/core/enums/order-status.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
 import { plainToInstance } from "class-transformer";
 import { GetTopRatedBooksResponse } from "@/features/library/book/queries/get-top-rated-books/get-top-rated-books.response";
 import { Cache } from "@nestjs/cache-manager";

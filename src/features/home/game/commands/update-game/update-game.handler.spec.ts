@@ -3,7 +3,7 @@ import { UpdateGameCommand } from "@/features/home/game/commands/update-game/upd
 import { UpdateGameRequest } from "@/features/home/game/commands/update-game/update-game.request";
 import { Game } from "@/features/home/entities/game/game.entity";
 import { Player } from "@/features/home/entities/player/player.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("UpdateGameHandler", () => {

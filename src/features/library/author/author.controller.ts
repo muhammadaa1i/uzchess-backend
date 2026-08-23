@@ -25,7 +25,7 @@ import { DeleteAuthorResponse } from "@/features/library/author/commands/delete-
 import { GetAuthorsResponse } from "@/features/library/author/queries/get-authors/get-authors.response";
 import { GetAuthorsByIdResponse } from "@/features/library/author/queries/get-authors-by-id/get-authors-by-id.response";
 import { Public } from "@/core/decorators/public.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Roles } from "@/core/decorators/roles.decorator";
 
 @ApiTags("Authors")

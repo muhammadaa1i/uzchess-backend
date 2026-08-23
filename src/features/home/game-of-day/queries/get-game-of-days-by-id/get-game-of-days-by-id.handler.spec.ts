@@ -1,7 +1,7 @@
 import { GetGameOfDaysByIdHandler } from "@/features/home/game-of-day/queries/get-game-of-days-by-id/get-game-of-days-by-id.handler";
 import { GetGameOfDaysByIdQuery } from "@/features/home/game-of-day/queries/get-game-of-days-by-id/get-game-of-days-by-id.query";
 import { GameOfDay } from "@/features/home/entities/game-of-day/game-of-day.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("GetGameOfDaysByIdHandler", () => {

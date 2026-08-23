@@ -8,7 +8,7 @@ import { CourseLesson } from "@/features/common/entities/section/course-lesson.e
 import { In } from "typeorm";
 import { plainToInstance } from "class-transformer";
 import { GetCoursePurchasesResponse } from "@/features/common/purchase/queries/get-purchases/get-purchases.response";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
 
 @QueryHandler(GetPurchasesQuery)
 export class GetPurchasesHandler implements IQueryHandler<GetPurchasesQuery> {

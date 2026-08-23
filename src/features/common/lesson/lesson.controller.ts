@@ -18,7 +18,7 @@ import type {LessonFiles} from "@/core/interceptors/lesson-files.interceptor";
 import {ApiConsumes, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {CommandBus, QueryBus} from "@nestjs/cqrs";
 import {Roles} from "@/core/decorators/roles.decorator";
-import {Role} from "@/core/enums/role.enum";
+import {Role} from "@/core/enums/role/role.enum";
 import {Public} from "@/core/decorators/public.decorator";
 import {CreateLessonRequest} from "@/features/common/lesson/commands/create-lesson/create-lesson.request";
 import {CreateLessonCommand} from "@/features/common/lesson/commands/create-lesson/create-lesson.command";

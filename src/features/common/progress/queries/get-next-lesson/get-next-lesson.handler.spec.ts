@@ -4,7 +4,7 @@ import { CourseLesson } from "@/features/common/entities/section/course-lesson.e
 import { Course } from "@/features/common/entities/course/course.entity";
 import { CoursePurchase } from "@/features/common/entities/purchase/course-purchase.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
 
 describe("GetNextLessonHandler", () => {
   let handler: GetNextLessonHandler;

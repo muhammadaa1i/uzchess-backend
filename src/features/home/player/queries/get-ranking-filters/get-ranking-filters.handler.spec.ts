@@ -1,6 +1,6 @@
 import { GetRankingFiltersHandler } from "@/features/home/player/queries/get-ranking-filters/get-ranking-filters.handler";
 import { Player } from "@/features/home/entities/player/player.entity";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 
 describe("GetRankingFiltersHandler", () => {
   let handler: GetRankingFiltersHandler;

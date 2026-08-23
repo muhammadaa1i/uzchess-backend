@@ -8,7 +8,7 @@ import {
   Min,
 } from "class-validator";
 import { Transform, Type } from "class-transformer";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 
 export class CreateGameOfDayRequest {
   @ApiProperty()

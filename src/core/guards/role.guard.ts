@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 import { RolesKey } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { IS_PUBLIC_KEY } from "@/core/decorators/public.decorator";
 
 @Injectable()

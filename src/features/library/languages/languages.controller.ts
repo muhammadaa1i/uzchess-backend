@@ -12,7 +12,7 @@ import {
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 import { CreateLanguageRequest } from "@/features/library/languages/commands/create-language/create-language.request";
 import { CreateLanguageCommand } from "@/features/library/languages/commands/create-language/create-language.command";

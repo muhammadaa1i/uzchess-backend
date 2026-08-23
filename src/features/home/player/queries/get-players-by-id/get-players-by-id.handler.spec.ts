@@ -2,7 +2,7 @@ import { GetPlayersByIdHandler } from "@/features/home/player/queries/get-player
 import { GetPlayersByIdQuery } from "@/features/home/player/queries/get-players-by-id/get-players-by-id.query";
 import { Player } from "@/features/home/entities/player/player.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 
 describe("GetPlayersByIdHandler", () => {
   let handler: GetPlayersByIdHandler;

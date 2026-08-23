@@ -3,7 +3,6 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
     Param,
     ParseIntPipe,
     Patch,
@@ -15,10 +14,9 @@ import {FileCleanupInterceptor} from "@/core/interceptors/file-cleanup.intercept
 import {GAME_OF_DAY_FILES_INTERCEPTOR} from "@/core/interceptors/game-of-day-files.interceptor";
 import type {GameOfDayFiles} from "@/core/interceptors/game-of-day-files.interceptor";
 import {ApiConsumes, ApiOkResponse, ApiTags} from "@nestjs/swagger";
-import {CommandBus, QueryBus} from "@nestjs/cqrs";
+import {CommandBus} from "@nestjs/cqrs";
 import {Roles} from "@/core/decorators/roles.decorator";
-import {Role} from "@/core/enums/role.enum";
-import {Public} from "@/core/decorators/public.decorator";
+import {Role} from "@/core/enums/role/role.enum";
 import {
     CreateGameOfDayRequest
 } from "@/features/home/game-of-day/commands/create-game-of-day/create-game-of-day.request";
@@ -43,20 +41,6 @@ import {
 import {
     DeleteGameOfDayResponse
 } from "@/features/home/game-of-day/commands/delete-game-of-day/delete-game-of-day.response";
-import {GetGameOfDaysQuery} from "@/features/home/game-of-day/queries/get-game-of-days/get-game-of-days.query";
-import {GetGameOfDaysResponse} from "@/features/home/game-of-day/queries/get-game-of-days/get-game-of-days.response";
-import {
-    GetGameOfDaysByIdQuery
-} from "@/features/home/game-of-day/queries/get-game-of-days-by-id/get-game-of-days-by-id.query";
-import {
-    GetGameOfDaysByIdResponse
-} from "@/features/home/game-of-day/queries/get-game-of-days-by-id/get-game-of-days-by-id.response";
-import {
-    GetActiveGameOfDayQuery
-} from "@/features/home/game-of-day/queries/get-active-game-of-day/get-active-game-of-day.query";
-import {
-    GetActiveGameOfDayResponse
-} from "@/features/home/game-of-day/queries/get-active-game-of-day/get-active-game-of-day.response";
 
 @ApiTags("Game of the Day")
 @Roles(Role.Admin)
@@ -64,29 +48,7 @@ import {
 export class GameOfDayController {
     constructor(
         private readonly cmdBus: CommandBus,
-        private readonly queryBus: QueryBus,
     ) {
-    }
-
-    @Public()
-    @Get("read")
-    @ApiOkResponse({type: [GetGameOfDaysResponse]})
-    async getAll() {
-        return await this.queryBus.execute(new GetGameOfDaysQuery());
-    }
-
-    @Public()
-    @Get("read/:id")
-    @ApiOkResponse({type: GetGameOfDaysByIdResponse})
-    async getById(@Param("id", ParseIntPipe) id: number) {
-        return await this.queryBus.execute(new GetGameOfDaysByIdQuery(id));
-    }
-
-    @Public()
-    @Get("active")
-    @ApiOkResponse({type: GetActiveGameOfDayResponse})
-    async getActive() {
-        return await this.queryBus.execute(new GetActiveGameOfDayQuery());
     }
 
     @Post("create")

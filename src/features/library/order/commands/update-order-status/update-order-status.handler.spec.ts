@@ -3,7 +3,7 @@ import { UpdateOrderStatusHandler } from "@/features/library/order/commands/upda
 import { UpdateOrderStatusCommand } from "@/features/library/order/commands/update-order-status/update-order-status.command";
 import { UpdateOrderStatusRequest } from "@/features/library/order/commands/update-order-status/update-order-status.request";
 import { Order } from "@/features/library/entities/order/order.entity";
-import { OrderStatus } from "@/core/enums/order-status.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("UpdateOrderStatusHandler", () => {

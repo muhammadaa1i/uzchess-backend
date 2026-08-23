@@ -25,7 +25,7 @@ import {GetCouponsResponse} from "@/features/library/coupon/queries/get-coupons/
 import {GetCouponByIdQuery} from "@/features/library/coupon/queries/get-coupon-by-id/get-coupon-by-id.query";
 import {GetCouponByIdResponse} from "@/features/library/coupon/queries/get-coupon-by-id/get-coupon-by-id.response";
 import {Roles} from "@/core/decorators/roles.decorator";
-import {Role} from "@/core/enums/role.enum";
+import {Role} from "@/core/enums/role/role.enum";
 
 @ApiTags("Coupon")
 @Roles(Role.Admin)

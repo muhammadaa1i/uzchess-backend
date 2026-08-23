@@ -4,7 +4,7 @@ import { Game } from "@/features/home/entities/game/game.entity";
 import { Player } from "@/features/home/entities/player/player.entity";
 import { plainToInstance } from "class-transformer";
 import { GetGamesFiltersResponse } from "@/features/home/game/queries/get-games-filters/get-games-filters.response";
-import { calculateAge } from "@/features/home/game/game-age.util";
+import { calculateAge } from "@/core/utils/game-age/game-age.util";
 import { Cache } from "@nestjs/cache-manager";
 import { GAMES_FILTERS_CACHE_KEY } from "@/features/home/game/game.cache";
 

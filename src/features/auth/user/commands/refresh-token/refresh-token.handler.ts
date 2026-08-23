@@ -4,7 +4,7 @@ import {RefreshTokenCommand} from "@/features/auth/user/commands/refresh-token/r
 import {RefreshToken} from "@/features/auth/entities/refresh-token/refresh-token.entity";
 import {createHash, randomBytes} from "crypto";
 import {JwtService} from "@nestjs/jwt";
-import {Role} from "@/core/enums/role.enum";
+import {Role} from "@/core/enums/role/role.enum";
 import {plainToInstance} from "class-transformer";
 import {RefreshTokenResponse} from "@/features/auth/user/commands/refresh-token/refresh-token.response";
 

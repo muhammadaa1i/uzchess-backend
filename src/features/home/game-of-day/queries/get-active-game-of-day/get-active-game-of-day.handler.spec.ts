@@ -1,6 +1,6 @@
 import { GetActiveGameOfDayHandler } from "@/features/home/game-of-day/queries/get-active-game-of-day/get-active-game-of-day.handler";
 import { GameOfDay } from "@/features/home/entities/game-of-day/game-of-day.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("GetActiveGameOfDayHandler", () => {

@@ -26,7 +26,7 @@ import { CreateCategoryResponse } from "@/features/library/category/commands/cre
 import { UpdateCategoryResponse } from "@/features/library/category/commands/update-category/update-category.response";
 import { DeleteCategoryResponse } from "@/features/library/category/commands/delete-category/delete-category.response";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 
 @ApiTags("Book Categories")

@@ -2,7 +2,7 @@ import { BadRequestException } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UpdateOrderStatusCommand } from "@/features/library/order/commands/update-order-status/update-order-status.command";
 import { Order } from "@/features/library/entities/order/order.entity";
-import { OrderStatus } from "@/core/enums/order-status.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { plainToInstance } from "class-transformer";
 import { UpdateOrderStatusResponse } from "@/features/library/order/commands/update-order-status/update-order-status.response";

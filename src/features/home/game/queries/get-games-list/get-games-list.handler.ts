@@ -5,7 +5,8 @@ import { Game } from "@/features/home/entities/game/game.entity";
 import { plainToInstance } from "class-transformer";
 import { GetGamesListResponse } from "@/features/home/game/queries/get-games-list/get-games-list.response";
 import { PaginatedResultDto } from "@/core/dtos/paginated-result.dto";
-import { calculateAge } from "@/features/home/game/game-age.util";
+import { calculateAge } from "@/core/utils/game-age/game-age.util";
+import { ratingForGameType } from "@/core/utils/game-rating/game-rating.util";
 import { Cache } from "@nestjs/cache-manager";
 import {
   CachedGamesList,
@@ -72,10 +73,10 @@ export class GetGamesListHandler implements IQueryHandler<GetGamesListQuery> {
       ...game,
       whitePlayerName: game.whitePlayer.name,
       whitePlayerAvatarUrl: game.whitePlayer.avatarUrl,
-      whitePlayerRating: game.whitePlayer.classicalRating,
+      whitePlayerRating: ratingForGameType(game.whitePlayer, game.gameType),
       blackPlayerName: game.blackPlayer.name,
       blackPlayerAvatarUrl: game.blackPlayer.avatarUrl,
-      blackPlayerRating: game.blackPlayer.classicalRating,
+      blackPlayerRating: ratingForGameType(game.blackPlayer, game.gameType),
     }));
 
     const data = plainToInstance(GetGamesListResponse, pagedGames, {

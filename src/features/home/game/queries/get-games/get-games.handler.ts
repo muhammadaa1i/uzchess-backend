@@ -5,6 +5,7 @@ import {plainToInstance} from "class-transformer";
 import {GetGamesResponse} from "@/features/home/game/queries/get-games/get-games.response";
 import {Cache} from "@nestjs/cache-manager";
 import {GAMES_RECENT_CACHE_KEY} from "@/features/home/game/game.cache";
+import {ratingForGameType} from "@/core/utils/game-rating/game-rating.util";
 
 @QueryHandler(GetGamesQuery)
 export class GetGamesHandler implements IQueryHandler<GetGamesQuery> {
@@ -33,10 +34,10 @@ export class GetGamesHandler implements IQueryHandler<GetGamesQuery> {
                 ...game,
                 whitePlayerName: game.whitePlayer.name,
                 whitePlayerAvatarUrl: game.whitePlayer.avatarUrl,
-                whitePlayerRating: game.whitePlayer.classicalRating,
+                whitePlayerRating: ratingForGameType(game.whitePlayer, game.gameType),
                 blackPlayerName: game.blackPlayer.name,
                 blackPlayerAvatarUrl: game.blackPlayer.avatarUrl,
-                blackPlayerRating: game.blackPlayer.classicalRating,
+                blackPlayerRating: ratingForGameType(game.blackPlayer, game.gameType),
             })),
             {excludeExtraneousValues: true},
         );

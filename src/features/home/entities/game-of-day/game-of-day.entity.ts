@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
 import { Player } from "@/features/home/entities/player/player.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 
 @Entity("gamesOfDay")
 export class GameOfDay extends BaseModel {

@@ -1,5 +1,5 @@
 import { PDFDocument, PDFFont, StandardFonts } from "pdf-lib";
-import { wrapTextToLines } from "@/features/common/certificate/certificate-pdf.generator";
+import { wrapTextToLines } from "@/core/utils/certificate-pdf/certificate-pdf.generator";
 
 describe("wrapTextToLines", () => {
   let font: PDFFont;

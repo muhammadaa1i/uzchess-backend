@@ -5,7 +5,7 @@ import { CourseRating } from "@/features/common/entities/rating/course-rating.en
 import { CourseSection } from "@/features/common/entities/section/course-section.entity";
 import { CourseLesson } from "@/features/common/entities/section/course-lesson.entity";
 import { CoursePurchase } from "@/features/common/entities/purchase/course-purchase.entity";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
 import { plainToInstance } from "class-transformer";
 import { GetTopRatedCoursesResponse } from "@/features/common/courses/queries/get-top-rated-courses/get-top-rated-courses.response";
 import { Cache } from "@nestjs/cache-manager";

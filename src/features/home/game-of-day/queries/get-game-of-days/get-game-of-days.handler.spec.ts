@@ -1,6 +1,6 @@
 import { GetGameOfDaysHandler } from "@/features/home/game-of-day/queries/get-game-of-days/get-game-of-days.handler";
 import { GameOfDay } from "@/features/home/entities/game-of-day/game-of-day.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 
 describe("GetGameOfDaysHandler", () => {
   let handler: GetGameOfDaysHandler;

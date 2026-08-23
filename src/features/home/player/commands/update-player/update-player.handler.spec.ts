@@ -7,7 +7,7 @@ import { UpdatePlayerCommand } from "@/features/home/player/commands/update-play
 import { UpdatePlayerRequest } from "@/features/home/player/commands/update-player/update-player.request";
 import { Player } from "@/features/home/entities/player/player.entity";
 import { Game } from "@/features/home/entities/game/game.entity";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 

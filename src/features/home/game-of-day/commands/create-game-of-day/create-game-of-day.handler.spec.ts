@@ -3,7 +3,7 @@ import { CreateGameOfDayCommand } from "@/features/home/game-of-day/commands/cre
 import { CreateGameOfDayRequest } from "@/features/home/game-of-day/commands/create-game-of-day/create-game-of-day.request";
 import { GameOfDay } from "@/features/home/entities/game-of-day/game-of-day.entity";
 import { Player } from "@/features/home/entities/player/player.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("CreateGameOfDayHandler", () => {

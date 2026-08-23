@@ -18,7 +18,7 @@ import { FileCleanupInterceptor } from "@/core/interceptors/file-cleanup.interce
 import { ApiConsumes, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 import { CreateBookRequest } from "@/features/library/book/commands/create-book/create-book.request";
 import { CreateBookCommand } from "@/features/library/book/commands/create-book/create-book.command";

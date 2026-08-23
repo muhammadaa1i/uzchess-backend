@@ -5,7 +5,7 @@ import { CreateLessonProgressCommand } from "@/features/common/progress/commands
 import { CreateLessonProgressResponse } from "@/features/common/progress/commands/create-lesson-progress/create-lesson-progress.response";
 import { CourseLesson } from "@/features/common/entities/section/course-lesson.entity";
 import { CoursePurchase } from "@/features/common/entities/purchase/course-purchase.entity";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
 import { LessonProgress } from "@/features/common/entities/progress/lesson-progress.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 

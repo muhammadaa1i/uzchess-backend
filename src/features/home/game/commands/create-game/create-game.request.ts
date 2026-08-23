@@ -1,7 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {IsDateString, IsEnum, IsInt, Min} from "class-validator";
 import {Type} from "class-transformer";
-import {GameType} from "@/core/enums/game-type.enum";
+import {GameType} from "@/core/enums/game-type/game-type.enum";
 
 export class CreateGameRequest {
     @ApiProperty()

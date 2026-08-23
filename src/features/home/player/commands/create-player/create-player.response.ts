@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 
 export class CreatePlayerResponse {
   @ApiProperty()

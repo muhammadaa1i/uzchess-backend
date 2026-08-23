@@ -3,7 +3,7 @@ import { CreatePlayerCommand } from "@/features/home/player/commands/create-play
 import { Player } from "@/features/home/entities/player/player.entity";
 import { plainToInstance } from "class-transformer";
 import { CreatePlayerResponse } from "@/features/home/player/commands/create-player/create-player.response";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 import { Cache } from "@nestjs/cache-manager";
 import {
   PLAYERS_RANKING_CACHE_KEY,

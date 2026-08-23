@@ -1,6 +1,6 @@
 import { GetGamesFiltersHandler } from "@/features/home/game/queries/get-games-filters/get-games-filters.handler";
 import { Game } from "@/features/home/entities/game/game.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 
 describe("GetGamesFiltersHandler", () => {
   let handler: GetGamesFiltersHandler;

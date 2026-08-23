@@ -4,7 +4,7 @@ import { RefreshTokenHandler } from "@/features/auth/user/commands/refresh-token
 import { RefreshTokenCommand } from "@/features/auth/user/commands/refresh-token/refresh-token.command";
 import { RefreshTokenRequest } from "@/features/auth/user/commands/refresh-token/refresh-token.request";
 import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 
 describe("RefreshTokenHandler", () => {
   let handler: RefreshTokenHandler;

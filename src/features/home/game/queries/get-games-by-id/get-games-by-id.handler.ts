@@ -6,6 +6,7 @@ import { GetGamesByIdResponse } from "@/features/home/game/queries/get-games-by-
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { Cache } from "@nestjs/cache-manager";
 import { gameByIdCacheKey } from "@/features/home/game/game.cache";
+import { ratingForGameType } from "@/core/utils/game-rating/game-rating.util";
 
 @QueryHandler(GetGamesByIdQuery)
 export class GetGamesByIdHandler implements IQueryHandler<GetGamesByIdQuery> {
@@ -28,10 +29,10 @@ export class GetGamesByIdHandler implements IQueryHandler<GetGamesByIdQuery> {
         ...game,
         whitePlayerName: game.whitePlayer.name,
         whitePlayerAvatarUrl: game.whitePlayer.avatarUrl,
-        whitePlayerRating: game.whitePlayer.classicalRating,
+        whitePlayerRating: ratingForGameType(game.whitePlayer, game.gameType),
         blackPlayerName: game.blackPlayer.name,
         blackPlayerAvatarUrl: game.blackPlayer.avatarUrl,
-        blackPlayerRating: game.blackPlayer.classicalRating,
+        blackPlayerRating: ratingForGameType(game.blackPlayer, game.gameType),
       },
       { excludeExtraneousValues: true },
     );

@@ -5,8 +5,8 @@ import { Course } from "@/features/common/entities/course/course.entity";
 import { CoursePurchase } from "@/features/common/entities/purchase/course-purchase.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
-import { PaymentProvider } from "@/core/enums/payment-provider.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
+import { PaymentProvider } from "@/core/enums/payment-provider/payment-provider.enum";
 
 describe("CreatePurchaseHandler", () => {
   let handler: CreatePurchaseHandler;

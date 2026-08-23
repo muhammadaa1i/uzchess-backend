@@ -2,7 +2,7 @@ import { GetCouponsHandler } from "@/features/library/coupon/queries/get-coupons
 import { GetCouponsQuery } from "@/features/library/coupon/queries/get-coupons/get-coupons.query";
 import { GetCouponsRequest } from "@/features/library/coupon/queries/get-coupons/get-coupons.request";
 import { Coupon } from "@/features/library/entities/coupon/coupon.entity";
-import { CouponType } from "@/core/enums/coupon-type.enum";
+import { CouponType } from "@/core/enums/coupon-type/coupon-type.enum";
 
 describe("GetCouponsHandler", () => {
   let handler: GetCouponsHandler;

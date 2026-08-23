@@ -3,7 +3,7 @@ import { GetOrdersQuery } from "@/features/library/order/queries/get-orders/get-
 import { Order } from "@/features/library/entities/order/order.entity";
 import { OrderItem } from "@/features/library/entities/order/order-item.entity";
 import { Book } from "@/features/library/entities/book/book.entity";
-import { OrderStatus } from "@/core/enums/order-status.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
 
 describe("GetOrdersHandler", () => {
   let handler: GetOrdersHandler;

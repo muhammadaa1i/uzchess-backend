@@ -23,7 +23,7 @@ import { GetCourseReviewsResponse } from "@/features/common/rating/queries/get-c
 import { PaginatedResultDto } from "@/core/dtos/paginated-result.dto";
 import { Public } from "@/core/decorators/public.decorator";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 
 @ApiTags("Course Rating")
 @Controller("courses")

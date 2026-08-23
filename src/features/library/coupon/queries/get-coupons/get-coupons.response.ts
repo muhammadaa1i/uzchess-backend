@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {Expose} from "class-transformer";
-import {CouponType} from "@/core/enums/coupon-type.enum";
+import {CouponType} from "@/core/enums/coupon-type/coupon-type.enum";
 
 export class GetCouponsResponse {
     @ApiProperty()

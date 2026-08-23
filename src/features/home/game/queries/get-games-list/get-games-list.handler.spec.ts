@@ -5,7 +5,7 @@ import {
   GetGamesListRequest,
 } from "@/features/home/game/queries/get-games-list/get-games-list.request";
 import { Game } from "@/features/home/entities/game/game.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 
 describe("GetGamesListHandler", () => {
   let handler: GetGamesListHandler;
@@ -17,6 +17,8 @@ describe("GetGamesListHandler", () => {
     avatarUrl: null,
     country: "NOR",
     classicalRating: 2830,
+    rapidRating: 2800,
+    blitzRating: 2900,
     birthDate: null,
     ...overrides,
   });
@@ -200,5 +202,19 @@ describe("GetGamesListHandler", () => {
     expect(result.totalPages).toBe(1);
     expect(result.hasNext).toBe(false);
     expect(result.hasPrevious).toBe(true);
+  });
+
+  it("picks the rating matching the game's gameType, falling back to classicalRating for bullet", async () => {
+    jest.spyOn(Game, "find").mockResolvedValue([
+      makeGame({ id: 1, gameType: GameType.Rapid }),
+      makeGame({ id: 2, gameType: GameType.Bullet }),
+    ]);
+
+    const result = await handler.execute(new GetGamesListQuery({}));
+
+    const rapidGame = result.data.find((g) => g.id === 1);
+    const bulletGame = result.data.find((g) => g.id === 2);
+    expect(rapidGame?.whitePlayerRating).toBe(2800);
+    expect(bulletGame?.whitePlayerRating).toBe(2830);
   });
 });

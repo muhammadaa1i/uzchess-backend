@@ -1,7 +1,7 @@
 import { GetCouponByIdHandler } from "@/features/library/coupon/queries/get-coupon-by-id/get-coupon-by-id.handler";
 import { GetCouponByIdQuery } from "@/features/library/coupon/queries/get-coupon-by-id/get-coupon-by-id.query";
 import { Coupon } from "@/features/library/entities/coupon/coupon.entity";
-import { CouponType } from "@/core/enums/coupon-type.enum";
+import { CouponType } from "@/core/enums/coupon-type/coupon-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("GetCouponByIdHandler", () => {

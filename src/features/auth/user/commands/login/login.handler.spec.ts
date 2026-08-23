@@ -5,7 +5,7 @@ import { LoginRequest } from "@/features/auth/user/commands/login/login.request"
 import { User } from "@/features/auth/entities/user/user.entity";
 import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { createHash } from "crypto";
 
 describe("LoginHandler", () => {

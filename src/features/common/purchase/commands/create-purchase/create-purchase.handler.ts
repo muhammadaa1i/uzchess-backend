@@ -6,7 +6,7 @@ import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception"
 import {AlreadyExistException} from "@/core/exceptions/already-exist.exception";
 import {plainToInstance} from "class-transformer";
 import {CreatePurchaseResponse} from "@/features/common/purchase/commands/create-purchase/create-purchase.response";
-import {PurchaseStatus} from "@/core/enums/purchase-status.enum";
+import {PurchaseStatus} from "@/core/enums/purchase-status/purchase-status.enum";
 import {Cache} from "@nestjs/cache-manager";
 import {TOP_RATED_COURSES_CACHE_KEY} from "@/features/common/courses/course.cache";
 

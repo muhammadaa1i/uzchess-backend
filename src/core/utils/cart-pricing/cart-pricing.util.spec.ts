@@ -1,6 +1,6 @@
-import {resolveCoupon} from "@/features/library/cart/cart-pricing.util";
+import {resolveCoupon} from "@/core/utils/cart-pricing/cart-pricing.util";
 import {Coupon} from "@/features/library/entities/coupon/coupon.entity";
-import {CouponType} from "@/core/enums/coupon-type.enum";
+import {CouponType} from "@/core/enums/coupon-type/coupon-type.enum";
 
 describe("resolveCoupon", () => {
     afterEach(() => jest.restoreAllMocks());

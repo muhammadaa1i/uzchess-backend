@@ -5,7 +5,7 @@ import { Course } from "@/features/common/entities/course/course.entity";
 import { CourseRating } from "@/features/common/entities/rating/course-rating.entity";
 import { CourseSection } from "@/features/common/entities/section/course-section.entity";
 import { CourseLesson } from "@/features/common/entities/section/course-lesson.entity";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
 
 describe("GetPurchasesHandler", () => {
   let handler: GetPurchasesHandler;

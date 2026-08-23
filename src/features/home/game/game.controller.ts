@@ -12,7 +12,7 @@ import {
 import {ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {CommandBus, QueryBus} from "@nestjs/cqrs";
 import {Roles} from "@/core/decorators/roles.decorator";
-import {Role} from "@/core/enums/role.enum";
+import {Role} from "@/core/enums/role/role.enum";
 import {Public} from "@/core/decorators/public.decorator";
 import {CreateGameRequest} from "@/features/home/game/commands/create-game/create-game.request";
 import {CreateGameCommand} from "@/features/home/game/commands/create-game/create-game.command";

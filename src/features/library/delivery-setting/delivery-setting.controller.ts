@@ -17,7 +17,7 @@ import {
     UpdateDeliverySettingResponse
 } from "@/features/library/delivery-setting/commands/update-delivery-setting/update-delivery-setting.response";
 import {Roles} from "@/core/decorators/roles.decorator";
-import {Role} from "@/core/enums/role.enum";
+import {Role} from "@/core/enums/role/role.enum";
 
 @ApiTags("Delivery Setting")
 @Roles(Role.Admin)

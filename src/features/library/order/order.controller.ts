@@ -20,7 +20,7 @@ import { UpdateOrderStatusCommand } from "@/features/library/order/commands/upda
 import { UpdateOrderStatusRequest } from "@/features/library/order/commands/update-order-status/update-order-status.request";
 import { UpdateOrderStatusResponse } from "@/features/library/order/commands/update-order-status/update-order-status.response";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 
 @ApiTags("Order")
 @Controller("orders")

@@ -1,7 +1,7 @@
 import { GetGamesByIdHandler } from "@/features/home/game/queries/get-games-by-id/get-games-by-id.handler";
 import { GetGamesByIdQuery } from "@/features/home/game/queries/get-games-by-id/get-games-by-id.query";
 import { Game } from "@/features/home/entities/game/game.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("GetGamesByIdHandler", () => {
@@ -58,5 +58,46 @@ describe("GetGamesByIdHandler", () => {
     await expect(
       handler.execute(new GetGamesByIdQuery(999)),
     ).rejects.toBeInstanceOf(DoesNotExistException);
+  });
+
+  it("picks the rating matching the game's gameType, falling back to classicalRating for bullet", async () => {
+    const player = {
+      name: "Player",
+      avatarUrl: null,
+      classicalRating: 2000,
+      rapidRating: 1900,
+      blitzRating: 2100,
+    };
+
+    cache.get.mockResolvedValue(undefined);
+    jest.spyOn(Game, "findOne").mockResolvedValue({
+      id: 1,
+      whitePlayerId: 1,
+      blackPlayerId: 2,
+      whitePlayer: player,
+      blackPlayer: player,
+      whiteScore: 1,
+      blackScore: 0,
+      gameType: GameType.Rapid,
+      movesCount: 40,
+      playedAt: new Date("2026-08-01"),
+    } as any);
+    let result = await handler.execute(new GetGamesByIdQuery(1));
+    expect(result.whitePlayerRating).toBe(1900);
+
+    jest.spyOn(Game, "findOne").mockResolvedValue({
+      id: 2,
+      whitePlayerId: 1,
+      blackPlayerId: 2,
+      whitePlayer: player,
+      blackPlayer: player,
+      whiteScore: 1,
+      blackScore: 0,
+      gameType: GameType.Bullet,
+      movesCount: 40,
+      playedAt: new Date("2026-08-01"),
+    } as any);
+    result = await handler.execute(new GetGamesByIdQuery(2));
+    expect(result.whitePlayerRating).toBe(2000);
   });
 });

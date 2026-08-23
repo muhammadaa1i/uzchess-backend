@@ -18,7 +18,7 @@ import { FileCleanupInterceptor } from "@/core/interceptors/file-cleanup.interce
 import { ApiConsumes, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 import { CreateCourseRequest } from "@/features/common/courses/commands/create-course/create-course.request";
 import { CreateCourseCommand } from "@/features/common/courses/commands/create-course/create-course.command";

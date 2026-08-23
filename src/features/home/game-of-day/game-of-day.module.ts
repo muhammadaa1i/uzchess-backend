@@ -1,6 +1,7 @@
 import {Module} from "@nestjs/common";
 import {CqrsModule} from "@nestjs/cqrs";
 import {GameOfDayController} from "@/features/home/game-of-day/game-of-day.controller";
+import {GameOfDayViewController} from "@/features/home/game-of-day/game-of-day-view.controller";
 import {
     CreateGameOfDayHandler
 } from "@/features/home/game-of-day/commands/create-game-of-day/create-game-of-day.handler";
@@ -20,7 +21,7 @@ import {
 
 @Module({
     imports: [CqrsModule],
-    controllers: [GameOfDayController],
+    controllers: [GameOfDayController, GameOfDayViewController],
     providers: [
         GetGameOfDaysHandler,
         GetGameOfDaysByIdHandler,

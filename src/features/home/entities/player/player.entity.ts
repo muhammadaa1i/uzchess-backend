@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm";
 import { BaseModel } from "@/core/base.model";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 
 @Entity("players")
 export class Player extends BaseModel {

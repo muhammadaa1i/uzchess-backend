@@ -2,7 +2,7 @@ import { CreateCouponHandler } from "@/features/library/coupon/commands/create-c
 import { CreateCouponCommand } from "@/features/library/coupon/commands/create-coupon/create-coupon.command";
 import { CreateCouponRequest } from "@/features/library/coupon/commands/create-coupon/create-coupon.request";
 import { Coupon } from "@/features/library/entities/coupon/coupon.entity";
-import { CouponType } from "@/core/enums/coupon-type.enum";
+import { CouponType } from "@/core/enums/coupon-type/coupon-type.enum";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
 
 describe("CreateCouponHandler", () => {

@@ -30,7 +30,7 @@ import { DeleteDifficultyResponse } from "@/features/library/difficulty/commands
 import { GetDifficultiesQuery } from "@/features/library/difficulty/queries/get-difficulties/get-difficulties.query";
 import { GetDifficultiesRequest } from "@/features/library/difficulty/queries/get-difficulties/get-difficulties.request";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 import { GetDifficultiesResponse } from "@/features/library/difficulty/queries/get-difficulties/get-difficulties.response";
 import { GetDifficultiesByIdResponse } from "@/features/library/difficulty/queries/get-difficulty-by-id/get-difficulties-by-id.response";

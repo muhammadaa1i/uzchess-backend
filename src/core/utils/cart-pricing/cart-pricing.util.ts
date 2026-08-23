@@ -1,6 +1,6 @@
 import {ILike} from "typeorm";
 import {Coupon} from "@/features/library/entities/coupon/coupon.entity";
-import {CouponType} from "@/core/enums/coupon-type.enum";
+import {CouponType} from "@/core/enums/coupon-type/coupon-type.enum";
 
 export async function resolveCoupon(
     code: string | undefined | null,

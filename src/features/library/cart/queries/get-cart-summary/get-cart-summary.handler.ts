@@ -6,7 +6,7 @@ import {DeliverySetting} from "@/features/library/entities/delivery-setting/deli
 import {In} from "typeorm";
 import {plainToInstance} from "class-transformer";
 import {GetCartSummaryResponse} from "@/features/library/cart/queries/get-cart-summary/get-cart-summary.response";
-import {resolveCoupon} from "@/features/library/cart/cart-pricing.util";
+import {resolveCoupon} from "@/core/utils/cart-pricing/cart-pricing.util";
 
 @QueryHandler(GetCartSummaryQuery)
 export class GetCartSummaryHandler implements IQueryHandler<GetCartSummaryQuery> {

@@ -5,7 +5,7 @@ import { GetCourseLessonsQuery } from "@/features/common/progress/queries/get-co
 import { GetCourseLessonsResponse } from "@/features/common/progress/queries/get-course-lessons/get-course-lessons.response";
 import { Course } from "@/features/common/entities/course/course.entity";
 import { CoursePurchase } from "@/features/common/entities/purchase/course-purchase.entity";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
 import { LessonProgress } from "@/features/common/entities/progress/lesson-progress.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 

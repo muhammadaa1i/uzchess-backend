@@ -5,7 +5,7 @@ jest.mock("@/core/configs/multer/multer.config", () => ({
 import { UpdateGameOfDayHandler } from "@/features/home/game-of-day/commands/update-game-of-day/update-game-of-day.handler";
 import { UpdateGameOfDayCommand } from "@/features/home/game-of-day/commands/update-game-of-day/update-game-of-day.command";
 import { GameOfDay } from "@/features/home/entities/game-of-day/game-of-day.entity";
-import { GameType } from "@/core/enums/game-type.enum";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { deleteUploadedFile } from "@/core/configs/multer/multer.config";
 

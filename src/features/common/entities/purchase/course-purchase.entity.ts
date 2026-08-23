@@ -3,7 +3,7 @@ import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
 import { Course } from "@/features/common/entities/course/course.entity";
 import { User } from "@/features/auth/entities/user/user.entity";
-import { PurchaseStatus } from "@/core/enums/purchase-status.enum";
+import { PurchaseStatus } from "@/core/enums/purchase-status/purchase-status.enum";
 
 @Entity("coursePurchases")
 @Index(["courseId", "userId"], { unique: true })

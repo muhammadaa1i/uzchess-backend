@@ -10,7 +10,7 @@ import {
     MaxLength,
     Min,
 } from "class-validator";
-import {CouponType} from "@/core/enums/coupon-type.enum";
+import {CouponType} from "@/core/enums/coupon-type/coupon-type.enum";
 
 export class CreateCouponRequest {
     @ApiProperty()

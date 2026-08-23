@@ -6,7 +6,7 @@ import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exceptio
 import argon2 from "argon2";
 import { createHash, randomBytes } from "crypto";
 import { JwtService } from "@nestjs/jwt";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { plainToInstance } from "class-transformer";
 import { LoginResponse } from "@/features/auth/user/commands/login/login.response";
 

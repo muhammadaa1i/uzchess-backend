@@ -12,7 +12,7 @@ import {
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 import { CreateSectionRequest } from "@/features/common/section/commands/create-section/create-section.request";
 import { CreateSectionCommand } from "@/features/common/section/commands/create-section/create-section.command";

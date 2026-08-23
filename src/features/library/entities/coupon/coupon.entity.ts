@@ -1,6 +1,6 @@
 import { Column, Entity } from "typeorm";
 import { BaseModel } from "@/core/base.model";
-import { CouponType } from "@/core/enums/coupon-type.enum";
+import { CouponType } from "@/core/enums/coupon-type/coupon-type.enum";
 
 @Entity("coupons")
 export class Coupon extends BaseModel {

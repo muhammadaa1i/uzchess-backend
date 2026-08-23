@@ -2,7 +2,7 @@ import { CreatePlayerHandler } from "@/features/home/player/commands/create-play
 import { CreatePlayerCommand } from "@/features/home/player/commands/create-player/create-player.command";
 import { CreatePlayerRequest } from "@/features/home/player/commands/create-player/create-player.request";
 import { Player } from "@/features/home/entities/player/player.entity";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 
 describe("CreatePlayerHandler", () => {
   let handler: CreatePlayerHandler;

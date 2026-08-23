@@ -12,7 +12,7 @@ import {
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { Roles } from "@/core/decorators/roles.decorator";
-import { Role } from "@/core/enums/role.enum";
+import { Role } from "@/core/enums/role/role.enum";
 import { Public } from "@/core/decorators/public.decorator";
 import { CreateCourseCategoryRequest } from "@/features/common/category/commands/create-category/create-category.request";
 import { CreateCourseCategoryCommand } from "@/features/common/category/commands/create-category/create-category.command";

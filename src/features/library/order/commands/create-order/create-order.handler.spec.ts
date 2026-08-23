@@ -7,8 +7,8 @@ import { Order } from "@/features/library/entities/order/order.entity";
 import { OrderItem } from "@/features/library/entities/order/order-item.entity";
 import { DeliverySetting } from "@/features/library/entities/delivery-setting/delivery-setting.entity";
 import { Coupon } from "@/features/library/entities/coupon/coupon.entity";
-import { OrderStatus } from "@/core/enums/order-status.enum";
-import { CouponType } from "@/core/enums/coupon-type.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
+import { CouponType } from "@/core/enums/coupon-type/coupon-type.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("CreateOrderHandler", () => {

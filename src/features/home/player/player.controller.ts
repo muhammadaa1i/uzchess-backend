@@ -17,7 +17,7 @@ import {FileCleanupInterceptor} from "@/core/interceptors/file-cleanup.intercept
 import {ApiConsumes, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {CommandBus, QueryBus} from "@nestjs/cqrs";
 import {Roles} from "@/core/decorators/roles.decorator";
-import {Role} from "@/core/enums/role.enum";
+import {Role} from "@/core/enums/role/role.enum";
 import {Public} from "@/core/decorators/public.decorator";
 import {CreatePlayerRequest} from "@/features/home/player/commands/create-player/create-player.request";
 import {CreatePlayerCommand} from "@/features/home/player/commands/create-player/create-player.command";

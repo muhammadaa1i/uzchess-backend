@@ -6,11 +6,11 @@ import { Order } from "@/features/library/entities/order/order.entity";
 import { OrderItem } from "@/features/library/entities/order/order-item.entity";
 import { DeliverySetting } from "@/features/library/entities/delivery-setting/delivery-setting.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
-import { OrderStatus } from "@/core/enums/order-status.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
 import { In, QueryFailedError } from "typeorm";
 import { plainToInstance } from "class-transformer";
 import { CreateOrderResponse } from "@/features/library/order/commands/create-order/create-order.response";
-import { resolveCoupon } from "@/features/library/cart/cart-pricing.util";
+import { resolveCoupon } from "@/core/utils/cart-pricing/cart-pricing.util";
 import { Cache } from "@nestjs/cache-manager";
 import { TOP_RATED_BOOKS_CACHE_KEY } from "@/features/library/book/book.cache";
 

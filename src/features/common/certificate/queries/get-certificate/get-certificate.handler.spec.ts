@@ -7,9 +7,9 @@ import { Certificate } from "@/features/common/entities/certificate/certificate.
 import { User } from "@/features/auth/entities/user/user.entity";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { ForbiddenException } from "@nestjs/common";
-import * as pdfGenerator from "@/features/common/certificate/certificate-pdf.generator";
+import * as pdfGenerator from "@/core/utils/certificate-pdf/certificate-pdf.generator";
 
-jest.mock("@/features/common/certificate/certificate-pdf.generator", () => ({
+jest.mock("@/core/utils/certificate-pdf/certificate-pdf.generator", () => ({
   generateCertificatePdf: jest.fn(),
 }));
 

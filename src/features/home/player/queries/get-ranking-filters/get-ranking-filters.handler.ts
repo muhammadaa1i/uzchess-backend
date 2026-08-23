@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { GetRankingFiltersQuery } from "@/features/home/player/queries/get-ranking-filters/get-ranking-filters.query";
 import { Player } from "@/features/home/entities/player/player.entity";
-import { PlayerTitle } from "@/core/enums/player-title.enum";
+import { PlayerTitle } from "@/core/enums/player-title/player-title.enum";
 import { plainToInstance } from "class-transformer";
 import { GetRankingFiltersResponse } from "@/features/home/player/queries/get-ranking-filters/get-ranking-filters.response";
 import { Cache } from "@nestjs/cache-manager";

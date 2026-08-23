@@ -2,7 +2,7 @@ import {GetGamesHandler} from "@/features/home/game/queries/get-games/get-games.
 import {GetGamesQuery} from "@/features/home/game/queries/get-games/get-games.query";
 import {GetGamesRequest} from "@/features/home/game/queries/get-games/get-games.request";
 import {Game} from "@/features/home/entities/game/game.entity";
-import {GameType} from "@/core/enums/game-type.enum";
+import {GameType} from "@/core/enums/game-type/game-type.enum";
 
 describe("GetGamesHandler", () => {
     let handler: GetGamesHandler;
@@ -36,8 +36,8 @@ describe("GetGamesHandler", () => {
                 id: 1,
                 whitePlayerId: 1,
                 blackPlayerId: 2,
-                whitePlayer: {name: "Magnus Carlsen", avatarUrl: null, classicalRating: 2830},
-                blackPlayer: {name: "Hikaru Nakamura", avatarUrl: null, classicalRating: 2780},
+                whitePlayer: {name: "Magnus Carlsen", avatarUrl: null, classicalRating: 2830, rapidRating: 2800, blitzRating: 2900},
+                blackPlayer: {name: "Hikaru Nakamura", avatarUrl: null, classicalRating: 2780, rapidRating: 2750, blitzRating: 2850},
                 whiteScore: 1,
                 blackScore: 0,
                 gameType: GameType.Blitz,
@@ -56,8 +56,47 @@ describe("GetGamesHandler", () => {
         });
         expect(result).toHaveLength(1);
         expect(result[0].whitePlayerName).toBe("Magnus Carlsen");
-        expect(result[0].blackPlayerRating).toBe(2780);
+        expect(result[0].blackPlayerRating).toBe(2850);
         expect(cache.set).toHaveBeenCalledWith("games:recent", result);
+    });
+
+    it("picks the rating matching the game's gameType (rapid/blitz), falling back to classicalRating for bullet", async () => {
+        const player = {
+            name: "Player",
+            avatarUrl: null,
+            classicalRating: 2000,
+            rapidRating: 1900,
+            blitzRating: 2100,
+        };
+        const baseGame = {
+            id: 1,
+            whitePlayerId: 1,
+            blackPlayerId: 2,
+            whitePlayer: player,
+            blackPlayer: player,
+            whiteScore: 1,
+            blackScore: 0,
+            movesCount: 40,
+            playedAt: new Date("2026-08-01"),
+        };
+
+        jest.spyOn(Game, "find").mockResolvedValue([
+            {...baseGame, gameType: GameType.Rapid},
+        ] as any);
+        let result = await handler.execute(new GetGamesQuery({}));
+        expect(result[0].whitePlayerRating).toBe(1900);
+
+        jest.spyOn(Game, "find").mockResolvedValue([
+            {...baseGame, gameType: GameType.Blitz},
+        ] as any);
+        result = await handler.execute(new GetGamesQuery({}));
+        expect(result[0].whitePlayerRating).toBe(2100);
+
+        jest.spyOn(Game, "find").mockResolvedValue([
+            {...baseGame, gameType: GameType.Bullet},
+        ] as any);
+        result = await handler.execute(new GetGamesQuery({limit: 1}));
+        expect(result[0].whitePlayerRating).toBe(2000);
     });
 
     it("respects a custom limit and does not use or populate the default cache", async () => {

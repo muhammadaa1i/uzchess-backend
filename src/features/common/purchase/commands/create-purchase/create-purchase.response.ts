@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {Expose} from "class-transformer";
-import {PurchaseStatus} from "@/core/enums/purchase-status.enum";
+import {PurchaseStatus} from "@/core/enums/purchase-status/purchase-status.enum";
 
 export class CreatePurchaseResponse {
     @ApiProperty()

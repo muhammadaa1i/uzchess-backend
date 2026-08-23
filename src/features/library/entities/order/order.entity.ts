@@ -3,7 +3,7 @@ import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
 import { User } from "@/features/auth/entities/user/user.entity";
 import { OrderItem } from "@/features/library/entities/order/order-item.entity";
-import { OrderStatus } from "@/core/enums/order-status.enum";
+import { OrderStatus } from "@/core/enums/order-status/order-status.enum";
 
 @Entity("orders")
 export class Order extends BaseModel {
