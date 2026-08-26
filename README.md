@@ -23,26 +23,50 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+UzChess backend — a NestJS 11 + CQRS API for the UzChess platform (book library, courses, and a public chess landing page: players, games, news, banners).
 
 ## Project setup
 
 ```bash
 $ npm install
+$ cp .env.example .env   # then fill in the values — see below
+```
+
+`.env.example` documents every environment variable the app reads. At minimum you need:
+
+- `DATABASE_URL` — a reachable Postgres connection string
+- `JWT_SECRET` — any long random string, used to sign auth tokens
+
+R2 (file uploads) and SMTP (email verification) vars can be left blank for local development as long as you don't hit those specific endpoints — they'll throw at request time, not at boot.
+
+Once `.env` is filled in, run the pending migrations against your database:
+
+```bash
+$ npm run migrate
 ```
 
 ## Compile and run the project
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
+# development (watch mode)
 $ npm run start:dev
 
-# production mode
+# production mode (build first)
+$ npm run build
 $ npm run start:prod
 ```
+
+On boot, `start:dev` prints links to the Swagger docs (`/swagger/books`, `/swagger/courses`, `/swagger/account`, `/swagger/home`) for the port you're running on.
+
+### Running with Docker Compose
+
+`docker-compose.yaml` spins up both the API and a local Postgres container — no local Postgres install required:
+
+```bash
+$ docker compose up --build
+```
+
+The API container still needs the non-DB variables from `.env` (`JWT_SECRET`, R2, SMTP) — `docker-compose.yaml` wires `DATABASE_URL` for you to point at the bundled `database` service.
 
 ## Run tests
 
@@ -59,16 +83,7 @@ $ npm run test:cov
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+This repo deploys as a Docker image (see `Dockerfile`) that runs pending migrations then starts the server (`npx typeorm ... migration:run && node dist/src/main.js`). `render.yaml` defines a ready-to-use [Render](https://render.com) blueprint (a managed Postgres database + this Docker image as a web service) — the env vars marked `sync: false` in it (`JWT_SECRET`, R2, SMTP, `APP_URL`) need to be set manually in the Render dashboard after the first deploy; `DATABASE_URL` is wired automatically from the managed database.
 
 ## Resources
 
