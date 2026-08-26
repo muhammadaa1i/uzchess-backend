@@ -27,4 +27,4 @@ COPY --from=build /app/assets ./assets
 
 EXPOSE 8000
 
-CMD ["node", "dist/src/main.js"]
+CMD ["sh", "-c", "npx typeorm -d ./dist/src/data-source.js migration:run && node dist/src/main.js"]
