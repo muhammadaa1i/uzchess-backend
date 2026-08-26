@@ -14,6 +14,7 @@ export class CreateNewsHandler implements ICommandHandler<CreateNewsCommand> {
     const news = News.create({
       title: cmd.payload.title,
       excerpt: cmd.payload.excerpt,
+      content: cmd.payload.content,
       imageUrl: cmd.imagePath ?? null,
       publishedAt: new Date(cmd.payload.publishedAt),
     });

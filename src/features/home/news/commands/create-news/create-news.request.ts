@@ -14,6 +14,11 @@ export class CreateNewsRequest {
   excerpt: string;
 
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+
+  @ApiProperty()
   @IsDateString()
   publishedAt: string;
 

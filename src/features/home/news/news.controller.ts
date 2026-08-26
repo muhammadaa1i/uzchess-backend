@@ -32,6 +32,7 @@ import {GetNewsRequest} from "@/features/home/news/queries/get-news/get-news.req
 import {GetNewsResponse} from "@/features/home/news/queries/get-news/get-news.response";
 import {GetNewsByIdQuery} from "@/features/home/news/queries/get-news-by-id/get-news-by-id.query";
 import {GetNewsByIdResponse} from "@/features/home/news/queries/get-news-by-id/get-news-by-id.response";
+import {PaginatedResultDto} from "@/core/dtos/paginated-result.dto";
 
 @ApiTags("News")
 @Roles(Role.Admin)
@@ -45,7 +46,7 @@ export class NewsController {
 
     @Public()
     @Get("read")
-    @ApiOkResponse({type: [GetNewsResponse]})
+    @ApiOkResponse({type: PaginatedResultDto(GetNewsResponse)})
     async getAll(@Query() payload: GetNewsRequest) {
         return await this.queryBus.execute(new GetNewsQuery(payload));
     }

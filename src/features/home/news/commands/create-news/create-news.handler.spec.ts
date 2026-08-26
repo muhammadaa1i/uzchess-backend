@@ -23,6 +23,7 @@ describe("CreateNewsHandler", () => {
       id: 1,
       title: "Chess Olympiad Kicks Off",
       excerpt: "The world's top players gather for the biennial event.",
+      content: "Full article body describing the biennial event in detail.",
       imageUrl: "https://r2.example.com/news/image.png",
       publishedAt: new Date("2026-08-01"),
     } as any);
@@ -31,6 +32,7 @@ describe("CreateNewsHandler", () => {
     const payload: CreateNewsRequest = {
       title: "Chess Olympiad Kicks Off",
       excerpt: "The world's top players gather for the biennial event.",
+      content: "Full article body describing the biennial event in detail.",
       publishedAt: "2026-08-01",
     };
     const result = await handler.execute(
@@ -41,11 +43,15 @@ describe("CreateNewsHandler", () => {
       expect.objectContaining({
         title: "Chess Olympiad Kicks Off",
         excerpt: "The world's top players gather for the biennial event.",
+        content: "Full article body describing the biennial event in detail.",
         imageUrl: "https://r2.example.com/news/image.png",
       }),
     );
     expect(saveSpy).toHaveBeenCalled();
     expect(result.title).toBe("Chess Olympiad Kicks Off");
+    expect(result.content).toBe(
+      "Full article body describing the biennial event in detail.",
+    );
   });
 
   it("defaults imageUrl to null when not provided", async () => {
@@ -53,6 +59,7 @@ describe("CreateNewsHandler", () => {
       id: 2,
       title: "Local Club News",
       excerpt: "A short update.",
+      content: "The full body of the local club update.",
       imageUrl: null,
       publishedAt: new Date("2026-08-02"),
     } as any);
@@ -61,6 +68,7 @@ describe("CreateNewsHandler", () => {
     const payload: CreateNewsRequest = {
       title: "Local Club News",
       excerpt: "A short update.",
+      content: "The full body of the local club update.",
       publishedAt: "2026-08-02",
     };
     const result = await handler.execute(
@@ -77,6 +85,7 @@ describe("CreateNewsHandler", () => {
     const payload: CreateNewsRequest = {
       title: "Title",
       excerpt: "Excerpt",
+      content: "Content",
       publishedAt: "2026-08-01",
     };
     await handler.execute(new CreateNewsCommand(payload, undefined));

@@ -21,6 +21,7 @@ export class UpdateNewsHandler implements ICommandHandler<UpdateNewsCommand> {
 
     if (cmd.payload.title !== undefined) news.title = cmd.payload.title;
     if (cmd.payload.excerpt !== undefined) news.excerpt = cmd.payload.excerpt;
+    if (cmd.payload.content !== undefined) news.content = cmd.payload.content;
     if (cmd.payload.publishedAt !== undefined)
       news.publishedAt = new Date(cmd.payload.publishedAt);
 

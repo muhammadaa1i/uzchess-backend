@@ -31,6 +31,7 @@ describe("UpdateNewsHandler", () => {
       id: 1,
       title: "Old Title",
       excerpt: "Old excerpt",
+      content: "Old content",
       imageUrl: null,
       publishedAt: new Date("2026-08-01"),
       save: saveMock,
@@ -46,6 +47,29 @@ describe("UpdateNewsHandler", () => {
     expect(news.title).toBe("New Title");
     expect(saveMock).toHaveBeenCalled();
     expect(result.title).toBe("New Title");
+  });
+
+  it("updates the content field when provided", async () => {
+    const saveMock = jest.fn();
+    const news = {
+      id: 1,
+      title: "Title",
+      excerpt: "Excerpt",
+      content: "Old content",
+      imageUrl: null,
+      publishedAt: new Date("2026-08-01"),
+      save: saveMock,
+    };
+    saveMock.mockImplementation(() => Promise.resolve(news));
+    jest.spyOn(News, "findOneBy").mockResolvedValue(news as any);
+
+    const payload: UpdateNewsRequest = { content: "New content" };
+    const result = await handler.execute(
+      new UpdateNewsCommand(1, payload, undefined),
+    );
+
+    expect(news.content).toBe("New content");
+    expect(result.content).toBe("New content");
   });
 
   it("deletes the old image when a new one is uploaded", async () => {

@@ -1,17 +1,23 @@
-import {Column, Entity} from "typeorm";
-import {BaseModel} from "@/core/base.model";
+import { Column, Entity } from "typeorm";
+import { BaseModel } from "@/core/base.model";
 
 @Entity("news")
 export class News extends BaseModel {
-    @Column({length: 256})
-    title: string;
+  @Column({ length: 256 })
+  title: string;
 
-    @Column("text")
-    excerpt: string;
+  @Column("text")
+  excerpt: string;
 
-    @Column({type: "varchar", length: 256, nullable: true})
-    imageUrl: string | null;
+  @Column("text")
+  content: string;
 
-    @Column({type: "date"})
-    publishedAt: Date;
+  @Column({ type: "varchar", length: 256, nullable: true })
+  imageUrl: string | null;
+
+  @Column({ type: "date" })
+  publishedAt: Date;
+
+  @Column({ type: "int", default: 0 })
+  viewsCount: number;
 }

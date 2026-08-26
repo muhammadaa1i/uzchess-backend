@@ -23,6 +23,12 @@ export class UpdateNewsRequest {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  content?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsDateString()
   publishedAt?: string;
 

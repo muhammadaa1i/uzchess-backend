@@ -14,6 +14,10 @@ export class UpdateNewsResponse {
   @Expose()
   excerpt: string;
 
+  @ApiProperty()
+  @Expose()
+  content: string;
+
   @ApiProperty({ required: false, nullable: true })
   @Expose()
   imageUrl: string | null;
