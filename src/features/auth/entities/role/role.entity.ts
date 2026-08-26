@@ -1,7 +1,6 @@
 import { BaseModel } from "@/core/base.model";
 import { Column, Entity, OneToMany } from "typeorm";
 import type { Relation } from "typeorm";
-import { RolePermission } from "@/features/auth/entities/role-permission/role-permission.entity";
 import { UserRole } from "@/features/auth/entities/user-role/user.role.entity";
 
 @Entity("roles")
@@ -11,9 +10,6 @@ export class Role extends BaseModel {
 
   @Column({ type: "text", nullable: true })
   description?: string;
-
-  @OneToMany(() => RolePermission, (rp) => rp.role)
-  rolePermissions: Relation<RolePermission>[];
 
   @OneToMany(() => UserRole, (ur) => ur.role)
   userRoles: Relation<UserRole>[];

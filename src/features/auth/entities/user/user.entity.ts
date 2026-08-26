@@ -2,7 +2,6 @@ import { Column, Entity, OneToMany } from "typeorm";
 import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
 import { UserRole } from "@/features/auth/entities/user-role/user.role.entity";
-import { UserPermission } from "@/features/auth/entities/user-permission/user-permission.entity";
 
 @Entity("users")
 export class User extends BaseModel {
@@ -29,7 +28,4 @@ export class User extends BaseModel {
 
   @OneToMany(() => UserRole, (ur) => ur.user)
   userRoles: Relation<UserRole>[];
-
-  @OneToMany(() => UserPermission, (up) => up.user)
-  userPermissions: Relation<UserPermission>[];
 }

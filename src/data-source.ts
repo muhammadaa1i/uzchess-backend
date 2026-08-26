@@ -1,10 +1,8 @@
 import "./env";
-import { DataSource } from "typeorm";
+import {DataSource, DataSourceOptions} from "typeorm";
+import {resolveTypeOrmConnectionOptions} from "@/core/configs/typeorm/typeorm-connection.util";
 
 export const AppDataSource = new DataSource({
-  type: "postgres",
-  synchronize: false,
-  url: process.env.DATABASE_URL,
-  entities: ["dist/**/*.entity.js"],
-  migrations: ["dist/src/migrations/*.js"],
+    ...(resolveTypeOrmConnectionOptions() as DataSourceOptions),
+    migrations: ["dist/src/migrations/*.js"],
 });

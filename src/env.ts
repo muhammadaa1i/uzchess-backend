@@ -1,3 +1,5 @@
 try {
   process.loadEnvFile();
-} catch {}
+} catch (err) {
+  if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+}

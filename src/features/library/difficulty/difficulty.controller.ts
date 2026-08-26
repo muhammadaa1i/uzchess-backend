@@ -13,10 +13,8 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import {
-  multerStorageOptions,
-  deleteUploadedFile,
-} from "@/core/configs/multer/multer.config";
+import { multerStorageOptions } from "@/core/configs/multer/multer.config";
+import { FileCleanupInterceptor } from "@/core/interceptors/file-cleanup.interceptor";
 import { CreateDifficultyRequest } from "@/features/library/difficulty/commands/create-difficulty/create-difficulty.request";
 import { UpdateDifficultyRequest } from "@/features/library/difficulty/commands/update-difficulty/update-difficulty.request";
 import { ApiConsumes, ApiOkResponse, ApiTags } from "@nestjs/swagger";
@@ -73,6 +71,7 @@ export class DifficultyController {
         files: 1,
       },
     }),
+    FileCleanupInterceptor,
   )
   async create(
     @Body()
@@ -82,14 +81,9 @@ export class DifficultyController {
   ) {
     if (!icon) throw new BadRequestException();
 
-    try {
-      return await this.cmdBus.execute(
-        new CreateDifficultyCommand(payload, icon.path),
-      );
-    } catch (error) {
-      await deleteUploadedFile(icon.path).catch(() => {});
-      throw error;
-    }
+    return await this.cmdBus.execute(
+      new CreateDifficultyCommand(payload, icon.path),
+    );
   }
 
   @Patch("update/:id")
@@ -106,6 +100,7 @@ export class DifficultyController {
         files: 1,
       },
     }),
+    FileCleanupInterceptor,
   )
   async update(
     @Param("id", ParseIntPipe)
@@ -115,14 +110,9 @@ export class DifficultyController {
     @UploadedFile()
     icon: Express.Multer.File,
   ) {
-    try {
-      return await this.cmdBus.execute(
-        new UpdateDifficultyCommand(id, payload, icon?.path),
-      );
-    } catch (error) {
-      if (icon) await deleteUploadedFile(icon.path).catch(() => {});
-      throw error;
-    }
+    return await this.cmdBus.execute(
+      new UpdateDifficultyCommand(id, payload, icon?.path),
+    );
   }
 
   @Delete("delete/:id")
