@@ -1,4 +1,5 @@
 import {Body, Controller, Post, Req} from "@nestjs/common";
+import {Throttle} from "@nestjs/throttler";
 import type {Request} from "express";
 import {RegisterRequest} from "@/features/auth/user/commands/register/register.request";
 import {RegisterCommand} from "@/features/auth/user/commands/register/register.command";
@@ -22,6 +23,7 @@ export class UserController {
     }
 
     @Public()
+    @Throttle({default: {limit: 5, ttl: 60_000}})
     @ApiOkResponse({type: RegisterResponse})
     @Post("register")
     async register(@Body() payload: RegisterRequest) {
@@ -29,6 +31,7 @@ export class UserController {
     }
 
     @Public()
+    @Throttle({default: {limit: 5, ttl: 60_000}})
     @ApiOkResponse({type: LoginResponse})
     @Post("login")
     async login(@Body() payload: LoginRequest) {
@@ -36,6 +39,7 @@ export class UserController {
     }
 
     @Public()
+    @Throttle({default: {limit: 10, ttl: 60_000}})
     @ApiOkResponse({type: RefreshTokenResponse})
     @Post("refresh")
     async refresh(@Body() payload: RefreshTokenRequest) {

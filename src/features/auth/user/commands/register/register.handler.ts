@@ -5,7 +5,7 @@ import { User } from "@/features/auth/entities/user/user.entity";
 import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
 import argon2 from "argon2";
-import { createHash, randomBytes } from "crypto";
+import { createHash, randomBytes, randomInt } from "crypto";
 import { JwtService } from "@nestjs/jwt";
 import { plainToInstance } from "class-transformer";
 import { RegisterResponse } from "@/features/auth/user/commands/register/register.response";
@@ -61,7 +61,7 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
     });
     await RefreshToken.save(refreshToken);
 
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const code = randomInt(100000, 1000000).toString();
 
     await this.cache.set(
       verifyEmailCacheKey(savedUser.id),

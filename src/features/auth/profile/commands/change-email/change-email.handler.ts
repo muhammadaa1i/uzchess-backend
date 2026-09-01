@@ -1,4 +1,5 @@
 import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
+import {randomInt} from "crypto";
 import {ChangeEmailCommand} from "@/features/auth/profile/commands/change-email/change-email.command";
 import {User} from "@/features/auth/entities/user/user.entity";
 import {DoesNotExistException} from "@/core/exceptions/does-not-exist.exception";
@@ -48,7 +49,7 @@ export class ChangeEmailHandler implements ICommandHandler<ChangeEmailCommand> {
             "Please wait before requesting a new code",
         );
 
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const code = randomInt(100000, 1000000).toString();
 
         await this.cache.set(
             changeEmailCacheKey(userId),

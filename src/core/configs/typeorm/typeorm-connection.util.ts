@@ -1,11 +1,11 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 
 function resolveSsl(): boolean | { rejectUnauthorized: boolean } {
-  if (process.env.DATABASE_SSL === "true") return { rejectUnauthorized: false };
+  const rejectUnauthorized = process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true";
+
+  if (process.env.DATABASE_SSL === "true") return { rejectUnauthorized };
   if (process.env.DATABASE_SSL === "false") return false;
-  return process.env.NODE_ENV === "production"
-    ? { rejectUnauthorized: false }
-    : false;
+  return process.env.NODE_ENV === "production" ? { rejectUnauthorized } : false;
 }
 
 export function resolveTypeOrmConnectionOptions(): TypeOrmModuleOptions {

@@ -1,4 +1,5 @@
 import {Body, Controller, Get, Patch, Post, Req, UploadedFile, UseInterceptors} from "@nestjs/common";
+import {Throttle} from "@nestjs/throttler";
 import type {Request} from "express";
 import {CommandBus, QueryBus} from "@nestjs/cqrs";
 import {ApiConsumes, ApiOkResponse, ApiTags} from "@nestjs/swagger";
@@ -94,6 +95,7 @@ export class ProfileController {
     }
 
     @Post("email/confirm")
+    @Throttle({default: {limit: 5, ttl: 60_000}})
     @ApiOkResponse({type: ConfirmEmailResponse})
     async confirmEmail(
         @Body() payload: ConfirmEmailRequest,
@@ -113,6 +115,7 @@ export class ProfileController {
     }
 
     @Post("verify-email/confirm")
+    @Throttle({default: {limit: 5, ttl: 60_000}})
     @ApiOkResponse({type: VerifyEmailConfirmResponse})
     async confirmVerifyEmail(
         @Body() payload: VerifyEmailConfirmRequest,

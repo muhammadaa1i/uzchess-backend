@@ -10,6 +10,7 @@ import {AuthGuard} from "@/core/guards/auth.guard";
 import {RoleGuard} from "@/core/guards/role.guard";
 import {CqrsModule} from "@nestjs/cqrs";
 import {CacheModule} from "@nestjs/cache-manager";
+import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
 import {LibraryModule} from "@/features/library/library.module";
 import {HomeModule} from "@/features/home/home.module";
 
@@ -31,12 +32,20 @@ import {HomeModule} from "@/features/home/home.module";
             isGlobal: true,
             ttl: 1000 * 60 * 30,
         }),
+        ThrottlerModule.forRoot([
+            {
+                name: "default",
+                ttl: 60_000,
+                limit: 100,
+            },
+        ]),
         AuthModule,
         LibraryModule,
         CommonModule,
         HomeModule,
     ],
     providers: [
+        {provide: APP_GUARD, useClass: ThrottlerGuard},
         {provide: APP_GUARD, useClass: AuthGuard},
         {provide: APP_GUARD, useClass: RoleGuard},
     ],
