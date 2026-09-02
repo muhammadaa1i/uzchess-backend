@@ -13,8 +13,10 @@ import {CacheModule} from "@nestjs/cache-manager";
 import {ThrottlerModule, ThrottlerGuard} from "@nestjs/throttler";
 import {LibraryModule} from "@/features/library/library.module";
 import {HomeModule} from "@/features/home/home.module";
+import {HealthController} from "@/core/health/health.controller";
 
 @Module({
+    controllers: [HealthController],
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
