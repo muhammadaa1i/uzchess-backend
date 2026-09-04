@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, Logger } from "@nestjs/common";
 import { RegisterCommand } from "@/features/auth/user/commands/register/register.command";
 import { User } from "@/features/auth/entities/user/user.entity";
 import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
@@ -69,7 +69,13 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
       VERIFY_EMAIL_RECORD_TTL_MS,
     );
 
-    await sendVerificationCodeEmail(savedUser.email!, code);
+    sendVerificationCodeEmail(savedUser.email!, code).catch((error) => {
+      Logger.error(
+        `Failed to send verification email to ${savedUser.email}: ${error}`,
+        undefined,
+        "RegisterHandler",
+      );
+    });
 
     return plainToInstance(
       RegisterResponse,
