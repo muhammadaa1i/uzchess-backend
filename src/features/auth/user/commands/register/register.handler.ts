@@ -21,7 +21,7 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
   constructor(
     private readonly cache: Cache,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async execute({ payload }: RegisterCommand) {
     const emailTaken = await User.existsBy({ email: payload.email });
