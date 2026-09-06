@@ -1,6 +1,7 @@
 import {Controller, Get, Param, ParseIntPipe} from "@nestjs/common";
 import {ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {QueryBus} from "@nestjs/cqrs";
+import {Public} from "@/core/decorators/public.decorator";
 import {GetGameOfDaysQuery} from "@/features/home/game-of-day/queries/get-game-of-days/get-game-of-days.query";
 import {GetGameOfDaysResponse} from "@/features/home/game-of-day/queries/get-game-of-days/get-game-of-days.response";
 import {
@@ -22,18 +23,21 @@ export class GameOfDayViewController {
     constructor(private readonly queryBus: QueryBus) {
     }
 
+    @Public()
     @Get("read")
     @ApiOkResponse({type: [GetGameOfDaysResponse]})
     async getAll() {
         return await this.queryBus.execute(new GetGameOfDaysQuery());
     }
 
+    @Public()
     @Get("read/:id")
     @ApiOkResponse({type: GetGameOfDaysByIdResponse})
     async getById(@Param("id", ParseIntPipe) id: number) {
         return await this.queryBus.execute(new GetGameOfDaysByIdQuery(id));
     }
 
+    @Public()
     @Get("active")
     @ApiOkResponse({type: GetActiveGameOfDayResponse})
     async getActive() {

@@ -26,6 +26,7 @@ import { GameModule } from "@/features/home/game/game.module";
 import { GameOfDayModule } from "@/features/home/game-of-day/game-of-day.module";
 import { NewsModule } from "@/features/home/news/news.module";
 import { BannerModule } from "@/features/home/banner/banner.module";
+import { ContactModule } from "@/features/home/contact/contact.module";
 
 export interface SwaggerDocGroup {
   path: string;
@@ -83,6 +84,7 @@ export const SWAGGER_DOC_GROUPS: SwaggerDocGroup[] = [
       GameOfDayModule,
       NewsModule,
       BannerModule,
+      ContactModule,
     ],
   },
 ];

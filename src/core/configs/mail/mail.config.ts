@@ -14,3 +14,7 @@ export const mailTransporter = createTransport({
 });
 
 export const SMTP_FROM = process.env.SMTP_FROM!;
+
+// Recipient for admin notifications (e.g. contact form submissions).
+// Falls back to SMTP_FROM so this works out of the box without extra config.
+export const CONTACT_EMAIL_TO = process.env.CONTACT_EMAIL_TO || SMTP_FROM;
