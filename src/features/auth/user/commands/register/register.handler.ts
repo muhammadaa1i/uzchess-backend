@@ -3,7 +3,11 @@ import { BadRequestException, Logger } from "@nestjs/common";
 import { RegisterCommand } from "@/features/auth/user/commands/register/register.command";
 import { User } from "@/features/auth/entities/user/user.entity";
 import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
+import { Role as RoleEntity } from "@/features/auth/entities/role/role.entity";
+import { UserRole } from "@/features/auth/entities/user-role/user.role.entity";
+import { Role } from "@/core/enums/role/role.enum";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
+import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import argon2 from "argon2";
 import { createHash, randomBytes, randomInt } from "crypto";
 import { JwtService } from "@nestjs/jwt";
@@ -42,9 +46,16 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand> {
 
     const savedUser = await User.save(newUser);
 
+    const userRole = await RoleEntity.findOneBy({ title: Role.User });
+    DoesNotExistException.ThrowIfNull(userRole, "Default user role is not configured");
+
+    await UserRole.save(
+      UserRole.create({ userId: savedUser.id, roleId: userRole.id }),
+    );
+
     const jwtPayload = {
       id: savedUser.id,
-      roles: [],
+      roles: [Role.User],
     };
 
     const accessToken = this.jwtService.sign(jwtPayload);

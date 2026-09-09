@@ -8,7 +8,11 @@ import { RegisterCommand } from "@/features/auth/user/commands/register/register
 import { RegisterRequest } from "@/features/auth/user/commands/register/register.request";
 import { User } from "@/features/auth/entities/user/user.entity";
 import { RefreshToken } from "@/features/auth/entities/refresh-token/refresh-token.entity";
+import { Role as RoleEntity } from "@/features/auth/entities/role/role.entity";
+import { UserRole } from "@/features/auth/entities/user-role/user.role.entity";
+import { Role } from "@/core/enums/role/role.enum";
 import { AlreadyExistException } from "@/core/exceptions/already-exist.exception";
+import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 import { sendVerificationCodeEmail } from "@/core/configs/mail/mail.service";
 import { verifyEmailCacheKey } from "@/features/auth/profile/profile.cache";
 
@@ -76,6 +80,9 @@ describe("RegisterHandler", () => {
       isEmailVerified: false,
     };
     const userSaveSpy = jest.spyOn(User, "save").mockResolvedValue(savedUser as any);
+    jest.spyOn(RoleEntity, "findOneBy").mockResolvedValue({ id: 7, title: Role.User } as any);
+    jest.spyOn(UserRole, "create").mockReturnValue({} as any);
+    const userRoleSaveSpy = jest.spyOn(UserRole, "save").mockResolvedValue({} as any);
     jest.spyOn(RefreshToken, "create").mockReturnValue({} as any);
     const refreshTokenSaveSpy = jest.spyOn(RefreshToken, "save").mockResolvedValue({} as any);
 
@@ -83,8 +90,9 @@ describe("RegisterHandler", () => {
 
     expect(hashSpy).toHaveBeenCalledWith("password123");
     expect(userSaveSpy).toHaveBeenCalled();
+    expect(userRoleSaveSpy).toHaveBeenCalled();
     expect(refreshTokenSaveSpy).toHaveBeenCalled();
-    expect(jwtService.sign).toHaveBeenCalledWith({ id: 1, roles: [] });
+    expect(jwtService.sign).toHaveBeenCalledWith({ id: 1, roles: [Role.User] });
     expect(cache.set).toHaveBeenCalledWith(
       verifyEmailCacheKey(1),
       expect.objectContaining({ code: expect.any(String), createdAt: expect.any(Number) }),
@@ -97,5 +105,25 @@ describe("RegisterHandler", () => {
     expect(result.accessToken).toBe("signed-access-token");
     expect(result.refreshToken).toEqual(expect.any(String));
     expect(result.id).toBe(1);
+  });
+
+  it("throws DoesNotExistException when the default user role is not seeded", async () => {
+    jest.spyOn(User, "existsBy").mockResolvedValue(false);
+    jest.spyOn(User, "create").mockReturnValue({
+      email: "john@example.com",
+      firstName: "John",
+      lastName: "Doe",
+      password: "password123",
+      isEmailVerified: false,
+    } as any);
+    jest.spyOn(argon2, "hash").mockResolvedValue("hashed-password" as any);
+    jest.spyOn(User, "save").mockResolvedValue({ id: 1 } as any);
+    jest.spyOn(RoleEntity, "findOneBy").mockResolvedValue(null);
+    const userRoleSaveSpy = jest.spyOn(UserRole, "save");
+
+    await expect(
+      handler.execute(new RegisterCommand(basePayload())),
+    ).rejects.toBeInstanceOf(DoesNotExistException);
+    expect(userRoleSaveSpy).not.toHaveBeenCalled();
   });
 });
