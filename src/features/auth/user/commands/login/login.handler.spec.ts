@@ -60,6 +60,10 @@ describe("LoginHandler", () => {
   it("logs in successfully and issues tokens on the happy path", async () => {
     jest.spyOn(User, "findOne").mockResolvedValue({
       id: 1,
+      email: "john@example.com",
+      firstName: "John",
+      lastName: "Doe",
+      isEmailVerified: true,
       password: "hashed-password",
       userRoles: [
         { role: { title: Role.Admin } },
@@ -89,5 +93,10 @@ describe("LoginHandler", () => {
     expect(savedRefreshToken.tokenHash).toBe(rawTokenHash);
     expect(result.refreshToken).not.toBe(savedRefreshToken.tokenHash);
     expect(result.accessToken).toBe("signed-access-token");
+    expect(result.id).toBe(1);
+    expect(result.email).toBe("john@example.com");
+    expect(result.firstName).toBe("John");
+    expect(result.lastName).toBe("Doe");
+    expect(result.isEmailVerified).toBe(true);
   });
 });

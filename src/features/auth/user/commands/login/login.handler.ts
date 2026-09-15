@@ -51,7 +51,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
     return plainToInstance(
       LoginResponse,
-      { accessToken, refreshToken: rawRefreshToken },
+      { ...user, accessToken, refreshToken: rawRefreshToken },
       { excludeExtraneousValues: true },
     );
   }
