@@ -1,61 +1,66 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {Expose} from "class-transformer";
-import {GameType} from "@/core/enums/game-type/game-type.enum";
+import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
+import { GameType } from "@/core/enums/game-type/game-type.enum";
+import { GameStatus } from "@/core/enums/game-status/game-status.enum";
 
 export class GetGamesResponse {
-    @ApiProperty()
-    @Expose()
-    id: number;
+  @ApiProperty()
+  @Expose()
+  id: number;
 
-    @ApiProperty()
-    @Expose()
-    whitePlayerId: number;
+  @ApiProperty()
+  @Expose()
+  whitePlayerId: number;
 
-    @ApiProperty()
-    @Expose()
-    whitePlayerName: string;
+  @ApiProperty()
+  @Expose()
+  whitePlayerName: string;
 
-    @ApiProperty({required: false, nullable: true})
-    @Expose()
-    whitePlayerAvatarUrl: string | null;
+  @ApiProperty({ required: false, nullable: true })
+  @Expose()
+  whitePlayerAvatarUrl: string | null;
 
-    @ApiProperty()
-    @Expose()
-    whitePlayerRating: number;
+  @ApiProperty()
+  @Expose()
+  whitePlayerRating: number;
 
-    @ApiProperty()
-    @Expose()
-    blackPlayerId: number;
+  @ApiProperty()
+  @Expose()
+  blackPlayerId: number;
 
-    @ApiProperty()
-    @Expose()
-    blackPlayerName: string;
+  @ApiProperty()
+  @Expose()
+  blackPlayerName: string;
 
-    @ApiProperty({required: false, nullable: true})
-    @Expose()
-    blackPlayerAvatarUrl: string | null;
+  @ApiProperty({ required: false, nullable: true })
+  @Expose()
+  blackPlayerAvatarUrl: string | null;
 
-    @ApiProperty()
-    @Expose()
-    blackPlayerRating: number;
+  @ApiProperty()
+  @Expose()
+  blackPlayerRating: number;
 
-    @ApiProperty()
-    @Expose()
-    whiteScore: number;
+  @ApiProperty({ required: false, nullable: true })
+  @Expose()
+  whiteScore: number | null;
 
-    @ApiProperty()
-    @Expose()
-    blackScore: number;
+  @ApiProperty({ required: false, nullable: true })
+  @Expose()
+  blackScore: number | null;
 
-    @ApiProperty({enum: GameType})
-    @Expose()
-    gameType: GameType;
+  @ApiProperty({ enum: GameStatus })
+  @Expose()
+  status: GameStatus;
 
-    @ApiProperty()
-    @Expose()
-    movesCount: number;
+  @ApiProperty({ enum: GameType })
+  @Expose()
+  gameType: GameType;
 
-    @ApiProperty()
-    @Expose()
-    playedAt: Date;
+  @ApiProperty()
+  @Expose()
+  movesCount: number;
+
+  @ApiProperty()
+  @Expose()
+  playedAt: Date;
 }

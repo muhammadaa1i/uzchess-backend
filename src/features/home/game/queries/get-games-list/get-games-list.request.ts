@@ -1,6 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsInt, IsOptional, IsString, Max, MaxLength, Min } from "class-validator";
+import {
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+} from "class-validator";
 import { Type } from "class-transformer";
+import { GameStatus } from "@/core/enums/game-status/game-status.enum";
 
 export enum GamesListSortBy {
   Date = "date",
@@ -41,4 +50,9 @@ export class GetGamesListRequest {
   @IsOptional()
   @IsEnum(GamesListSortBy)
   sortBy?: GamesListSortBy;
+
+  @ApiProperty({ enum: GameStatus, required: false })
+  @IsOptional()
+  @IsEnum(GameStatus)
+  status?: GameStatus;
 }

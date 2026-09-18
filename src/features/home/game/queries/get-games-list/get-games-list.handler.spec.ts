@@ -6,6 +6,7 @@ import {
 } from "@/features/home/game/queries/get-games-list/get-games-list.request";
 import { Game } from "@/features/home/entities/game/game.entity";
 import { GameType } from "@/core/enums/game-type/game-type.enum";
+import { GameStatus } from "@/core/enums/game-status/game-status.enum";
 
 describe("GetGamesListHandler", () => {
   let handler: GetGamesListHandler;
@@ -32,6 +33,7 @@ describe("GetGamesListHandler", () => {
       blackPlayer: makePlayer({ id: 2, name: "Black Player", country: "USA" }),
       whiteScore: 1,
       blackScore: 0,
+      status: GameStatus.Completed,
       gameType: GameType.Blitz,
       movesCount: 40,
       playedAt: new Date("2026-08-01"),
@@ -60,10 +62,12 @@ describe("GetGamesListHandler", () => {
   });
 
   it("sorts by playedAt desc by default and defaults to page 1, size 10 when no payload given", async () => {
-    jest.spyOn(Game, "find").mockResolvedValue([
-      makeGame({ id: 1, playedAt: new Date("2026-08-01") }),
-      makeGame({ id: 2, playedAt: new Date("2026-08-05") }),
-    ]);
+    jest
+      .spyOn(Game, "find")
+      .mockResolvedValue([
+        makeGame({ id: 1, playedAt: new Date("2026-08-01") }),
+        makeGame({ id: 2, playedAt: new Date("2026-08-05") }),
+      ]);
 
     const payload: GetGamesListRequest = {};
     const result = await handler.execute(new GetGamesListQuery(payload));
@@ -76,10 +80,12 @@ describe("GetGamesListHandler", () => {
   });
 
   it("sorts by movesCount desc when sortBy=moves", async () => {
-    jest.spyOn(Game, "find").mockResolvedValue([
-      makeGame({ id: 1, movesCount: 20 }),
-      makeGame({ id: 2, movesCount: 60 }),
-    ]);
+    jest
+      .spyOn(Game, "find")
+      .mockResolvedValue([
+        makeGame({ id: 1, movesCount: 20 }),
+        makeGame({ id: 2, movesCount: 60 }),
+      ]);
 
     const result = await handler.execute(
       new GetGamesListQuery({ sortBy: GamesListSortBy.Moves }),
@@ -90,11 +96,13 @@ describe("GetGamesListHandler", () => {
   });
 
   it("sorts alphabetically ascending by gameType when sortBy=gameType", async () => {
-    jest.spyOn(Game, "find").mockResolvedValue([
-      makeGame({ id: 1, gameType: GameType.Rapid }),
-      makeGame({ id: 2, gameType: GameType.Blitz }),
-      makeGame({ id: 3, gameType: GameType.Bullet }),
-    ]);
+    jest
+      .spyOn(Game, "find")
+      .mockResolvedValue([
+        makeGame({ id: 1, gameType: GameType.Rapid }),
+        makeGame({ id: 2, gameType: GameType.Blitz }),
+        makeGame({ id: 3, gameType: GameType.Bullet }),
+      ]);
 
     const result = await handler.execute(
       new GetGamesListQuery({ sortBy: GamesListSortBy.GameType }),
@@ -135,8 +143,16 @@ describe("GetGamesListHandler", () => {
 
   it("filters by age, matching either white or black player's calculated age", async () => {
     const now = new Date();
-    const twentyYearsAgo = new Date(now.getFullYear() - 20, now.getMonth(), now.getDate());
-    const thirtyYearsAgo = new Date(now.getFullYear() - 30, now.getMonth(), now.getDate());
+    const twentyYearsAgo = new Date(
+      now.getFullYear() - 20,
+      now.getMonth(),
+      now.getDate(),
+    );
+    const thirtyYearsAgo = new Date(
+      now.getFullYear() - 30,
+      now.getMonth(),
+      now.getDate(),
+    );
 
     jest.spyOn(Game, "find").mockResolvedValue([
       makeGame({
@@ -205,10 +221,12 @@ describe("GetGamesListHandler", () => {
   });
 
   it("picks the rating matching the game's gameType, falling back to classicalRating for bullet", async () => {
-    jest.spyOn(Game, "find").mockResolvedValue([
-      makeGame({ id: 1, gameType: GameType.Rapid }),
-      makeGame({ id: 2, gameType: GameType.Bullet }),
-    ]);
+    jest
+      .spyOn(Game, "find")
+      .mockResolvedValue([
+        makeGame({ id: 1, gameType: GameType.Rapid }),
+        makeGame({ id: 2, gameType: GameType.Bullet }),
+      ]);
 
     const result = await handler.execute(new GetGamesListQuery({}));
 
@@ -216,5 +234,52 @@ describe("GetGamesListHandler", () => {
     const bulletGame = result.data.find((g) => g.id === 2);
     expect(rapidGame?.whitePlayerRating).toBe(2800);
     expect(bulletGame?.whitePlayerRating).toBe(2830);
+  });
+
+  it("filters by status=completed, excluding ongoing games", async () => {
+    jest.spyOn(Game, "find").mockResolvedValue([
+      makeGame({ id: 1, status: GameStatus.Completed }),
+      makeGame({
+        id: 2,
+        status: GameStatus.Ongoing,
+        whiteScore: null,
+        blackScore: null,
+      }),
+    ]);
+
+    const result = await handler.execute(
+      new GetGamesListQuery({ status: GameStatus.Completed }),
+    );
+
+    expect(result.data.map((g) => g.id)).toEqual([1]);
+  });
+
+  it("filters by status=ongoing, excluding completed games", async () => {
+    jest.spyOn(Game, "find").mockResolvedValue([
+      makeGame({ id: 1, status: GameStatus.Completed }),
+      makeGame({
+        id: 2,
+        status: GameStatus.Ongoing,
+        whiteScore: null,
+        blackScore: null,
+      }),
+    ]);
+
+    const result = await handler.execute(
+      new GetGamesListQuery({ status: GameStatus.Ongoing }),
+    );
+
+    expect(result.data.map((g) => g.id)).toEqual([2]);
+  });
+
+  it("bypasses the default-query cache read/write when status is set", async () => {
+    jest.spyOn(Game, "find").mockResolvedValue([makeGame({ id: 1 })]);
+
+    await handler.execute(
+      new GetGamesListQuery({ status: GameStatus.Completed }),
+    );
+
+    expect(cache.get).not.toHaveBeenCalled();
+    expect(cache.set).not.toHaveBeenCalled();
   });
 });

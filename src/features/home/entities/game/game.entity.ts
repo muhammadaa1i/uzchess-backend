@@ -3,6 +3,7 @@ import type { Relation } from "typeorm";
 import { BaseModel } from "@/core/base.model";
 import { Player } from "@/features/home/entities/player/player.entity";
 import { GameType } from "@/core/enums/game-type/game-type.enum";
+import { GameStatus } from "@/core/enums/game-status/game-status.enum";
 
 @Entity("games")
 export class Game extends BaseModel {
@@ -20,11 +21,14 @@ export class Game extends BaseModel {
   @JoinColumn({ name: "blackPlayerId" })
   blackPlayer: Relation<Player>;
 
-  @Column("integer")
-  whiteScore: number;
+  @Column("integer", { nullable: true })
+  whiteScore: number | null;
 
-  @Column("integer")
-  blackScore: number;
+  @Column("integer", { nullable: true })
+  blackScore: number | null;
+
+  @Column({ type: "enum", enum: GameStatus, default: GameStatus.Completed })
+  status: GameStatus;
 
   @Column({ type: "enum", enum: GameType })
   gameType: GameType;

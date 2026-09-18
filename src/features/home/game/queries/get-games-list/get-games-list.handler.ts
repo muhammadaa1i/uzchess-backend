@@ -23,12 +23,12 @@ export class GetGamesListHandler implements IQueryHandler<GetGamesListQuery> {
       query.payload.age === undefined &&
       !query.payload.sortBy &&
       !query.payload.page &&
-      !query.payload.size;
+      !query.payload.size &&
+      !query.payload.status;
 
     if (isDefaultQuery) {
-      const cached = await this.cache.get<CachedGamesList>(
-        GAMES_LIST_CACHE_KEY,
-      );
+      const cached =
+        await this.cache.get<CachedGamesList>(GAMES_LIST_CACHE_KEY);
       if (cached) return cached;
     }
 
@@ -52,13 +52,20 @@ export class GetGamesListHandler implements IQueryHandler<GetGamesListQuery> {
       );
     }
 
+    if (query.payload.status) {
+      games = games.filter((game) => game.status === query.payload.status);
+    }
+
     const sortBy = query.payload.sortBy ?? GamesListSortBy.Date;
     if (sortBy === GamesListSortBy.Moves) {
       games.sort((a, b) => b.movesCount - a.movesCount);
     } else if (sortBy === GamesListSortBy.GameType) {
       games.sort((a, b) => a.gameType.localeCompare(b.gameType));
     } else {
-      games.sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime());
+      games.sort(
+        (a, b) =>
+          new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime(),
+      );
     }
 
     const take = query.payload.size ?? 10;

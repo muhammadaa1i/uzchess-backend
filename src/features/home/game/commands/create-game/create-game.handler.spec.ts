@@ -4,10 +4,11 @@ import { CreateGameRequest } from "@/features/home/game/commands/create-game/cre
 import { Game } from "@/features/home/entities/game/game.entity";
 import { Player } from "@/features/home/entities/player/player.entity";
 import { GameType } from "@/core/enums/game-type/game-type.enum";
+import { GameStatus } from "@/core/enums/game-status/game-status.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("CreateGameHandler", () => {
-    let handler: CreateGameHandler;
+  let handler: CreateGameHandler;
   let cache: { get: jest.Mock; set: jest.Mock; del: jest.Mock };
 
   beforeEach(() => {
@@ -92,5 +93,70 @@ describe("CreateGameHandler", () => {
     expect(cache.del).toHaveBeenCalledWith("games:list");
     expect(cache.del).toHaveBeenCalledWith("games:filters");
     expect(cache.del).toHaveBeenCalledWith("games:recent");
+  });
+
+  it("derives status=Completed when both scores are provided", async () => {
+    jest.spyOn(Player, "existsBy").mockResolvedValue(true);
+    const createSpy = jest
+      .spyOn(Game, "create")
+      .mockImplementation((g) => g as Game);
+    jest.spyOn(Game, "save").mockImplementation((g: any) => Promise.resolve(g));
+
+    const result = await handler.execute(new CreateGameCommand(payload));
+
+    expect(createSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        whiteScore: 1,
+        blackScore: 0,
+        status: GameStatus.Completed,
+      }),
+    );
+    expect(result.status).toBe(GameStatus.Completed);
+  });
+
+  it("derives status=Ongoing when no scores are provided", async () => {
+    jest.spyOn(Player, "existsBy").mockResolvedValue(true);
+    const createSpy = jest
+      .spyOn(Game, "create")
+      .mockImplementation((g) => g as Game);
+    jest.spyOn(Game, "save").mockImplementation((g: any) => Promise.resolve(g));
+
+    const noScorePayload = {
+      ...payload,
+      whiteScore: undefined,
+      blackScore: undefined,
+    };
+    const result = await handler.execute(new CreateGameCommand(noScorePayload));
+
+    expect(createSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        whiteScore: null,
+        blackScore: null,
+        status: GameStatus.Ongoing,
+      }),
+    );
+    expect(result.status).toBe(GameStatus.Ongoing);
+  });
+
+  it("derives status=Ongoing when only one score is provided", async () => {
+    jest.spyOn(Player, "existsBy").mockResolvedValue(true);
+    const createSpy = jest
+      .spyOn(Game, "create")
+      .mockImplementation((g) => g as Game);
+    jest.spyOn(Game, "save").mockImplementation((g: any) => Promise.resolve(g));
+
+    const partialScorePayload = { ...payload, blackScore: undefined };
+    const result = await handler.execute(
+      new CreateGameCommand(partialScorePayload),
+    );
+
+    expect(createSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        whiteScore: 1,
+        blackScore: null,
+        status: GameStatus.Ongoing,
+      }),
+    );
+    expect(result.status).toBe(GameStatus.Ongoing);
   });
 });

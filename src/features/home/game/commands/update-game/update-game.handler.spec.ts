@@ -4,6 +4,7 @@ import { UpdateGameRequest } from "@/features/home/game/commands/update-game/upd
 import { Game } from "@/features/home/entities/game/game.entity";
 import { Player } from "@/features/home/entities/player/player.entity";
 import { GameType } from "@/core/enums/game-type/game-type.enum";
+import { GameStatus } from "@/core/enums/game-status/game-status.enum";
 import { DoesNotExistException } from "@/core/exceptions/does-not-exist.exception";
 
 describe("UpdateGameHandler", () => {
@@ -29,6 +30,7 @@ describe("UpdateGameHandler", () => {
       blackPlayerId: 2,
       whiteScore: 1,
       blackScore: 0,
+      status: GameStatus.Completed,
       gameType: GameType.Blitz,
       movesCount: 40,
       playedAt: new Date("2026-08-01"),
@@ -79,5 +81,38 @@ describe("UpdateGameHandler", () => {
     expect(cache.del).toHaveBeenCalledWith("games:filters");
     expect(cache.del).toHaveBeenCalledWith("games:recent");
     expect(cache.del).toHaveBeenCalledWith("games:1");
+  });
+
+  it("recomputes status to Completed when a patch fills in the last missing score", async () => {
+    const { game } = makeGame();
+    game.whiteScore = null;
+    game.blackScore = null;
+    game.status = GameStatus.Ongoing;
+    jest.spyOn(Game, "findOneBy").mockResolvedValue(game);
+
+    // First call sets whiteScore only -> still Ongoing.
+    await handler.execute(new UpdateGameCommand(1, { whiteScore: 3 }));
+    expect(game.status).toBe(GameStatus.Ongoing);
+
+    // Second call sets the remaining blackScore -> flips to Completed,
+    // using the score persisted on the entity from the prior call, not
+    // just what's in this call's payload.
+    const result = await handler.execute(
+      new UpdateGameCommand(1, { blackScore: 1 }),
+    );
+    expect(game.status).toBe(GameStatus.Completed);
+    expect(result.status).toBe(GameStatus.Completed);
+  });
+
+  it("leaves status Completed as-is when a patch doesn't touch either score", async () => {
+    const { game } = makeGame();
+    jest.spyOn(Game, "findOneBy").mockResolvedValue(game);
+
+    const result = await handler.execute(
+      new UpdateGameCommand(1, { movesCount: 55 }),
+    );
+
+    expect(game.status).toBe(GameStatus.Completed);
+    expect(result.status).toBe(GameStatus.Completed);
   });
 });

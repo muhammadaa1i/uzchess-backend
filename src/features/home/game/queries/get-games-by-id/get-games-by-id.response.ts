@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { GameType } from "@/core/enums/game-type/game-type.enum";
+import { GameStatus } from "@/core/enums/game-status/game-status.enum";
 
 export class GetGamesByIdResponse {
   @ApiProperty()
@@ -39,13 +40,17 @@ export class GetGamesByIdResponse {
   @Expose()
   blackPlayerRating: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, nullable: true })
   @Expose()
-  whiteScore: number;
+  whiteScore: number | null;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, nullable: true })
   @Expose()
-  blackScore: number;
+  blackScore: number | null;
+
+  @ApiProperty({ enum: GameStatus })
+  @Expose()
+  status: GameStatus;
 
   @ApiProperty({ enum: GameType })
   @Expose()
