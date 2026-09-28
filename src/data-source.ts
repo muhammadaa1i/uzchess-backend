@@ -4,5 +4,5 @@ import {resolveTypeOrmConnectionOptions} from "@/core/configs/typeorm/typeorm-co
 
 export const AppDataSource = new DataSource({
     ...(resolveTypeOrmConnectionOptions() as DataSourceOptions),
-    migrations: ["dist/src/migrations/*.js"],
+    migrations: ["dist/src/migrations/**/*.js"],
 });
